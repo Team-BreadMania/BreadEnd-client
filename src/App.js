@@ -1,24 +1,22 @@
-import logo from './logo.svg';
-import './App.css';
-import Header from './component/Header.js';
-import Nav from './component/Nav.js';
-import Home from './component/Home.js';
-import Footer from './component/Footer.js';
-import React from "react";
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import sytled from 'styled-components';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import Header from "./Components/Header";
+import NaviBar from "./Components/NaviBar";
+import Home from "./Pages/Home";
 
 function App() {
-  return (
-    <BrowserRouter>
-      <Header/>
-      <Nav/>
-      <Routes>
-        <Route path='/' element={<Home/>}/>
-      </Routes> 
-      <Footer/>     
-    </BrowserRouter>
-  );
+    return (
+      <Router>
+          <div style = {{ width: "100%", height: "100vh"}}> 
+              <Header/>
+              <Routes>
+                  <Route path = "/" element = {<Navigate to = "/Home"/>}/>
+                  <Route path = "/Home" element = {<Home/>}/>
+              </Routes>
+              <NaviBar/>
+          </div>
+      </Router>
+    );
 }
 
 export default App;
