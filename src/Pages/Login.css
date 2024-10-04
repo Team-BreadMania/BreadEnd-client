@@ -77,3 +77,36 @@
 .loginButton:hover {
     background-color: #444;
 }
+
+/* 모바일 화면에서 반응형 처리 */
+@media screen and (max-width: 1440px) {
+    .icon-container {
+        display: none; /* 모바일 화면에서는 아이콘 숨기기 */
+    }
+
+    .login-page {
+        justify-content: center;
+        align-items: center;
+        height: 80vh; /* 모바일 화면에서는 전체 높이로 설정 */
+    }
+
+    .login-form-container {
+        width: 90%; /* 모바일 화면에서는 너비를 조정하여 더 잘 맞추기 */
+        max-width: 100%;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .inputField {
+        padding: 12px;
+        font-size: 16px; /* 모바일 화면에서는 폰트 크기를 약간 줄이기 */
+        height: 45px;
+    }
+
+    .loginButton {
+        padding: 12px;
+        height: 45px;
+        font-size: 16px;
+    }
+}
