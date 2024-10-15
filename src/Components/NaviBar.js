@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import search_icon from '../Images/search_icon.svg';
 import map_icon from '../Images/map_icon.svg';
@@ -10,6 +10,7 @@ import edit_icon1 from '../Images/edit_icon1.png';
 
 export default function NaviBar() {
     const location = useLocation();
+    const navigate = useNavigate(); // useNavigate로 변경
     const [userLogin, setUserLogin] = useState(false);
     const [userAuth, setUserAuth] = useState('buyer');
 
@@ -18,7 +19,7 @@ export default function NaviBar() {
         { to: '/Map', icon: map_icon, text: '내 주변 가게' },
         { to: '/Home', icon: home_icon, text: '홈' },
         { to: '/MyCart', icon: cart_icon, text: '내 장바구니' },
-        { to: '/MyPage_buyer', icon: my_icon, text: '마이페이지' },
+        { to: '/MyPage_buyer', icon: my_icon, text: '마이페이지', protected: true },
     ];
 
     const sellerMenuItems = [
@@ -26,15 +27,24 @@ export default function NaviBar() {
         { to: '/Map', icon: edit_icon1, text: '판매물품 등록' },
         { to: '/Home', icon: home_icon, text: '홈' },
         { to: '/MySeller', icon: cart_icon, text: '내 판매상품' },
-        { to: '/MyPage_buyer', icon: my_icon, text: '마이페이지' },
+        { to: '/MyPage_buyer', icon: my_icon, text: '마이페이지', protected: true },
     ];
 
     const menuItems = !userLogin ? buyerMenuItems : userAuth === 'seller' ? sellerMenuItems : buyerMenuItems;
 
+    const handleMenuClick = (item) => {
+        if (item.protected && !userLogin) {
+            alert('로그인이 필요한 컨텐츠입니다.');
+            navigate('/Login'); // 메인 페이지로 돌아가기
+        } else {
+            navigate(item.to); // 정상적인 이동
+        }
+    };
+
     return (
         <Container>
             {menuItems.map((item) => (
-                <NaviMenu key={item.to} to={item.to} active={location.pathname === item.to}>
+                <NaviMenu key={item.to} active={location.pathname === item.to} onClick={() => handleMenuClick(item)}>
                     <NaviIcon src={item.icon} />
                     <NaviText>{item.text}</NaviText>
                 </NaviMenu>
@@ -69,7 +79,7 @@ const Container = styled.div`
     }
 `;
 
-const NaviMenu = styled(Link)`
+const NaviMenu = styled.div`
     height: 100%;
     display: flex;
     flex-direction: column;
@@ -81,6 +91,7 @@ const NaviMenu = styled(Link)`
     background-color: ${({ active }) => (active ? '#e0e0e0' : 'transparent')};
     font-weight: ${({ active }) => (active ? 'bold' : 'normal')};
     font-size: ${({ active }) => (active ? '12px' : '10px')};
+    cursor: pointer; // 클릭 가능한 요소로 변경
 `;
 
 const NaviIcon = styled.img`

@@ -217,14 +217,6 @@ const UserImage = styled.div`
     background-position: center;
     border-radius: 50%;
     margin-right: 40px;
-    @media (max-width: 800px) {
-        margin-right: 20px;
-    }
-    @media (max-width: 400px) {
-        margin-right: 10px;
-        width: 18vw;
-        height: 18vw;
-    }
 `;
 const UserInform = styled.div`
     display: flex;
