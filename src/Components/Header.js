@@ -11,21 +11,24 @@ export default function Header() {
     return (
         <Container>
             <Box><MenuButton/></Box>
-            <Box style = {{width: "60%"}}>
-                <LogoButton to = "/Home">
+            <Box style={{ width: "60%" }}>
+                <LogoButton to="/Home">
                     <LogoIcon/>
                     <LogoText>빵끝마켓</LogoText>
                 </LogoButton>
             </Box>
-            <LoginBox to = "/Login">로그인</LoginBox>
+            <Box style={{ width: "20%", justifyContent: "flex-end" }}> {/* 로그인과 회원가입 박스를 담는 박스 */}
+                <LoginBox to="/Login">로그인</LoginBox>
+                <SignupBox to="/Signup">회원가입</SignupBox>
+            </Box>
             <Box><AlarmButton/></Box>
         </Container>
     );
 }
 
-// 아래부터 styled-components CSS 설정
+// 아래는 styled-components CSS 설정 그대로 유지
 
-const Container = styled.div` // 최상단 박스 컨테이너
+const Container = styled.div`
     display: flex;
     width: 90%;
     height: 7.5vh;
@@ -43,7 +46,7 @@ const Container = styled.div` // 최상단 박스 컨테이너
     }
 `;
 
-const Box = styled.div` // 내부 박스 컨테이너
+const Box = styled.div`
     display: flex;
     width: 15%;
     height: 100%;
@@ -51,27 +54,55 @@ const Box = styled.div` // 내부 박스 컨테이너
     align-items: center;
 `;
 
-const LoginBox = styled(Link)` // 로그인 박스 컨테이너
+const LoginBox = styled(Link)`
     display: flex;
-    width: 10%;
+    width: auto;
+    padding-right: 15px;
     height: 100%;
     justify-content: right;
     align-items: center;
-    font-size: 15px;
+    font-size: 13px;
     font-weight: bold;
     color: black;
     text-decoration: none;
+    white-space: nowrap; /* 줄바꿈 방지 */
 
     @media (max-width: 800px) {
-        font-size: 12.5px;
+        font-size: 11px;
+        padding-right: 10px; /* 오른쪽 여백 줄이기 */
     }
 
     @media (max-width: 600px) {
         font-size: 10px;
+        padding-right: 5px; /* 오른쪽 여백 더 줄이기 */
     }
 `;
 
-const MenuButton = styled.div` // 헤더 좌측 메뉴버튼
+const SignupBox = styled(Link)`
+    display: flex;
+    width: auto;
+    padding-left: 15px;
+    height: 100%;
+    justify-content: right;
+    align-items: center;
+    font-size: 13px;
+    font-weight: bold;
+    color: black;
+    text-decoration: none;
+    white-space: nowrap; /* 줄바꿈 방지 */
+
+    @media (max-width: 800px) {
+        font-size: 11px;
+        padding-left: 10px; /* 왼쪽 여백 줄이기 */
+    }
+
+    @media (max-width: 600px) {
+        font-size: 10px;
+        padding-left: 5px; /* 왼쪽 여백 더 줄이기 */
+    }
+`;
+
+const MenuButton = styled.div`
     width: 50%;
     height: 50%;
     background-image: url(${menu_icon});
@@ -86,7 +117,7 @@ const MenuButton = styled.div` // 헤더 좌측 메뉴버튼
     }
 `;
 
-const AlarmButton = styled.div` // 헤더 우측 알람버튼
+const AlarmButton = styled.div`
     width: 50%;
     height: 50%;
     background-image: url(${alarm_icon});
@@ -101,7 +132,7 @@ const AlarmButton = styled.div` // 헤더 우측 알람버튼
     }
 `;
 
-const LogoButton = styled(Link)` // 헤더 중앙 로고버튼
+const LogoButton = styled(Link)`
     display: flex;
     width: 60%;
     height: 100%;
@@ -111,7 +142,7 @@ const LogoButton = styled(Link)` // 헤더 중앙 로고버튼
     text-decoration: none;
 `;
 
-const LogoIcon = styled.div` // 로고 아이콘
+const LogoIcon = styled.div`
     width: 20%;
     height: 100%;
     background-image: url(${logo_icon});
@@ -124,7 +155,7 @@ const LogoIcon = styled.div` // 로고 아이콘
     }
 `;
 
-const LogoText = styled.div` // 로고 텍스트
+const LogoText = styled.div`
     font-family: maple-font;
     font-size: 30px;
 

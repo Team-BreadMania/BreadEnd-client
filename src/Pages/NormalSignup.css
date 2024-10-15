@@ -1,0 +1,116 @@
+.signup-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 50px;
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+
+    /* 숫자로 위치 조정 가능한 속성 추가 */
+    margin-top: -60px;  /* 페이지 상단에서 떨어지는 거리 */
+    margin-bottom: 20px;  /* 페이지 하단에서 떨어지는 거리 */
+    margin-left: -78px;  /* 중앙 정렬을 유지하려면 auto 사용 */
+    margin-right: auto; /* 중앙 정렬을 유지하려면 auto 사용 */
+
+    /* 또는 아래 속성을 이용해 위치를 더 세부적으로 조정할 수 있음 */
+    position: relative; /* relative로 설정하여 위, 아래, 왼쪽, 오른쪽 값 사용 가능 */
+    top: 20px;  /* 페이지 상단에서 떨어지는 거리 조정 */
+    left: 10px; /* 왼쪽에서 떨어지는 거리 조정 */
+}
+
+
+form {
+    display: flex;
+    flex-direction: column;
+    width: 320px;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
+    width: 100%;
+}
+
+label {
+    font-size: 14px;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #333;
+}
+
+input, select {
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    background-color: #f0f0f0;
+    outline: none;
+    transition: border 0.2s;
+}
+
+input:focus, select:focus {
+    border: 1px solid #007BFF;
+    background-color: #fff;
+}
+
+button {
+    padding: 10px 15px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #fff;
+    background-color: #007BFF;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    width: 100%;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+/* 중복 체크 버튼 */
+.duplicate-check {
+    padding: 10px;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 20px;
+    border: 1px solid #ddd;
+    background-color: #f0f0f0;
+    margin-top: 10px;
+    transition: background-color 0.2s;
+}
+
+.duplicate-check:hover {
+    background-color: #e0e0e0;
+}
+
+.id-check-message {
+    margin-top: 10px;
+    font-size: 12px;
+    color: green;
+}
+
+.use-id-button {
+    margin-left: 10px;
+    padding: 2px 5px;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.button-group {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+button {
+    margin-top: 10px;
+}
