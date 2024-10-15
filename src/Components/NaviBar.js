@@ -6,7 +6,7 @@ import map_icon from '../Images/map_icon.svg';
 import home_icon from '../Images/home_icon.svg';
 import cart_icon from '../Images/cart_icon.svg';
 import my_icon from '../Images/my_icon.svg';
-import edit_icon from '../Images/edit_icon.png';
+import edit_icon1 from '../Images/edit_icon1.png';
 
 export default function NaviBar() {
     const location = useLocation();
@@ -23,7 +23,7 @@ export default function NaviBar() {
 
     const sellerMenuItems = [
         { to: '/Search', icon: search_icon, text: '검색' },
-        { to: '/Map', icon: edit_icon, text: '판매물품 등록' },
+        { to: '/Map', icon: edit_icon1, text: '판매물품 등록' },
         { to: '/Home', icon: home_icon, text: '홈' },
         { to: '/MySeller', icon: cart_icon, text: '내 판매상품' },
         { to: '/MyPage_buyer', icon: my_icon, text: '마이페이지' },

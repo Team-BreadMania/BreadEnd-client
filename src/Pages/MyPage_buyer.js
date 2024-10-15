@@ -35,11 +35,11 @@ export default function MyPage_buyer() {
         <Container>
             <LeftContainer>
                 <ImformationContainer>
-                    <MypageContaer>
+                    <MypageContainer>
                         <a href="/MyPage_buyer" style={{ textDecoration: 'none', color: 'black' }}>
                             마이페이지
                         </a>
-                    </MypageContaer>
+                    </MypageContainer>
                     <LinkContainer onClick={() => setActiveTab('Account')} isSelected={activeTab === 'Account'}>
                         내 계정 정보
                     </LinkContainer>
@@ -63,7 +63,11 @@ export default function MyPage_buyer() {
             <RightContainer>
                 <UserContainer>
                     <UserImage />
-                    <UserNameContainer>이름</UserNameContainer>
+                    <UserInform>
+                        <UserNameContainer>이름</UserNameContainer>
+                        <UserEmail>이메일</UserEmail>
+                        <UserIntro>자기소개</UserIntro>
+                    </UserInform>
                 </UserContainer>
                 <ToolContainer>{renderInformationContainer()}</ToolContainer>
             </RightContainer>
@@ -77,31 +81,74 @@ const Container = styled.div`
     max-width: 100%;
     padding: 0 10%;
     height: auto;
+    @media (max-width: 800px) {
+        padding: 0 5%;
+    }
+    @media (max-width: 400px) {
+        padding: 0 3%;
+    }
 `;
 const LeftContainer = styled.div`
     min-width: 19%;
-    font-size: 1.875rem;
+    font-size: 30px;
     padding-top: 3%;
     margin-right: 20px;
     padding-left: 20px;
     border-right: 2px solid black;
+    @media (max-width: 1500px) {
+        font-size: 28px;
+        padding-left: 15px;
+    }
+    @media (max-width: 1250px) {
+        font-size: 25px;
+        padding-left: 15px;
+    }
+    @media (max-width: 800px) {
+        font-size: 20px;
+        padding-left: 0px;
+        margin-right: 10px;
+    }
+    @media (max-width: 800px) {
+        font-size: 16px;
+        padding-left: 0px;
+        margin-right: 8px;
+        min-width: 27%;
+    }
 `;
 
-const MypageContaer = styled.div`
+const MypageContainer = styled.div`
     font-weight: bold;
     margin-bottom: 25px;
+    @media (max-width: 800px) {
+        margin-bottom: 18px;
+    }
+    @media (max-width: 800px) {
+        margin-bottom: 15px;
+    }
 `;
 
 const LinkContainer = styled.div`
     display: block;
     text-decoration: none;
     color: black;
-    font-size: 1.875rem;
+    font-size: 30px;
     margin-bottom: 15px;
     background-color: ${(props) => (props.isSelected ? '#adb5bd' : '#white')};
     cursor: pointer;
     &hover {
         background-color: #adb5bd;
+    }
+    @media (max-width: 2560px) {
+        font-size: 28px;
+    }
+    @media (max-width: 1920px) {
+        font-size: 25px;
+    }
+    @media (max-width: 1280px) {
+        font-size: 20px;
+    }
+    @media (max-width: 800px) {
+        font-size: 14px;
     }
 `;
 
@@ -113,29 +160,83 @@ const ImformationContainer = styled.div`
 `;
 const RightContainer = styled.div`
     min-width: 71%;
-    padding-top: 3%;
+    padding-top: 4%;
     margin-left: 3%;
+    @media (max-width: 800px) {
+        width: 95%;
+        padding-top: 5%;
+    }
+    @media (max-width: 800px) {
+        min-width: 63%;
+    }
 `;
 const UserContainer = styled.div`
     display: flex;
-    flex-direction: row;
     align-items: center;
     margin-bottom: 30px;
 `;
 const UserNameContainer = styled.div`
-    font-size: 2.1rem;
+    font-size: 33px;
     margin-left: 30px;
+    padding-bottom: 6px;
+    @media (max-width: 800px) {
+        font-size: 25px;
+    }
+    @media (max-width: 400px) {
+        font-size: 18px;
+    }
+`;
+const UserEmail = styled.div`
+    font-size: 16px;
+    margin-left: 40px;
+    padding-bottom: 6px;
+    @media (max-width: 800px) {
+        font-size: 14px;
+    }
+    @media (max-width: 400px) {
+        font-size: 12px;
+    }
+`;
+const UserIntro = styled.div`
+    font-size: 16px;
+    margin-left: 40px;
+    @media (max-width: 800px) {
+        font-size: 14px;
+    }
+    @media (max-width: 400px) {
+        font-size: 12px;
+    }
 `;
 const UserImage = styled.div`
-    width: 100px;
-    height: 100px;
+    width: 19vw;
+    height: 19vw;
+    max-width: 120px;
+    max-height: 120px;
     background-image: url(${Avata});
     background-size: cover;
     background-position: center;
     border-radius: 50%;
     margin-right: 40px;
+    @media (max-width: 800px) {
+        margin-right: 20px;
+    }
+    @media (max-width: 400px) {
+        margin-right: 10px;
+        width: 18vw;
+        height: 18vw;
+    }
+`;
+const UserInform = styled.div`
+    display: flex;
+    flex-direction: column;
 `;
 const ToolContainer = styled.div`
     display: flex;
     flex-direction: row;
+    @media (max-width: 800px) {
+        font-size: 16px;
+    }
+    @media (max-width: 400px) {
+        font-size: 14px;
+    }
 `;
