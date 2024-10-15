@@ -48,6 +48,8 @@ const Container = styled.div` // 최상단 박스 컨테이너
     bottom: 0; 
     justify-content: space-around; 
     align-items: center;
+    background-color: white;
+    z-index: 999;
 
     @media (max-width: 800px) {
         width: 95%; 
