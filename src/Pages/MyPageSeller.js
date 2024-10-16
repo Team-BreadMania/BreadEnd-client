@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import Avata from '../Images/Generic_avatar.png';
 import Favorite from '../Images/favorite.png';
 
-export default function MyPage_seller() {
+export default function MyPageSeller() {
     return (
         //구매자 마이페이지
         <Container>

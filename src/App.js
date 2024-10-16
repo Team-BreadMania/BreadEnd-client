@@ -7,8 +7,8 @@ import Login from './Pages/Login';
 import Signup from './Pages/Signup';
 import NormalSignup from './Pages/NormalSignup';
 import SellerSignup from './Pages/SellerSignup';
-import MyPage_buyer from './Pages/MyPage_buyer';
-import MyPage_seller from './Pages/MyPage_seller';
+import MyPageBuyer from './Pages/MyPageBuyer';
+import MyPageSeller from './Pages/MyPageSeller';
 
 function App() {
     const location = useLocation(); // 현재 경로를 확인하기 위한 useLocation
@@ -27,8 +27,8 @@ function App() {
                 <Route path="/Signup" element={<Signup />} />
                 <Route path="/normal" element={<NormalSignup />} />
                 <Route path="/seller" element={<SellerSignup />} />
-                <Route path="/MyPage_buyer" element={<MyPage_buyer />} />
-                <Route path="/MyPage_seller" element={<MyPage_seller />} />
+                <Route path="/MyPageBuyer" element={<MyPageBuyer />} />
+                <Route path="/MyPageSeller" element={<MyPageSeller />} />
             </Routes>
 
             {/* NormalSignup과 SellerSignup 페이지에서는 NaviBar를 렌더링하지 않음 */}
