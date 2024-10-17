@@ -93,9 +93,11 @@ const LeftContainer = styled.div`
     text-align: left;
     @media (max-width: 1500px) {
         font-size: 28px;
+        min-width: 17%;
     }
     @media (max-width: 1250px) {
         font-size: 25px;
+        min-width: 17%;
     }
     @media (max-width: 1000px) {
         font-size: 22px;
