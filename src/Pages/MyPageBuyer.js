@@ -9,6 +9,7 @@ import Item from './02_Item';
 import Review from './02_Review';
 import Inquiry from './02_Inquiry';
 import Location from './02_Location';
+import edit_button from '../Images/edit_button.png'
 
 export default function MyPageBuyer() {
     const renderInformationContainer = () => {
@@ -36,7 +37,7 @@ export default function MyPageBuyer() {
             <LeftContainer>
                 <ImformationContainer>
                     <MypageContainer>
-                        <a href="/MyPage_buyer" style={{ textDecoration: 'none', color: 'black' }}>
+                        <a href="/MyPageBuyer" style={{ textDecoration: 'none', color: 'black' }}>
                             마이페이지
                         </a>
                     </MypageContainer>
@@ -66,8 +67,8 @@ export default function MyPageBuyer() {
                     <UserInform>
                         <UserNameContainer>이름</UserNameContainer>
                         <UserEmail>이메일</UserEmail>
-                        <UserIntro>자기소개</UserIntro>
                     </UserInform>
+                    {/* <EditButton/> */}
                 </UserContainer>
                 <ToolContainer>{renderInformationContainer()}</ToolContainer>
             </RightContainer>
@@ -78,74 +79,86 @@ export default function MyPageBuyer() {
 const Container = styled.div`
     display: flex;
     border-radius: 5px;
-    max-width: 100%;
-    padding: 0 10%;
-    height: auto;
-    @media (max-width: 800px) {
-        padding: 0 5%;
-    }
-    @media (max-width: 400px) {
-        padding: 0 3%;
-    }
+    min-width: 100%;
+    /* padding: 0 10%; */
+    height: 100%;
 `;
 const LeftContainer = styled.div`
-    min-width: 19%;
-    font-size: 30px;
-    padding-top: 3%;
-    margin-right: 20px;
-    padding-left: 20px;
+    min-width: 14%;
+    font-size: 26px;
+    padding : 4% 20px 0 5%;    
     border-right: 2px solid black;
+    text-align:left;
     @media (max-width: 1500px) {
-        font-size: 28px;
-        padding-left: 15px;
+        font-size: 26px;
     }
     @media (max-width: 1250px) {
-        font-size: 25px;
-        padding-left: 15px;
+        font-size: 26px;
+        width:24%;
     }
-    @media (max-width: 800px) {
+    @media (max-width: 850px) {
         font-size: 20px;
-        padding-left: 0px;
-        margin-right: 10px;
+        /* margin-right: 10px; */
+        min-width:25%;
+        padding-right:10px;
     }
-    @media (max-width: 800px) {
+    @media (max-width: 400px) {
         font-size: 16px;
-        padding-left: 0px;
-        margin-right: 8px;
         min-width: 27%;
+        padding-left:15px;
+    }
+    @media (max-width:350px){
+        font-size: 16px;
+        margin-right: 8px;
+        min-width: 31%;
     }
 `;
-
+const RightContainer = styled.div`
+    min-width: 70%;
+    padding : 4% 5% 0 3%;
+    background-color:#F4F6F8;
+    @media (max-width: 850px) {
+        min-width: 65%;
+        padding : 4% 0% 0 3%;
+    }
+    @media (max-width: 400px) {
+        min-width: 63%;
+        padding : 4% 0% 0 3%;
+    }
+    @media (max-width:350px){
+        min-width:59%;
+        padding : 4% 0% 0 3%;
+    }
+`;
 const MypageContainer = styled.div`
     font-weight: bold;
     margin-bottom: 25px;
     @media (max-width: 800px) {
-        margin-bottom: 18px;
+        margin-bottom: 12px;
     }
-    @media (max-width: 800px) {
-        margin-bottom: 15px;
+    @media (max-width: 400px) {
+        margin-bottom: 9px;
     }
 `;
 
 const LinkContainer = styled.div`
     display: block;
     text-decoration: none;
-    color: black;
-    font-size: 30px;
+    font-size: 26px;
     margin-bottom: 15px;
-    background-color: ${(props) => (props.isSelected ? '#adb5bd' : '#white')};
+    color: ${(props) => (props.isSelected ? '#black' : '#b5b7ba')};
     cursor: pointer;
     &hover {
-        background-color: #adb5bd;
+        background-color: #b5b7ba;
     }
     @media (max-width: 2560px) {
-        font-size: 28px;
+        font-size: 26px;
     }
     @media (max-width: 1920px) {
-        font-size: 25px;
+        font-size: 26px;
     }
     @media (max-width: 1280px) {
-        font-size: 20px;
+        font-size: 24px;
     }
     @media (max-width: 800px) {
         font-size: 14px;
@@ -158,22 +171,24 @@ const ImformationContainer = styled.div`
     margin-top: 1vh;
     z-index: 3;
 `;
-const RightContainer = styled.div`
-    min-width: 71%;
-    padding-top: 4%;
-    margin-left: 3%;
-    @media (max-width: 800px) {
-        width: 95%;
-        padding-top: 5%;
-    }
-    @media (max-width: 800px) {
-        min-width: 63%;
-    }
-`;
+
 const UserContainer = styled.div`
     display: flex;
     align-items: center;
+    padding:30px;
     margin-bottom: 30px;
+    position:relative;
+    background-color:white;
+    border-radius:20px;
+    width:85%;
+    @media (max-width:850px){
+        border-top: 0;
+        border-right: 0;
+        border-bottom: 0;
+        border-left: 0;
+        padding:10px;
+        margin-bottom: 15px;
+    }
 `;
 const UserNameContainer = styled.div`
     font-size: 33px;
@@ -197,19 +212,10 @@ const UserEmail = styled.div`
         font-size: 12px;
     }
 `;
-const UserIntro = styled.div`
-    font-size: 16px;
-    margin-left: 40px;
-    @media (max-width: 800px) {
-        font-size: 14px;
-    }
-    @media (max-width: 400px) {
-        font-size: 12px;
-    }
-`;
+
 const UserImage = styled.div`
-    width: 19vw;
-    height: 19vw;
+    width: 17vw;
+    height: 17vw;
     max-width: 120px;
     max-height: 120px;
     background-image: url(${Avata});
@@ -217,18 +223,41 @@ const UserImage = styled.div`
     background-position: center;
     border-radius: 50%;
     margin-right: 40px;
+    @media(max-width:800px){
+        margin-right:0px;
+    }
 `;
+
 const UserInform = styled.div`
     display: flex;
     flex-direction: column;
 `;
+const EditButton = styled.div`    
+    @media (max-width:850px){
+        background-image:url(${edit_button});
+        width:20px;
+        height:20px;
+        background-size:contain;
+        position:absolute;
+        bottom:0px;
+        right:100px;
+    }
+`
 const ToolContainer = styled.div`
     display: flex;
-    flex-direction: row;
-    @media (max-width: 800px) {
-        font-size: 16px;
-    }
-    @media (max-width: 400px) {
-        font-size: 14px;
+    align-items: center;
+    padding:30px;
+    margin-bottom: 30px;
+    position:relative;
+    background-color:white;
+    border-radius:20px;
+    font-size:25px;
+    width:85%;
+    @media (max-width:850px){
+        border-top: 0;
+        border-right: 0;
+        border-bottom: 0;
+        border-left: 0;
+        padding:10px;
     }
 `;
