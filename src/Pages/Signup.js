@@ -80,7 +80,7 @@ const UserTypeBox = styled.div`
     }
 `;
 
-const UserImage = styled.img`
+const UserImage = styled.img`  
     width: 130x; /* 이미지 크기 */
     height: 130px; /* 이미지 크기 */
     margin-bottom: 10px; /* 이미지와 텍스트 간의 간격 */
