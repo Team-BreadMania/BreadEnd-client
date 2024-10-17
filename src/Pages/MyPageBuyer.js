@@ -36,7 +36,7 @@ export default function MyPageBuyer() {
             <LeftContainer>
                 <ImformationContainer>
                     <MypageContainer>
-                        <a href="/MyPage_buyer" style={{ textDecoration: 'none', color: 'black' }}>
+                        <a href="/MyPageBuyer" style={{ textDecoration: 'none', color: 'black' }}>
                             마이페이지
                         </a>
                     </MypageContainer>
@@ -66,8 +66,8 @@ export default function MyPageBuyer() {
                     <UserInform>
                         <UserNameContainer>이름</UserNameContainer>
                         <UserEmail>이메일</UserEmail>
-                        <UserIntro>자기소개</UserIntro>
                     </UserInform>
+                    {/* <EditButton/> */}
                 </UserContainer>
                 <ToolContainer>{renderInformationContainer()}</ToolContainer>
             </RightContainer>
@@ -79,40 +79,55 @@ const Container = styled.div`
     display: flex;
     border-radius: 5px;
     max-width: 100%;
-    padding: 0 10%;
-    height: auto;
-    @media (max-width: 800px) {
-        padding: 0 5%;
-    }
-    @media (max-width: 400px) {
-        padding: 0 3%;
-    }
+    height: 100%;
 `;
 const LeftContainer = styled.div`
+    box-sizing: border-box;
     min-width: 19%;
     font-size: 30px;
     padding-top: 3%;
-    margin-right: 20px;
-    padding-left: 20px;
+    padding-left: 3%;
     border-right: 2px solid black;
     @media (max-width: 1500px) {
         font-size: 28px;
-        padding-left: 15px;
     }
     @media (max-width: 1250px) {
         font-size: 25px;
-        padding-left: 15px;
+    }
+    @media (max-width: 1000px) {
+        font-size: 23px;
+        padding-left: 2.5%;
+        min-width: 21%;
     }
     @media (max-width: 800px) {
         font-size: 20px;
-        padding-left: 0px;
-        margin-right: 10px;
+        min-width: 20%;
+    }
+    @media (max-width: 600px) {
+        font-size: 20px;
+        min-width: 28%;
+        padding-left: 2.5%;
+    }
+    @media (max-width: 400px) {
+        font-size: 16px;
+        min-width: 31%;
+    }
+    @media (max-width: 350px) {
+        padding-left: 2%;
+    }
+`;
+
+const RightContainer = styled.div`
+    min-width: 81%;
+    padding: 4% 0 0 3%;
+    box-sizing: border-box;
+    background-color: #f4f6f8;
+    @media (max-width: 800px) {
+        width: 95%;
+        padding-top: 5%;
     }
     @media (max-width: 800px) {
-        font-size: 16px;
-        padding-left: 0px;
-        margin-right: 8px;
-        min-width: 27%;
+        min-width: 63%;
     }
 `;
 
@@ -133,7 +148,7 @@ const LinkContainer = styled.div`
     color: black;
     font-size: 30px;
     margin-bottom: 15px;
-    background-color: ${(props) => (props.isSelected ? '#adb5bd' : '#white')};
+    color: ${(props) => (props.isSelected ? '#white' : '#adb5bd')};
     cursor: pointer;
     &hover {
         background-color: #adb5bd;
@@ -158,22 +173,15 @@ const ImformationContainer = styled.div`
     margin-top: 1vh;
     z-index: 3;
 `;
-const RightContainer = styled.div`
-    min-width: 71%;
-    padding-top: 4%;
-    margin-left: 3%;
-    @media (max-width: 800px) {
-        width: 95%;
-        padding-top: 5%;
-    }
-    @media (max-width: 800px) {
-        min-width: 63%;
-    }
-`;
+
 const UserContainer = styled.div`
     display: flex;
     align-items: center;
+    background-color: white;
+    padding: 3%;
     margin-bottom: 30px;
+    border-radius: 20px;
+    width: 88%;
 `;
 const UserNameContainer = styled.div`
     font-size: 33px;
@@ -217,14 +225,24 @@ const UserImage = styled.div`
     background-position: center;
     border-radius: 50%;
     margin-right: 40px;
+    @media (max-width: 800px) {
+        width: 17vw;
+        height: 17vw;
+        margin-right: 0px;
+    }
 `;
 const UserInform = styled.div`
     display: flex;
     flex-direction: column;
+    text-align: left;
 `;
 const ToolContainer = styled.div`
     display: flex;
     flex-direction: row;
+    width: 88%;
+    border-radius: 20px;
+    background-color: white;
+    padding: 3%;
     @media (max-width: 800px) {
         font-size: 16px;
     }
