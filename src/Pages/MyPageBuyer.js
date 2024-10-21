@@ -126,7 +126,7 @@ const RightContainer = styled.div`
     min-width: 85%;
     padding: 4% 0 0 3%;
     box-sizing: border-box;
-    background-color: #f4f6f8;
+    background-color: #ecedef;
     @media (max-width: 800px) {
         width: 95%;
         padding-top: 5%;
