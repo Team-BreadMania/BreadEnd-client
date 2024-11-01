@@ -221,10 +221,10 @@ const UserImage = styled.div`
     background-size: cover;
     background-position: center;
     border-radius: 50%;
-    margin-right: 40px;
+    margin-right: 20px;
     @media (max-width: 800px) {
-        width: 17vw;
-        height: 17vw;
+        width: 15vw;
+        height: 15vw;
         margin-right: 0px;
     }
 `;
@@ -232,7 +232,7 @@ const UserImage = styled.div`
 const UserInform = styled.div`
     display: flex;
     flex-direction: column;
-    text-align: left;
+    text-align: right;
 `;
 const EditButton = styled.div`
     @media (max-width: 850px) {
