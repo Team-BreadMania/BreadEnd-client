@@ -45,10 +45,10 @@ export default function MyPageBuyer() {
                         내 계정 정보
                     </LinkContainer>
                     <LinkContainer onClick={() => setActiveTab('Reservation')} isSelected={activeTab === 'Reservation'}>
-                        구매 예약 제품
+                        찜 한 제품
                     </LinkContainer>
                     <LinkContainer onClick={() => setActiveTab('Item')} isSelected={activeTab === 'Item'}>
-                        구매한 제품
+                        구매 내역
                     </LinkContainer>
                     <LinkContainer onClick={() => setActiveTab('Review')} isSelected={activeTab === 'Review'}>
                         리뷰 관리
@@ -250,7 +250,7 @@ const ToolContainer = styled.div`
     display: flex;
     flex-direction: row;
     width: 88%;
-    border-radius: 20px;
+    border-radius: 10px;
     background-color: white;
     padding: 3%;
     @media (max-width: 800px) {
