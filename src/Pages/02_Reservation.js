@@ -1,12 +1,31 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import bread_img from '../Images/bread_img.png';
 import choc_img from '../Images/chocosora.jpg';
 
 export default function Reservation() {
+    const [isMobile, setIsMobile] = useState(false);
     const [quantity, setQuantity] = useState(1);
     const [priceUnit, setPriceUnit] = useState(0)
     const totalPrice = quantity ? Number(quantity) * priceUnit : 0;
+
+    const resizingHandler = () => {
+        if(window.innerWidth <= 430){
+            setIsMobile(true);
+        }else{
+            setIsMobile(false);
+        }
+    }
+    useEffect(()=>{
+        if(window.innerWidth<=430){
+            setIsMobile(true);
+        }
+
+        window.addEventListener('resize',resizingHandler)
+        return()=>{
+            window.removeEventListener('resize',resizingHandler)
+        }
+    },[])
 
     return (
         <Container>
@@ -94,6 +113,7 @@ const Table = styled.table`
     border-collapse: collapse;
 
     th, td {
+        margin:auto;
         text-align: center;
         padding: 10px;
         border: 1px solid #bdbdbd; 
@@ -133,8 +153,7 @@ const ReservImage = styled.div`
     background-image: url(${props => props.backgroundImage});
     background-size: cover;
     background-position: center;
-    margin-right: 20px;
-
+    text-align:center;
     @media (max-width: 768px) {
         width: 30vw; 
         height: 30vw;
