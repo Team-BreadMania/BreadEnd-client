@@ -1,17 +1,48 @@
-import React, { useState } from 'react';
-import axios from 'axios';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import Avata from '../Images/Generic_avatar.png';
-import Favorite from '../Images/favorite.png';
 import Account from '../Components/Account';
 import Reservation from '../Components/Reservation';
 import Item from '../Components/Item';
 import Review from '../Components/Review';
 import Inquiry from '../Components/Inquiry';
 import Location from '../Components/Location';
-import edit_button from '../Images/edit_button.png';
 
 export default function MyPageBuyer() {
+    const [isMobile, setIsMobile] = useState(false);
+    const [userLogin, setUserLogin] = useState(true);
+    const [userAuth, setUserAuth] = useState('buyer');
+
+    const buyerMenuItems = [
+        { tab: 'Account', text: '내 계정 정보' },
+        { tab: 'Reservation', text: '찜 한 제품' },
+        { tab: 'Item', text: '구매 내역' },
+        { tab: 'Review', text: '리뷰관리' },
+        { tab: 'Inquiry', text: '문의내역', protected: true },
+    ];
+
+    const sellerMenuItems = [
+        { tab: 'Account', text: '내 계정 정보' },
+        { tab: 'ItemRegistration', text: '판매 제품 관리' },
+        { tab: 'ReservationManagement', text: '판매 예약 관리' },
+        { tab: 'Review', text: '리뷰관리' },
+        { tab: 'Inquiry', text: '문의내역', protected: true },
+    ];
+
+    const menuItems = !userLogin ? buyerMenuItems : userAuth === 'seller' ? sellerMenuItems : buyerMenuItems;
+
+    const resizingHandler = () => {
+        setIsMobile(window.innerWidth <= 430);
+    };
+
+    useEffect(() => {
+        setIsMobile(window.innerWidth <= 430);
+        window.addEventListener('resize', resizingHandler);
+        return () => {
+            window.removeEventListener('resize', resizingHandler);
+        };
+    }, []);
+
     const renderInformationContainer = () => {
         switch (activeTab) {
             case 'Account':
@@ -30,35 +61,44 @@ export default function MyPageBuyer() {
                 return <Account />;
         }
     };
+
     const [activeTab, setActiveTab] = useState('Account');
+
+    const pcMenu = ({ activeTab, setActiveTab }) => {
+        const menuItems = [
+            { tab: 'Account', text: '내 계정 정보' },
+            { tab: 'Reservation', text: '찜 한 제품' },
+            { tab: 'Item', text: '구매 내역' },
+            { tab: 'Review', text: '리뷰 관리' },
+            { tab: 'Inquiry', text: '내 문의 내역' },
+        ];
+        return (
+            <MenuContainer>
+                <MypageContainer onClick={() => setActiveTab('Account')} isSelected={activeTab === 'Account'}>
+                    마이페이지
+                </MypageContainer>
+                {menuItems.map((item, index) => (
+                    <LinkContainer key={index} onClick={() => setActiveTab(item.tab)} isSelected={activeTab === item.tab}>
+                        {item.text}
+                    </LinkContainer>
+                ))}
+            </MenuContainer>
+        );
+    };
+
+    const mobileMenu = ({ activeTab, setActiveTab }) => {};
     return (
-        //구매자 마이페이지
         <Container>
             <LeftContainer>
                 <ImformationContainer>
-                    <MypageContainer>
-                        <a href="/MyPageBuyer" style={{ textDecoration: 'none', color: 'black' }}>
-                            마이페이지
-                        </a>
+                    <MypageContainer onClick={() => setActiveTab('Account')} isSelected={activeTab === 'Account'}>
+                        마이페이지
                     </MypageContainer>
-                    <LinkContainer onClick={() => setActiveTab('Account')} isSelected={activeTab === 'Account'}>
-                        내 계정 정보
-                    </LinkContainer>
-                    <LinkContainer onClick={() => setActiveTab('Reservation')} isSelected={activeTab === 'Reservation'}>
-                        찜 한 제품
-                    </LinkContainer>
-                    <LinkContainer onClick={() => setActiveTab('Item')} isSelected={activeTab === 'Item'}>
-                        구매 내역
-                    </LinkContainer>
-                    <LinkContainer onClick={() => setActiveTab('Review')} isSelected={activeTab === 'Review'}>
-                        리뷰 관리
-                    </LinkContainer>
-                    <LinkContainer onClick={() => setActiveTab('Location')} isSelected={activeTab === 'Location'}>
-                        내 지역 관리
-                    </LinkContainer>
-                    <LinkContainer onClick={() => setActiveTab('Inquiry')} isSelected={activeTab === 'Inquiry'}>
-                        내 문의 내역
-                    </LinkContainer>
+                    {menuItems.map((item, index) => (
+                        <LinkContainer key={index} onClick={() => setActiveTab(item.tab)} isSelected={activeTab === item.tab}>
+                            {item.text}
+                        </LinkContainer>
+                    ))}
                 </ImformationContainer>
             </LeftContainer>
             <RightContainer>
@@ -68,13 +108,25 @@ export default function MyPageBuyer() {
                         <UserNameContainer>이름</UserNameContainer>
                         <UserEmail>이메일</UserEmail>
                     </UserInform>
-                    {/* <EditButton/> */}
                 </UserContainer>
                 <ToolContainer>{renderInformationContainer()}</ToolContainer>
             </RightContainer>
         </Container>
     );
 }
+const MenuContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    background-color: #faf6e3;
+`;
+
+const MobileMenuContainer = styled.div`
+    position: relative;
+    padding: 20px;
+    background-color: #faf6e3;
+`;
+
 //전체 컨테이너
 const Container = styled.div`
     display: flex;
@@ -145,6 +197,7 @@ const MypageContainer = styled.div`
     @media (max-width: 400px) {
         margin-bottom: 9px;
     }
+    cursor: pointer;
 `;
 //메뉴바 글자 컨테이너
 const LinkContainer = styled.div`
@@ -228,23 +281,14 @@ const UserImage = styled.div`
         margin-right: 0px;
     }
 `;
+
 //유저 이름, 이메일 정보 전체 컨테이너
 const UserInform = styled.div`
     display: flex;
     flex-direction: column;
     text-align: right;
 `;
-const EditButton = styled.div`
-    @media (max-width: 850px) {
-        background-image: url(${edit_button});
-        width: 20px;
-        height: 20px;
-        background-size: contain;
-        position: absolute;
-        bottom: 0px;
-        right: 100px;
-    }
-`;
+
 //렌더링 컨테이너
 const ToolContainer = styled.div`
     display: flex;
