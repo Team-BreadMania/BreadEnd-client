@@ -10,7 +10,7 @@ import Review from './02_Review';
 import Inquiry from './02_Inquiry';
 import Location from './02_Location';
 
-export default function MyPage_buyer() {
+export default function MyPageBuyer() {
     const renderInformationContainer = () => {
         switch (activeTab) {
             case 'Account':

@@ -8,7 +8,7 @@ export default function Shop() {
 
     return (
         <Container>
-            <ImageBox/>
+            <ImageBox/> 
             <ShopName>삼송빵집</ShopName>
             <ShopLocation>수성구 범어1동</ShopLocation>
         </Container>
