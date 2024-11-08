@@ -1,18 +1,13 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
-import '../apikey'; // API 키를 가져오는 파일
-
-const MapContainer = styled.div`
-    width: 100%;
-    height: 350px;
-`;
 
 export default function Location() {
     useEffect(() => {
         const loadKakaoMap = () => {
+            const mapApi = process.env.MAP_API_KEY1;
             const script = document.createElement('script');
-            script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.REACT_APP_KAKAO_MAP_KEY}`; // 환경변수에서 API 키 가져오기
+            script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${mapApi}`; // 환경변수에서 API 키 가져오기
             script.async = true;
             script.onload = () => {
                 const mapContainer = document.getElementById('map'); // 지도를 표시할 div
@@ -36,3 +31,8 @@ export default function Location() {
         </MapContainer>
     );
 }
+
+const MapContainer = styled.div`
+    width: 100%;
+    height: 350px;
+`;
