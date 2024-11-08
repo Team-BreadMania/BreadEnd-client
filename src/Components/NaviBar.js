@@ -11,7 +11,7 @@ import edit_icon1 from '../Images/edit_icon1.png';
 export default function NaviBar() {
     const location = useLocation();
     const navigate = useNavigate(); // useNavigate로 변경
-    const [userLogin, setUserLogin] = useState(false);
+    const [userLogin, setUserLogin] = useState(true);
     const [userAuth, setUserAuth] = useState('buyer');
 
     const buyerMenuItems = [
@@ -19,7 +19,7 @@ export default function NaviBar() {
         { to: '/Map', icon: map_icon, text: '내 주변 가게' },
         { to: '/Home', icon: home_icon, text: '홈' },
         { to: '/MyCart', icon: cart_icon, text: '내 장바구니' },
-        { to: '/MyPage_buyer', icon: my_icon, text: '마이페이지', protected: true },
+        { to: '/MyPageBuyer', icon: my_icon, text: '마이페이지', protected: true },
     ];
 
     const sellerMenuItems = [
@@ -27,7 +27,7 @@ export default function NaviBar() {
         { to: '/Map', icon: edit_icon1, text: '판매물품 등록' },
         { to: '/Home', icon: home_icon, text: '홈' },
         { to: '/MySeller', icon: cart_icon, text: '내 판매상품' },
-        { to: '/MyPage_buyer', icon: my_icon, text: '마이페이지', protected: true },
+        { to: '/MyPageSeller', icon: my_icon, text: '마이페이지', protected: true },
     ];
 
     const menuItems = !userLogin ? buyerMenuItems : userAuth === 'seller' ? sellerMenuItems : buyerMenuItems;

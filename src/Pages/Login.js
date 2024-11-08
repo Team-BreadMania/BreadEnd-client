@@ -1,19 +1,17 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // useNavigate 훅 임포트
-import './Login.css';  // CSS 파일 임포트
+import { useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
 
 function Login() {
-    const [username, setUsername] = useState('');  // username(아이디) 상태
-    const [password, setPassword] = useState('');  // password 상태
-    const navigate = useNavigate(); // useNavigate 훅으로 navigate 함수 생성
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+    const navigate = useNavigate();
 
     const handleSubmit = (e) => {
-        e.preventDefault();  // 페이지 새로고침 방지
-
-        // 임의의 로그인 성공 조건 (예: 아이디와 비밀번호가 비어있지 않으면 성공)
+        e.preventDefault();
         if (username && password) {
             console.log('로그인 성공:', { username, password });
-            navigate('/Home'); // 로그인 성공 시 Home 페이지로 이동
+            navigate('/Home');
         } else {
             console.log('로그인 실패: 아이디 또는 비밀번호가 없습니다.');
             alert('로그인 실패: 아이디 또는 비밀번호를 입력하세요.');
@@ -21,51 +19,143 @@ function Login() {
     };
 
     return (
-        <div className="login-page">
-            {/* 이미지 */}
-            <div className="icon-container">
-                <img
+        <LoginPage>
+            <IconContainer>
+                <Icon
                     src="https://cdn-icons-png.flaticon.com/512/121/121046.png"
                     alt="아이콘"
-                    className="inputIcon"
                 />
-            </div>
-
-            {/* 로그인 폼 */}
-            <div className="login-form-container">
-                <h1>로그인</h1>
-                <form onSubmit={handleSubmit} className="login-form">
-                    
-                    {/* 아이디 입력 필드 */}
-                    <label className="input-container">
-                        <input
+            </IconContainer>
+            <LoginFormContainer>
+               <Title>빵끝마켓🍞</Title>
+                <LoginForm onSubmit={handleSubmit}>
+                    <InputContainer>
+                        <InputField
                             type="text"
                             value={username}
                             onChange={(e) => setUsername(e.target.value)}
                             placeholder="아이디"
                             required
-                            className="inputField"
                         />
-                    </label>
-                    
-                    {/* 비밀번호 입력 필드 */}
-                    <label className="input-container">
-                        <input
+                    </InputContainer>
+                    <InputContainer>
+                        <InputField
                             type="password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             placeholder="비밀번호"
                             required
-                            className="inputField"
                         />
-                    </label>
-
-                    {/* 로그인 버튼 */}
-                    <button type="submit" className="loginButton">로그인</button>
-                </form>
-            </div>
-        </div>
+                    </InputContainer>
+                    <LoginButton type="submit">로그인</LoginButton>
+                </LoginForm>
+            </LoginFormContainer>
+        </LoginPage>
     );
 }
 
 export default Login;
+
+const LoginPage = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 80vh;
+    gap: 20px;
+
+    @media screen and (max-width: 1440px) {
+        flex-direction: column;
+        height: auto;
+    }
+`;
+
+const IconContainer = styled.div`
+    @media screen and (max-width: 1440px) {
+        display: none;
+    }
+`;
+
+const Icon = styled.img`
+    width: 200px;
+    height: 200px;
+`;
+
+const LoginFormContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    max-width: 400px;
+    padding: 40px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+
+    @media screen and (max-width: 1440px) {
+        width: 90%;
+        padding: 20px;
+    }
+`;
+
+const Title = styled.h1`
+    font-size: 40px;
+    font-family: 'Black Han Sans', sans-serif;
+`;
+
+const LoginForm = styled.form`
+    width: 100%;
+`;
+
+const InputContainer = styled.div`
+    width: 100%;
+    margin-bottom: 10px;
+
+    &:nth-of-type(1) {
+        margin-bottom: 6px;
+    }
+`;
+
+const InputField = styled.input`
+    padding: 15px;
+    font-size: 18px;
+    width: 100%;
+    height: 50px;
+    box-sizing: border-box;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    transition: border-color 0.3s ease;
+
+    &::placeholder {
+        text-align: left;
+    }
+
+    @media screen and (max-width: 1440px) {
+        padding: 12px;
+        font-size: 16px;
+        height: 45px;
+    }
+`;
+
+const LoginButton = styled.button`
+    padding: 15px;
+    width: 100%;
+    height: 50px;
+    background-color: black;
+    color: white;
+    font-size: 18px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+
+    &:hover {
+        background-color: #444;
+    }
+
+    @media screen and (max-width: 1440px) {
+        padding: 12px;
+        height: 45px;
+        font-size: 16px;
+    }
+`;

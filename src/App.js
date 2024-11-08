@@ -15,12 +15,14 @@ import ProductDetailPage from "./Pages/ProductDetailPage";
 function App() {
     const location = useLocation(); // 현재 경로를 확인하기 위한 useLocation
 
-    const hideHeaderAndNavi = location.pathname === '/normal' || location.pathname === '/seller'; // WelcomePage는 제외하여 헤더와 네비바를 표시함
+    // Header와 NaviBar를 각 페이지별로 숨김 처리
+    const hideHeader = location.pathname === '/normal' || location.pathname === '/seller' || location.pathname === '/Search';
+    const hideNaviBar = location.pathname === '/normal' || location.pathname === '/seller';
 
     return (
         <div style={{ width: '100%', height: '100vh' }}>
-            {/* NormalSignup과 SellerSignup 페이지에서는 Header와 NaviBar를 렌더링하지 않음 */}
-            {!hideHeaderAndNavi && <Header />}
+            {/* 특정 경로에서는 Header를 렌더링하지 않음 */}
+            {!hideHeader && <Header />}
 
             <Routes>
                 <Route path="/" element={<Navigate to="/Home" />} />
@@ -35,8 +37,8 @@ function App() {
                 <Route path="/ProductDetailPage" element={<ProductDetailPage />} />
             </Routes>
 
-            {/* NormalSignup과 SellerSignup 페이지에서는 NaviBar를 렌더링하지 않음 */}
-            {!hideHeaderAndNavi && <NaviBar />}
+            {/* 특정 경로에서는 NaviBar를 렌더링하지 않음 */}
+            {!hideNaviBar && <NaviBar />}
         </div>
     );
 }
@@ -44,7 +46,10 @@ function App() {
 export default function AppWrapper() {
     return (
         <Router>
-            <App />
+            {/* Router 내부에서 App 컴포넌트를 렌더링하여 useLocation이 정상적으로 작동하도록 수정 */}
+            <Routes>
+                <Route path="/*" element={<App />} />
+            </Routes>
         </Router>
     );
 }

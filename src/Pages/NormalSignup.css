@@ -114,3 +114,23 @@ button:hover {
 button {
     margin-top: 10px;
 }
+.duplicate-check {
+    padding: 10px;
+    font-size: 14px;
+    cursor: not-allowed; /* 기본 상태에서는 클릭할 수 없도록 설정 */
+    border-radius: 20px;
+    border: 1px solid #ddd;
+    background-color: #f0f0f0;
+    margin-top: 10px;
+    transition: background-color 0.2s;
+}
+
+.duplicate-check.active {
+    background-color: #007BFF; /* 활성화된 상태에서 색상 변경 */
+    color: #fff;
+    cursor: pointer;
+}
+
+.duplicate-check:hover.active {
+    background-color: #0056b3; /* 활성화된 상태에서 hover 색상 */
+}

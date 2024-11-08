@@ -86,8 +86,7 @@ const Price = styled.div` // 상품 가격
     height: 100%;
     font-size: 15px;
     font-weight: bold;
-    align-items: center
-
+    align-items: center;
     @media (max-width: 800px) {
         font-size: 12.5px; 
     }

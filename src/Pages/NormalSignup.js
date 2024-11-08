@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './NormalSignup.css';
 
@@ -16,6 +16,11 @@ export default function NormalSignup() {
 
     const [idCheckMessage, setIdCheckMessage] = useState('');
     const [isIdAvailable, setIsIdAvailable] = useState(false);
+    const [isIdEntered, setIsIdEntered] = useState(false);
+
+    useEffect(() => {
+        setIsIdEntered(formData.id.length > 0); // 아이디가 입력되었는지 여부 확인
+    }, [formData.id]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -26,7 +31,6 @@ export default function NormalSignup() {
     };
 
     const handleIdCheck = () => {
-        // 무조건 사용 가능한 아이디로 표시
         setIsIdAvailable(true);
         setIdCheckMessage(`${formData.id}는 사용 가능한 아이디입니다.`);
     };
@@ -34,7 +38,6 @@ export default function NormalSignup() {
     const handleSubmit = (e) => {
         e.preventDefault();
         if (isIdAvailable) {
-            // 가입이 완료되면 환영 페이지로 이동
             navigate('/home'); 
         } else {
             alert('아이디 중복 확인을 해주세요.');
@@ -60,7 +63,14 @@ export default function NormalSignup() {
                         placeholder="아이디 (13자 이내 중복확인)"
                         required
                     />
-                    <button type="button" className="duplicate-check" onClick={handleIdCheck}>중복 체크</button>
+                    <button
+                        type="button"
+                        className={`duplicate-check ${isIdEntered ? 'active' : ''}`}
+                        onClick={handleIdCheck}
+                        disabled={!isIdEntered}
+                    >
+                        중복 체크
+                    </button>
                 </div>
                 {idCheckMessage && (
                     <div className="id-check-message">
