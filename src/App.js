@@ -11,7 +11,7 @@ import MyPageBuyer from './Pages/MyPageBuyer';
 import MyPageSeller from './Pages/MyPageSeller';
 import MyCart from "./Pages/MyCart";
 import ProductDetailPage from "./Pages/ProductDetailPage";
-import Search from "./Pages/Search"; // Search 페이지 추가
+import Search from "./Pages/Search"; // Search 페이지 추가 
 import Map from "./Pages/Map";       // Map 페이지 추가
 
 function App() {
