@@ -3,12 +3,12 @@ import axios from 'axios';
 import styled from 'styled-components';
 import Avata from '../Images/Generic_avatar.png';
 import Favorite from '../Images/favorite.png';
-import Account from '../Components/02_Account';
-import Reservation from '../Components/02_Reservation';
-import Item from '../Components/02_Item';
-import Review from '../Components/02_Review';
-import Inquiry from '../Components/02_Inquiry';
-import Location from '../Components/02_Location';
+import Account from '../Components/Account';
+import Reservation from '../Components/Reservation';
+import Item from '../Components/Item';
+import Review from '../Components/Review';
+import Inquiry from '../Components/Inquiry';
+import Location from '../Components/Location';
 import edit_button from '../Images/edit_button.png';
 
 export default function MyPageBuyer() {
