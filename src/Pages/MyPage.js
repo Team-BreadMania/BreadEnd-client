@@ -7,18 +7,20 @@ import Item from '../Components/Item';
 import Review from '../Components/Review';
 import Inquiry from '../Components/Inquiry';
 import Location from '../Components/Location';
+import List_Pointer from '../Images/List_Pointers.jpg';
+import Cross from '../Images/Cross.jpg';
 
 export default function MyPageBuyer() {
     const [isMobile, setIsMobile] = useState(false);
     const [userLogin, setUserLogin] = useState(true);
-    const [userAuth, setUserAuth] = useState('seller');
+    const [userAuth, setUserAuth] = useState('buyer');
 
     const buyerMenuItems = [
         { tab: 'Account', text: '내 계정 정보' },
         { tab: 'Reservation', text: '찜 한 매장' },
         { tab: 'Item', text: '구매 내역' },
         { tab: 'Review', text: '리뷰관리' },
-        { tab: 'Location', text : '내 지역관리'},
+        { tab: 'Location', text: '내 지역관리' },
         { tab: 'Inquiry', text: '문의내역', protected: true },
     ];
 
@@ -65,28 +67,51 @@ export default function MyPageBuyer() {
     const [activeTab, setActiveTab] = useState('Account');
 
     const pcMenu = ({ activeTab, setActiveTab }) => {
-        const menuItems = [
-            { tab: 'Account', text: '내 계정 정보' },
-            { tab: 'Reservation', text: '찜 한 제품' },
-            { tab: 'Item', text: '구매 내역' },
-            { tab: 'Review', text: '리뷰 관리' },
-            { tab: 'Inquiry', text: '내 문의 내역' },
-        ];
         return (
-            <MenuContainer>
-                <MypageContainer onClick={() => setActiveTab('Account')} isSelected={activeTab === 'Account'}>
-                    마이페이지
-                </MypageContainer>
-                {menuItems.map((item, index) => (
-                    <LinkContainer key={index} onClick={() => setActiveTab(item.tab)} isSelected={activeTab === item.tab}>
-                        {item.text}
-                    </LinkContainer>
-                ))}
-            </MenuContainer>
+            <Container>
+                <LeftContainer>
+                    <ImformationContainer>
+                        <MypageContainer onClick={() => setActiveTab('Account')} isSelected={activeTab === 'Account'}>
+                            마이페이지
+                        </MypageContainer>
+                        {menuItems.map((item, index) => (
+                            <LinkContainer key={index} onClick={() => setActiveTab(item.tab)} isSelected={activeTab === item.tab}>
+                                {item.text}
+                            </LinkContainer>
+                        ))}
+                    </ImformationContainer>
+                </LeftContainer>
+                <RightContainer>
+                    <UserContainer>
+                        <UserImage />
+                        <UserInform>
+                            <UserNameContainer>이름</UserNameContainer>
+                            <UserEmail>이메일</UserEmail>
+                        </UserInform>
+                    </UserContainer>
+                    <ToolContainer>{renderInformationContainer()}</ToolContainer>
+                </RightContainer>
+            </Container>
         );
     };
 
-    const mobileMenu = ({ activeTab, setActiveTab }) => {};
+    const mobileMenu = ({ activeTab, setActiveTab }) => {
+        return (
+            <Container>
+                <RightContainer>
+                    <UserContainer>
+                        <UserImage />
+                        <UserInform>
+                            <UserNameContainer>이름</UserNameContainer>
+                            <UserEmail>이메일</UserEmail>
+                        </UserInform>
+                    </UserContainer>
+                    <ToolContainer>{renderInformationContainer()}</ToolContainer>
+                </RightContainer>
+            </Container>
+        );
+    };
+
     return (
         <Container>
             <LeftContainer>
@@ -114,19 +139,6 @@ export default function MyPageBuyer() {
         </Container>
     );
 }
-const MenuContainer = styled.div`
-    display: flex;
-    flex-direction: column;
-    padding: 20px;
-    background-color: #faf6e3;
-`;
-
-const MobileMenuContainer = styled.div`
-    position: relative;
-    padding: 20px;
-    background-color: #faf6e3;
-`;
-
 //전체 컨테이너
 const Container = styled.div`
     display: flex;
@@ -172,6 +184,11 @@ const LeftContainer = styled.div`
     @media (max-width: 350px) {
         padding-left: 2%;
     }
+`;
+const MobileMenu = styled.div`
+    background-image: url(${List_Pointer});
+    background-position: center;
+    background-size: contain;
 `;
 //마이페이지 오른쪽 컨테이너
 const RightContainer = styled.div`
@@ -302,5 +319,46 @@ const ToolContainer = styled.div`
     }
     @media (max-width: 400px) {
         font-size: 14px;
+        padding: 1%;
+    }
+`;
+//전체 배경 스타일
+const Body = styled.div`
+    background-color: #333;
+    width: 500px;
+    margin: 30px auto;
+`;
+
+// 메뉴 트리거 스타일
+const MenuTrigger = styled.a`
+    margin-right: 70px;
+    margin-bottom: 50px;
+    position: relative;
+    width: 50px;
+    height: 44px;
+    display: inline-block;
+    transition: all 0.4s;
+    box-sizing: border-box;
+
+    span {
+        position: absolute;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        background-color: #fff;
+        border-radius: 4px;
+        transition: all 0.4s;
+
+        &:nth-of-type(1) {
+            top: 0;
+        }
+
+        &:nth-of-type(2) {
+            top: 20px;
+        }
+
+        &:nth-of-type(3) {
+            bottom: 0;
+        }
     }
 `;
