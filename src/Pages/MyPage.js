@@ -15,17 +15,17 @@ export default function MyPageBuyer() {
 
     const buyerMenuItems = [
         { tab: 'Account', text: '내 계정 정보' },
-        { tab: 'Reservation', text: '찜 한 제품' },
+        { tab: 'Reservation', text: '찜 한 매장' },
         { tab: 'Item', text: '구매 내역' },
         { tab: 'Review', text: '리뷰관리' },
+        { tab: 'Location', text : '내 지역관리'},
         { tab: 'Inquiry', text: '문의내역', protected: true },
     ];
 
     const sellerMenuItems = [
         { tab: 'Account', text: '내 계정 정보' },
-        { tab: 'ItemRegistration', text: '판매 제품 관리' },
-        { tab: 'ReservationManagement', text: '판매 예약 관리' },
-        { tab: 'Review', text: '리뷰관리' },
+        // { tab: 'ItemRegistration', text: '판매 제품 관리' },
+        { tab: 'Review', text: '리뷰조회' },
         { tab: 'Inquiry', text: '문의내역', protected: true },
     ];
 

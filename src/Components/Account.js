@@ -12,6 +12,7 @@ export default function Account() {
             <EmailContainer>{Email}</EmailContainer>
             <DetailContainer>{Detail}</DetailContainer>
             <LocationContainer>{Location}</LocationContainer>
+            정보 수정        
         </Container>
     );
 }
