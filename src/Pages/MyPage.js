@@ -11,7 +11,7 @@ import Location from '../Components/Location';
 export default function MyPageBuyer() {
     const [isMobile, setIsMobile] = useState(false);
     const [userLogin, setUserLogin] = useState(true);
-    const [userAuth, setUserAuth] = useState('buyer');
+    const [userAuth, setUserAuth] = useState('seller');
 
     const buyerMenuItems = [
         { tab: 'Account', text: '내 계정 정보' },
