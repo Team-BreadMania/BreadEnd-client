@@ -8,38 +8,61 @@ export default function Reservation() {
     const [priceUnit, setPriceUnit] = useState(0);
     const totalPrice = quantity ? Number(quantity) * priceUnit : 0;
 
-    const resizingHandler = () => {
-        if (window.innerWidth <= 430) {
-            setIsMobile(true);
-        } else {
-            setIsMobile(false);
-        }
-    };
-    useEffect(() => {
-        if (window.innerWidth <= 430) {
-            setIsMobile(true);
-        }
+    const [stores, setStores] = useState([
+        { id: 1, name: '오둥이 빵집', phone: '02-546-7588', address: '서울특별시 강남구 압구정로30길 9', backgroundImage: 'breadShop', selected: false },
+        { id: 2, name: '또 다른 빵집', phone: '02-1234-5678', address: '서울특별시 강남구 압구정로30길 10', backgroundImage: 'breadShop', selected: false },
+    ]);
 
-        window.addEventListener('resize', resizingHandler);
-        return () => {
-            window.removeEventListener('resize', resizingHandler);
-        };
-    }, []);
+    const toggleSelect = (id) => {
+        setStores(stores.map(store => 
+            store.id === id ? { ...store, selected: !store.selected } : store
+        ));
+    };
+
+    const deleteSelected = () => {
+        setStores(stores.filter(store => !store.selected));
+    };
+
+    const checkAll = (event) => {
+        const isChecked = event.target.checked;
+        setStores(stores.map(store => ({ ...store, selected: isChecked })));
+    };
 
     return (
         <Container>
-            <NameContainer>찜 한 매장</NameContainer>
-            <ItemContainer>
-                <CheckboxContainer>
-                    <CheckBox />
-                </CheckboxContainer>
-                <ShopImage backgroundImage={breadShop} />
-                <InformationConatiner>
-                    <ShopNameContainer>오둥이 빵집</ShopNameContainer>
-                    <ShopNumberContainer>매장 전화번호 : 02-546-7588</ShopNumberContainer>
-                    <ShopLocationContainer>매장 주소 : 서울특별시 강남구 압구정로30길 9</ShopLocationContainer>
-                </InformationConatiner>
-            </ItemContainer>
+            <NameContainer>찜 한 매장</NameContainer>   
+            <div style={{ display: 'flex', alignItems: 'center',marginBottom:'10px' }}>
+                <CheckAllBox /> 모두 선택
+            </div>       
+            <StoreContainer>
+                <ItemContainer>
+                    <CheckboxContainer>
+                        <CheckBox />
+                    </CheckboxContainer>
+                    <ShopImage backgroundImage={breadShop} />
+                    <InformationConatiner>
+                        <ShopNameContainer>오둥이 빵집</ShopNameContainer>
+                        <ShopNumberContainer>매장 전화번호 : 02-546-7588</ShopNumberContainer>
+                        <ShopLocationContainer>매장 주소 : 서울특별시 강남구 압구정로30길 9</ShopLocationContainer>
+                    </InformationConatiner>
+                </ItemContainer>
+            </StoreContainer>
+            <StoreContainer>
+                <ItemContainer>
+                    <CheckboxContainer>
+                        <CheckBox />
+                    </CheckboxContainer>
+                    <ShopImage backgroundImage={breadShop} />
+                    <InformationConatiner>
+                        <ShopNameContainer>오둥이 빵집</ShopNameContainer>
+                        <ShopNumberContainer>매장 전화번호 : 02-546-7588</ShopNumberContainer>
+                        <ShopLocationContainer>매장 주소 : 서울특별시 강남구 압구정로30길 9</ShopLocationContainer>
+                    </InformationConatiner>
+                </ItemContainer>
+            </StoreContainer>
+            <div >
+                <DeleteSelectButton onClick={deleteSelected}>선택 삭제</DeleteSelectButton>
+            </div>
         </Container>
     );
 }
@@ -50,18 +73,23 @@ const Container = styled.div`
     width: 100%;
     padding: 20px;
     box-sizing: border-box;
-    @media (max-width: 800px) {
+    @media (max-width: 850px) {
         padding: 10px;
     }
     @media (max-width: 450px) {
         padding: 8px;
     }
+    box-sizing : border-box;
+`;
+
+const StoreContainer = styled.div`
+    margin : 0 0 2% 0;
 `;
 
 const NameContainer = styled.div`
     text-align: left;
     border-bottom: 1px solid #bdbdbd;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
     font-size: 20px;
     @media (max-width: 1200px) {
         font-size: 16px;
@@ -73,9 +101,9 @@ const NameContainer = styled.div`
         font-size: 12px;
         margin-bottom: 10px;
     }
-    @media (max-width: 400px) {
-        font-size: 10px;
-        margin-bottom: 6px;
+    @media (max-width: 800px) {
+        font-size: 12px;
+        margin-bottom: 10px;
     }
 `;
 //가게 컨테이너
@@ -89,11 +117,7 @@ const ItemContainer = styled.div`
     @media (max-width: 1280px) {
         border-radius: 15px;
     }
-    @media (max-width: 768px) {
-        border-radius: 10px;
-    }
-
-    @media (max-width: 480px) {
+    @media (max-width: 850px) {
         border-radius: 10px;
     }
 `;
@@ -122,7 +146,7 @@ const ShopImage = styled.div`
         width: 169px;
         height: 120px;
     }
-    @media (max-width: 768px) {
+    @media (max-width: 850px) {
         width: 100px;
         height: 75px;
     }
@@ -140,9 +164,7 @@ const InformationConatiner = styled.div`
     @media (max-width: 1024px) {
         padding-left: 16px;
     }
-    @media (max-width: 480px) {
-        padding-left: 10px;
-    }
+    
 `;
 //체크박스 컨테이너
 const CheckboxContainer = styled.div`
@@ -183,45 +205,80 @@ const ShopNameContainer = styled.div`
         font-size: 18px;
     }
     @media (max-width: 600px) {
-        font-size: 13.5px;
+        font-size: 16px;
     }
-    @media (max-width: 400px) {
-        font-size: 9px;
+    @media (max-width: 600px) {
+        font-size: 14px;
     }
+    
 `;
 const ShopNumberContainer = styled.div`
     font-size: 20px;
     @media (max-width: 1200px) {
-        font-size: 18px;
+        font-size: 19px;
     }
     @media (max-width: 1000px) {
-        font-size: 16px;
+        font-size: 17px;
     }
     @media (max-width: 800px) {
-        font-size: 14px;
+        font-size: 15px;
+    }
+    @media (max-width: 600px) {
+        font-size: 13px;
     }
     @media (max-width: 600px) {
         font-size: 10.5px;
     }
-    @media (max-width: 400px) {
-        font-size: 8px;
-    }
+    
 `;
 const ShopLocationContainer = styled.div`
     font-size: 20px;
     @media (max-width: 1200px) {
-        font-size: 18px;
+        font-size: 19px;
     }
     @media (max-width: 1000px) {
-        font-size: 16px;
+        font-size: 17px;
     }
     @media (max-width: 800px) {
-        font-size: 14px;
+        font-size: 15px;
+    }
+    @media (max-width: 600px) {
+        font-size: 13px;
     }
     @media (max-width: 600px) {
         font-size: 10.5px;
     }
-    @media (max-width: 400px) {
-        font-size: 8px;
+`;
+const CheckAllBox = styled.input.attrs({ type: 'checkbox' })`
+    width: 20px;
+    height: 20px;
+    &:hover {
+        cursor: pointer;
     }
+    @media (max-width: 800px) {
+        width: 17.5px;
+        height: 17.5px;
+    }
+    @media (max-width: 450px) {
+        width: 12px;
+        height: 12px;
+    }
+`;
+const DeleteSelectButton = styled.button`
+    padding: 10px 15px;
+    font-size: 16px;
+    font-weight: bold;
+    color: white;
+    background-color: black;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    width: 100%;
+    &:hover, :active {
+        background: #3e3e3e;
+        color: white;
+    }
+
+    
 `;

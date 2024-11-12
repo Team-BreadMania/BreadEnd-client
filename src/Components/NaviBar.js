@@ -23,7 +23,6 @@ export default function NaviBar() {
     ];
 
     const sellerMenuItems = [
-        // { to: '/Search', icon: search_icon, text: '검색' },
         { to: '/Map', icon: edit_icon1, text: '상품 등록' },
         { to: '/MyPage', icon: home_icon, text: '홈' },
         { to: '/MySeller', icon: cart_icon, text: '상품 관리' },
