@@ -72,42 +72,58 @@ export default function Search() {
     );
 }
 
+
 // Styled-components CSS 설정
 const SearchContainer = styled.div`
     display: flex;
     flex-direction: column;
-    align-items: center;
-    padding: 20px;
+    align-items: flex-start;
+    justify-content: flex-start;
+    position: absolute;
+    top: ${({ top }) => top || '160px'};
+    left: ${({ left }) => left || '0px'};
+    padding: 0;
     width: 100%;
+    height: 100vh;
+    background-color: #ffffff;
 `;
 
 const Title = styled.h1`
+    font-family: 'Arial, sans-serif';
     font-size: 24px;
-    margin-bottom: 20px;
-    text-align: center;
+    margin: 20px 0 10px 10%;
+    text-align: left;
+    color: #4a4a4a;
 
     @media (max-width: 768px) {
         font-size: 20px;
+        margin: 15px 0 10px 10%;
     }
 `;
 
 const SearchBar = styled.div`
     display: flex;
     width: 80%;
-    max-width: 600px;
+    max-width: 700px;
     margin-bottom: 20px;
+    margin-left: 10%;
+    border-radius: 30px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 
     @media (max-width: 768px) {
-        width: 90%;
+        width: 85%;
+        margin-left: 10%;
     }
 `;
 
 const SearchInput = styled.input`
-    flex: 1;
+    flex: 4;
     padding: 10px;
     font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 4px 0 0 4px;
+    border: none;
+    background-color: #fff;
+    color: #4a4a4a;
 
     @media (max-width: 768px) {
         padding: 8px;
@@ -115,17 +131,17 @@ const SearchInput = styled.input`
 `;
 
 const SearchButton = styled.button`
+    flex: 1;
     padding: 10px 20px;
     font-size: 16px;
-    border: 1px solid #ccc;
-    border-left: none;
-    background-color: #333;
+    border: none;
+    background-color: #d4b896;
     color: white;
-    border-radius: 0 4px 4px 0;
     cursor: pointer;
+    transition: background-color 0.3s;
 
     &:hover {
-        background-color: #555;
+        background-color: #bfa17d;
     }
 
     @media (max-width: 768px) {
@@ -135,9 +151,10 @@ const SearchButton = styled.button`
 
 const TabContainer = styled.div`
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     margin-bottom: 20px;
-    width: 100%;
+    margin-left: 10%;
+    width: 80%;
     overflow-x: auto;
     white-space: nowrap;
 `;
@@ -148,12 +165,12 @@ const Tab = styled.div`
     cursor: pointer;
     padding: 10px 20px;
     border-radius: 20px;
-    background-color: ${({ active }) => (active ? '#000' : '#f0f0f0')};
-    color: ${({ active }) => (active ? '#fff' : '#000')};
+    background-color: ${({ active }) => (active ? '#d4b896' : '#f0e9dd')};
+    color: ${({ active }) => (active ? '#fff' : '#4a4a4a')};
     transition: background-color 0.3s, color 0.3s;
 
     &:hover {
-        background-color: #000;
+        background-color: #bfa17d;
         color: #fff;
     }
 
@@ -166,9 +183,10 @@ const Tab = styled.div`
 const RecentSearchesContainer = styled.div`
     display: flex;
     flex-wrap: wrap;
-    justify-content: center;
+    justify-content: flex-start;
     margin-bottom: 20px;
-    width: 100%;
+    margin-left: 10%;
+    width: 80%;
 `;
 
 const SearchTag = styled.div`
@@ -176,14 +194,14 @@ const SearchTag = styled.div`
     align-items: center;
     padding: 10px;
     margin: 5px;
-    background-color: #f0f0f0;
+    background-color: #f0e9dd;
     border-radius: 20px;
     font-size: 14px;
     cursor: pointer;
     transition: background-color 0.3s;
 
     &:hover {
-        background-color: #e0e0e0;
+        background-color: #e0d8c8;
     }
 
     @media (max-width: 768px) {
@@ -196,7 +214,7 @@ const DeleteButton = styled.button`
     margin-left: 10px;
     background: none;
     border: none;
-    color: red;
+    color: #b22222;
     cursor: pointer;
     font-size: 14px;
 
@@ -213,7 +231,8 @@ const NoRecentSearches = styled.div`
     font-size: 14px;
     color: #888;
     margin-top: 20px;
-    text-align: center;
+    margin-left: 10%;
+    text-align: left;
 
     @media (max-width: 768px) {
         font-size: 12px;

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import './NormalSignup.css';
 
 export default function NormalSignup() {
@@ -11,6 +12,7 @@ export default function NormalSignup() {
         confirmPassword: '',
         nickname: '',
         region: '',
+        detaillocation: '',
         contact: '',
     });
 
@@ -35,10 +37,39 @@ export default function NormalSignup() {
         setIdCheckMessage(`${formData.id}는 사용 가능한 아이디입니다.`);
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         if (isIdAvailable) {
-            navigate('/home'); 
+            try {
+                const response = await axios.post('/user/sign-up', {
+                    userid: formData.id,
+                    password: formData.password,
+                    name: null,
+                    phoneNumber: formData.contact,
+                    nickname: formData.nickname,
+                    registDate: new Date().toISOString(),
+                    shopName: null,
+                    shopNumber: null,
+                    userType: 'normal',
+                    location: formData.region,
+                    detaillocation: formData.detaillocation
+                }, {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.status === 200) {
+                    console.log('회원가입 성공:', response.data);
+                    navigate('/home');
+                } else {
+                    console.log('회원가입 실패:', response.data);
+                    alert('회원가입 실패: 입력 정보를 확인하세요.');
+                }
+            } catch (error) {
+                console.error('회원가입 중 오류 발생:', error);
+                alert('회원가입 실패: 서버 오류가 발생했습니다.');
+            }
         } else {
             alert('아이디 중복 확인을 해주세요.');
         }
@@ -123,6 +154,18 @@ export default function NormalSignup() {
                         value={formData.region}
                         onChange={handleChange}
                         placeholder="경상북도 경산시..."
+                        required
+                    />
+                </div>
+                <div className="form-group">
+                    <label htmlFor="detaillocation">상세 지역</label>
+                    <input
+                        type="text"
+                        id="detaillocation"
+                        name="detaillocation"
+                        value={formData.detaillocation}
+                        onChange={handleChange}
+                        placeholder="상세 주소 입력..."
                         required
                     />
                 </div>

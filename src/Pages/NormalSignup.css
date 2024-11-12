@@ -3,38 +3,45 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 50px;
-    font-family: Arial, sans-serif;
+    width: 100%;
+    height: 100vh;
+    padding: 0;
+    margin: 0;
     background-color: #f9f9f9;
+    box-sizing: border-box;
 
-    /* 숫자로 위치 조정 가능한 속성 추가 */
-    margin-top: -60px;  /* 페이지 상단에서 떨어지는 거리 */
-    margin-bottom: 20px;  /* 페이지 하단에서 떨어지는 거리 */
-    margin-left: -78px;  /* 중앙 정렬을 유지하려면 auto 사용 */
-    margin-right: auto; /* 중앙 정렬을 유지하려면 auto 사용 */
-
-    /* 또는 아래 속성을 이용해 위치를 더 세부적으로 조정할 수 있음 */
-    position: relative; /* relative로 설정하여 위, 아래, 왼쪽, 오른쪽 값 사용 가능 */
-    top: 20px;  /* 페이지 상단에서 떨어지는 거리 조정 */
-    left: 10px; /* 왼쪽에서 떨어지는 거리 조정 */
+    @media screen and (max-width: 375px) { /* 아이폰 SE 대응 */
+        height: auto;
+        padding: 10px;
+    }
 }
-
 
 form {
     display: flex;
     flex-direction: column;
-    width: 320px;
+    width: 100%;
+    max-width: 350px;
     background-color: #fff;
-    padding: 20px;
+    padding: 15px;
     border-radius: 10px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;
+
+    @media screen and (max-width: 375px) { /* 아이폰 SE 대응 */
+        padding: 10px;
+        max-width: 300px;
+    }
 }
 
 .form-group {
     display: flex;
     flex-direction: column;
-    margin-bottom: 15px;
+    margin-bottom: 10px;
     width: 100%;
+
+    @media screen and (max-width: 375px) {
+        margin-bottom: 8px;
+    }
 }
 
 label {
@@ -42,16 +49,25 @@ label {
     margin-bottom: 5px;
     font-weight: bold;
     color: #333;
+
+    @media screen and (max-width: 375px) {
+        font-size: 13px;
+    }
 }
 
 input, select {
-    padding: 10px;
+    padding: 8px;
     font-size: 14px;
     border: 1px solid #ddd;
     border-radius: 20px;
     background-color: #f0f0f0;
     outline: none;
     transition: border 0.2s;
+
+    @media screen and (max-width: 375px) {
+        padding: 6px;
+        font-size: 13px;
+    }
 }
 
 input:focus, select:focus {
@@ -70,6 +86,12 @@ button {
     cursor: pointer;
     transition: background-color 0.2s;
     width: 100%;
+    margin-top: 10px;
+
+    @media screen and (max-width: 375px) {
+        padding: 8px 12px;
+        font-size: 14px;
+    }
 }
 
 button:hover {
@@ -78,24 +100,39 @@ button:hover {
 
 /* 중복 체크 버튼 */
 .duplicate-check {
-    padding: 10px;
+    padding: 8px;
     font-size: 14px;
-    cursor: pointer;
+    cursor: not-allowed;
     border-radius: 20px;
     border: 1px solid #ddd;
     background-color: #f0f0f0;
     margin-top: 10px;
     transition: background-color 0.2s;
+
+    @media screen and (max-width: 375px) {
+        padding: 6px;
+        font-size: 13px;
+    }
 }
 
-.duplicate-check:hover {
-    background-color: #e0e0e0;
+.duplicate-check.active {
+    background-color: #007BFF;
+    color: #fff;
+    cursor: pointer;
+}
+
+.duplicate-check:hover.active {
+    background-color: #0056b3;
 }
 
 .id-check-message {
     margin-top: 10px;
     font-size: 12px;
     color: green;
+
+    @media screen and (max-width: 375px) {
+        font-size: 11px;
+    }
 }
 
 .use-id-button {
@@ -103,34 +140,21 @@ button:hover {
     padding: 2px 5px;
     font-size: 12px;
     cursor: pointer;
+
+    @media screen and (max-width: 375px) {
+        font-size: 11px;
+    }
 }
 
 .button-group {
     display: flex;
     justify-content: space-between;
     margin-top: 20px;
-}
+    width: 100%;
+    box-sizing: border-box;
 
-button {
-    margin-top: 10px;
-}
-.duplicate-check {
-    padding: 10px;
-    font-size: 14px;
-    cursor: not-allowed; /* 기본 상태에서는 클릭할 수 없도록 설정 */
-    border-radius: 20px;
-    border: 1px solid #ddd;
-    background-color: #f0f0f0;
-    margin-top: 10px;
-    transition: background-color 0.2s;
-}
-
-.duplicate-check.active {
-    background-color: #007BFF; /* 활성화된 상태에서 색상 변경 */
-    color: #fff;
-    cursor: pointer;
-}
-
-.duplicate-check:hover.active {
-    background-color: #0056b3; /* 활성화된 상태에서 hover 색상 */
+    @media screen and (max-width: 375px) {
+        flex-direction: column;
+        gap: 10px;
+    }
 }

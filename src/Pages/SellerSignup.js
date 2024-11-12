@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import './NormalSignup.css';
 
-export default function NormalSignup() {
+export default function SellerSignup() {
     const navigate = useNavigate();
 
     const [formData, setFormData] = useState({
@@ -10,7 +12,10 @@ export default function NormalSignup() {
         confirmPassword: '',
         nickname: '',
         region: '',
+        detaillocation: '',
         contact: '',
+        shopName: '',
+        shopNumber: ''
     });
 
     const [idCheckMessage, setIdCheckMessage] = useState('');
@@ -18,37 +23,7 @@ export default function NormalSignup() {
     const [isIdEntered, setIsIdEntered] = useState(false);
 
     useEffect(() => {
-        // 아이디 입력 여부에 따라 상태 업데이트
-        setIsIdEntered(formData.id.length > 0);
-
-        // 스타일 태그 동적으로 추가
-        const styleTag = document.createElement('style');
-        styleTag.innerHTML = `
-            .duplicate-check {
-                padding: 10px;
-                font-size: 14px;
-                cursor: not-allowed;
-                border-radius: 20px;
-                border: 1px solid #ddd;
-                background-color: #f0f0f0;
-                margin-top: 10px;
-                transition: background-color 0.2s;
-            }
-            .duplicate-check.active {
-                background-color: #007BFF;
-                color: #fff;
-                cursor: pointer;
-            }
-            .duplicate-check.active:hover {
-                background-color: #0056b3;
-            }
-        `;
-        document.head.appendChild(styleTag);
-
-        // 컴포넌트가 언마운트될 때 스타일 제거
-        return () => {
-            document.head.removeChild(styleTag);
-        };
+        setIsIdEntered(formData.id.length > 0); // 아이디가 입력되었는지 여부 확인
     }, [formData.id]);
 
     const handleChange = (e) => {
@@ -64,10 +39,39 @@ export default function NormalSignup() {
         setIdCheckMessage(`${formData.id}는 사용 가능한 아이디입니다.`);
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         if (isIdAvailable) {
-            navigate('/home'); 
+            try {
+                const response = await axios.post('/user/sign-up', {
+                    userid: formData.id,
+                    password: formData.password,
+                    name: formData.nickname,
+                    phoneNumber: formData.contact,
+                    nickname: formData.nickname,
+                    registDate: new Date().toISOString(),
+                    shopName: formData.shopName,
+                    shopNumber: formData.shopNumber,
+                    userType: 'seller',
+                    location: formData.region,
+                    detaillocation: formData.detaillocation
+                }, {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.status === 200) {
+                    console.log('회원가입 성공:', response.data);
+                    navigate('/home');
+                } else {
+                    console.log('회원가입 실패:', response.data);
+                    alert('회원가입 실패: 입력 정보를 확인하세요.');
+                }
+            } catch (error) {
+                console.error('회원가입 중 오류 발생:', error);
+                alert('회원가입 실패: 서버 오류가 발생했습니다.');
+            }
         } else {
             alert('아이디 중복 확인을 해주세요.');
         }
@@ -156,6 +160,18 @@ export default function NormalSignup() {
                     />
                 </div>
                 <div className="form-group">
+                    <label htmlFor="detaillocation">상세 지역</label>
+                    <input
+                        type="text"
+                        id="detaillocation"
+                        name="detaillocation"
+                        value={formData.detaillocation}
+                        onChange={handleChange}
+                        placeholder="상세 주소 입력..."
+                        required
+                    />
+                </div>
+                <div className="form-group">
                     <label htmlFor="contact">판매지점연락처</label>
                     <input
                         type="text"
@@ -164,6 +180,30 @@ export default function NormalSignup() {
                         value={formData.contact}
                         onChange={handleChange}
                         placeholder="(+82) 010xxxxxxxx"
+                        required
+                    />
+                </div>
+                <div className="form-group">
+                    <label htmlFor="shopName">판매지점 이름</label>
+                    <input
+                        type="text"
+                        id="shopName"
+                        name="shopName"
+                        value={formData.shopName}
+                        onChange={handleChange}
+                        placeholder="판매지점 이름 입력..."
+                        required
+                    />
+                </div>
+                <div className="form-group">
+                    <label htmlFor="shopNumber">판매지점 번호</label>
+                    <input
+                        type="text"
+                        id="shopNumber"
+                        name="shopNumber"
+                        value={formData.shopNumber}
+                        onChange={handleChange}
+                        placeholder="판매지점 번호 입력..."
                         required
                     />
                 </div>

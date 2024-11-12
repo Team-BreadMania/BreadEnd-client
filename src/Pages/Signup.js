@@ -44,29 +44,47 @@ const SignupContainer = styled.div`
     align-items: center;
     justify-content: flex-start;
     height: 100vh;
-    padding-top: 100px; /* 페이지 상단에서 100px 떨어진 위치에 컨텐츠 배치 */
-    background-color: #f5f5f5; /* 배경색 추가 */
+    padding: 0;
+    background-color: #f5f5f5;
+    width: 100%;
 `;
 
 const Title = styled.h1`
     font-size: 24px;
-    margin-bottom: 40px; /* 제목 아래 공간을 40px */
-    color: #333; /* 제목 색상 */
+    margin: 40px 0 20px;
+    color: #333;
+    text-align: center;
+
+    @media (max-width: 768px) {
+        font-size: 20px;
+        margin: 30px 0 15px;
+    }
 `;
 
 const ContentWrap = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 20px; /* 두 버튼 사이의 간격 */
+    gap: 20px;
+    width: 100%;
+    max-width: 1200px;
+    padding: 0 10%;
+    box-sizing: border-box;
+
+    @media (max-width: 768px) {
+        flex-direction: column;
+        gap: 15px;
+        padding: 0;
+    }
 `;
 
 const UserTypeBox = styled.div`
-    width: 200px;
+    width: 100%;
+    max-width: 300px;
     height: 250px;
-    border: 2px solid white; /* 테두리 색상 */
-    border-radius: 10px; /* 모서리 둥글게 */
-    background-color: #fff; /* 배경색 */
+    border: 2px solid white;
+    border-radius: 10px;
+    background-color: #fff;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -75,27 +93,45 @@ const UserTypeBox = styled.div`
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 
     &:hover {
-        transform: translateY(-5px); /* 마우스 오버 시 살짝 올라오는 애니메이션 */
-        box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2); /* 그림자 효과 */
+        transform: translateY(-5px);
+        box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    @media (max-width: 768px) {
+        max-width: 90%;
+        height: 200px;
     }
 `;
 
 const UserImage = styled.img`  
-    width: 130x; /* 이미지 크기 */
-    height: 130px; /* 이미지 크기 */
-    margin-bottom: 10px; /* 이미지와 텍스트 간의 간격 */
+    width: 130px;
+    height: 130px;
+    margin-bottom: 10px;
+
+    @media (max-width: 768px) {
+        width: 100px;
+        height: 100px;
+    }
 `;
 
 const UserTypeText = styled.span`
     font-size: 18px;
     font-weight: bold;
     text-align: center;
-    color: #333; /* 텍스트 색상 */
+    color: #333;
+
+    @media (max-width: 768px) {
+        font-size: 16px;
+    }
 `;
 
 const Description = styled.p`
     font-size: 12px;
     text-align: center;
-    color: #777; /* 설명 텍스트 색상 */
-    margin-top: 5px; /* 설명과 텍스트 간의 간격 */
+    color: #777;
+    margin-top: 5px;
+
+    @media (max-width: 768px) {
+        font-size: 10px;
+    }
 `;
