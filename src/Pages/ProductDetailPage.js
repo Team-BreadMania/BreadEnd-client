@@ -5,6 +5,8 @@ import styled from 'styled-components';
 import Slider from 'react-slick';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import Review from "../Components/Review";
+import Map from "../Components/ShopLocation";
 import bread_img01 from "../Images/bread_img01.jpg";
 import bread_img02 from "../Images/bread_img02.jpg";
 import bread_img03 from "../Images/bread_img03.png";
@@ -30,9 +32,10 @@ export default function ProductDetailPage() {
         pauseOnHover: true,
     };
 
+    const [shopAddress, setShopAddress] = useState("서울특별시 강남구 테헤란로 231"); // 매장 상세주소 상태
     const [dibs, setDibs] = useState(false); // 찜하기 상태
     const [quantity, setQuantity] = useState(1); // 구매수량 초기상태
-    const [activeMenu, setActiveMenu] = useState("상품 리뷰"); // 현재 활성화상태 메뉴
+    const [activeMenu, setActiveMenu] = useState("매장 리뷰"); // 현재 활성화상태 메뉴
 
     const toggleDibs = () => { // 찜상태 토클 메서드
         setDibs(prev => !prev); 
@@ -76,8 +79,8 @@ export default function ProductDetailPage() {
                             <ShopInfo style = {{fontSize: "20px", margin: "10px 0"}}>&lt;오둥이 빵집&gt;</ShopInfo>
                             <ShopInfo>영업 시간 : 08:30 ~ 19:00</ShopInfo>
                             <ShopInfo>매장 전화번호 : 02-546-7588</ShopInfo>
-                            <ShopInfo>매장 위치 : 서울특별시 강남구 압구정동</ShopInfo>
-                            <ShopInfo>매장 상세주소 : 서울특별시 강남구 압구정로30길 9</ShopInfo>
+                            <ShopInfo>매장 위치 : 서울특별시 강남구 역삼동</ShopInfo>
+                            <ShopInfo>매장 상세주소 : 서울특별시 강남구 테헤란로 231</ShopInfo>
                         </ShopInfoBox>
                         <ShopButtonBox>
                             <ShopButton style = {{marginTop: "15%"}} onClick = {toggleDibs}>
@@ -109,8 +112,8 @@ export default function ProductDetailPage() {
                                 <DescriptionBox>금일(2024.12.25) 오전 10시</DescriptionBox>
                             </LeftInnerBox>
                             <LeftInnerBox style = {{border: "none"}}>
-                                <LabelBox>소비 기한</LabelBox>
-                                <DescriptionBox>실온 보관시 하루, 냉장 보관시 내일까지</DescriptionBox>
+                                <LabelBox>판매 시간</LabelBox>
+                                <DescriptionBox>금일 오후 7시까지</DescriptionBox>
                             </LeftInnerBox>
                         </LeftBox>
                         <RightBox>
@@ -139,16 +142,16 @@ export default function ProductDetailPage() {
             </TopContainer>
             <BottomContainer>
                 <MenuBox>
-                    <TogleMenu active = {activeMenu === "상품 리뷰"} 
-                               onClick = {() => handleMenuClick("상품 리뷰")}>상품 리뷰
+                    <TogleMenu active = {activeMenu === "매장 리뷰"} 
+                               onClick = {() => handleMenuClick("매장 리뷰")}>매장 리뷰
                     </TogleMenu>
                     <TogleMenu active = {activeMenu === "매장 위치(지도)"} 
                                onClick = {() => handleMenuClick("매장 위치(지도)")}>매장 위치(지도)
                     </TogleMenu>
                 </MenuBox>
                 <ContentBox>
-                    {activeMenu === "상품 리뷰" && <ReviewContainer>리뷰 구현해야함</ReviewContainer>}
-                    {activeMenu === "매장 위치(지도)" && <MapContainer>지도 구현해야함</MapContainer>}
+                    {activeMenu === "매장 리뷰" && <ReviewContainer><Review/></ReviewContainer>}
+                    {activeMenu === "매장 위치(지도)" && <MapContainer><Map address = {shopAddress}/></MapContainer>}
                 </ContentBox>
             </BottomContainer>
             <Void/>
