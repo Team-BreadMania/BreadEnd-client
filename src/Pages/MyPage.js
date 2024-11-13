@@ -18,9 +18,9 @@ export default function MyPageBuyer() {
         e.stopPropagation();
         setMenuVisible(!menuVisible);
     };
-    
+
     const buyerMenuItems = [
-        { tab: 'Account', text: '내 계정 정보' },
+        { tab: 'Account', text: '회원 정보' },
         { tab: 'Reservation', text: '찜 한 매장' },
         { tab: 'Item', text: '구매 내역' },
         { tab: 'Review', text: '리뷰관리' },
@@ -55,8 +55,8 @@ export default function MyPageBuyer() {
         }
     };
 
-    const [activeTab, setActiveTab] = useState('Account');  
-    
+    const [activeTab, setActiveTab] = useState('Account');
+
     return (
         <Container onClick={() => setMenuVisible(false)}>
             <MobileNav isVisible={menuVisible}>
@@ -65,12 +65,12 @@ export default function MyPageBuyer() {
                         마이페이지
                     </MypageContainer>
                     {menuItems.map((item, index) => (
-                        <LinkContainer 
-                            key={index} 
+                        <LinkContainer
+                            key={index}
                             onClick={() => {
                                 setActiveTab(item.tab);
                                 setMenuVisible(false);
-                            }} 
+                            }}
                             isSelected={activeTab === item.tab}
                         >
                             {item.text}
@@ -95,13 +95,9 @@ export default function MyPageBuyer() {
             <RightContainer>
                 <MenuBox onClick={MenuToggle}>
                     <MenuButton src={MenuIcon} />
-                    <MenuTitle>
-                        {menuItems.find(item => item.tab === activeTab)?.text || '마이페이지'}
-                    </MenuTitle>
+                    <MenuTitle>{menuItems.find((item) => item.tab === activeTab)?.text || '마이페이지'}</MenuTitle>
                 </MenuBox>
-                <ToolContainer>                
-                    {renderInformationContainer()}
-                </ToolContainer>
+                <ToolContainer>{renderInformationContainer()}</ToolContainer>
             </RightContainer>
         </Container>
     );
@@ -112,7 +108,7 @@ const Container = styled.div`
     border-radius: 5px;
     max-width: 100%;
     height: 100%;
-    position: relative;    
+    position: relative;
 `;
 
 const MobileNav = styled.div`
@@ -124,12 +120,12 @@ const MobileNav = styled.div`
     height: 100%;
     background-color: rgba(0, 0, 0, 0.5);
     z-index: 1000;
-    opacity: ${props => props.isVisible ? 1 : 0};
-    visibility: ${props => props.isVisible ? 'visible' : 'hidden'};
+    opacity: ${(props) => (props.isVisible ? 1 : 0)};
+    visibility: ${(props) => (props.isVisible ? 'visible' : 'hidden')};
     transition: opacity 0.3s ease, visibility 0.3s ease;
 
     @media (max-width: 800px) {
-        display: ${props => props.isVisible ? 'block' : 'none'};
+        display: ${(props) => (props.isVisible ? 'block' : 'none')};
     }
 `;
 
@@ -152,7 +148,6 @@ const LeftContainer = styled.div`
     padding: 3% 0 0 3%;
     border-right: 2px solid black;
     text-align: left;
-
     @media (max-width: 1500px) {
         font-size: 28px;
         min-width: 17%;
@@ -165,7 +160,7 @@ const LeftContainer = styled.div`
         font-size: 22px;
         padding-left: 2.5%;
         min-width: 24%;
-    }    
+    }
     @media (max-width: 800px) {
         display: none; // 모바일에서 숨김
     }
@@ -173,10 +168,10 @@ const LeftContainer = styled.div`
 
 const RightContainer = styled.div`
     min-width: 85%;
-    padding: 4% 0 0 3%;
+    padding: 4% 3% 0 3%;
     box-sizing: border-box;
     background-color: #faf6e3;
-    
+
     @media (max-width: 800px) {
         min-width: 100%;
         padding: 20px;
@@ -194,7 +189,7 @@ const MypageContainer = styled.div`
     font-weight: bold;
     margin-bottom: 25px;
     cursor: pointer;
-    
+
     @media (max-width: 800px) {
         margin-bottom: 12px;
         font-size: 24px;
@@ -208,11 +203,11 @@ const LinkContainer = styled.div`
     margin-bottom: 15px;
     color: ${(props) => (props.isSelected ? '#white' : '#adb5bd')};
     cursor: pointer;
-    
+
     &:hover {
         background-color: #b5b7ba;
     }
-    
+
     @media (max-width: 2560px) {
         font-size: 24px;
     }
@@ -231,18 +226,17 @@ const LinkContainer = styled.div`
 const ToolContainer = styled.div`
     display: flex;
     flex-direction: row;
-    width: 88%;
+    flex-grow: 1;
+    width: 100%;
     border-radius: 10px;
     background-color: white;
     padding: 3%;
     box-sizing: border-box;
     @media (max-width: 850px) {
-        width: 85%;
         font-size: 16px;
-        padding:2%;
+        padding: 2%;
     }
     @media (max-width: 420px) {
-        width:100%;
         font-size: 14px;
         padding: 1%;
     }
