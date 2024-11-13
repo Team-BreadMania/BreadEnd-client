@@ -71,6 +71,26 @@ export default function Home() {
                     ))}
                 </BannerSlider>
             </Banner>
+            <Title>❤️@@님이 좋아하실만한 상품</Title>
+            <ProductContainer>
+                <ProductSlider {...product_settings}>
+                    {Array.from({ length: 10 }).map((_, index) => (
+                        <ProductBox key = {index}>
+                            <Product/>
+                        </ProductBox>
+                    ))}
+                </ProductSlider>
+            </ProductContainer>
+            <Title>🍞내 주변 매장</Title>
+            <ProductContainer>
+                <ProductSlider {...product_settings}>
+                    {Array.from({ length: 10 }).map((_, index) => (
+                        <ProductBox key = {index}>
+                            <Shop/>
+                        </ProductBox>
+                    ))}
+                </ProductSlider>
+            </ProductContainer>
             <Title>🔥내 주변 인기상품</Title>
             <ProductContainer>
                 <ProductSlider {...product_settings}>
@@ -91,16 +111,6 @@ export default function Home() {
                     ))}
                 </ProductSlider>
             </ProductContainer>
-            <Title>🍞내 주변 매장</Title>
-            <ProductContainer>
-                <ProductSlider {...product_settings}>
-                    {Array.from({ length: 10 }).map((_, index) => (
-                        <ProductBox key = {index}>
-                            <Shop/>
-                        </ProductBox>
-                    ))}
-                </ProductSlider>
-            </ProductContainer>
             <Empty/>
         </Container>
     );
@@ -114,8 +124,12 @@ const Container = styled.div` // 최상단 박스 컨테이너
 
 const Banner = styled.div` // 배너 컨테이너
     width: 100%;
-    height: 30vh;
+    height: 400px;
     position: relative;
+
+    @media (max-width: 500px) {
+        height: 300px;
+    }
 `;
 
 const BannerSlider = styled(Slider)` // 배너 슬라이더
@@ -128,16 +142,25 @@ const BannerSlider = styled(Slider)` // 배너 슬라이더
 
     .slick-prev {
         position: absolute;
-        top: 15vh;
-        left: 10px;
+        top: 25vh;
+        left: 20px;
         z-index: 10;
+
+        @media (max-width: 500px) {
+            left: 10px;
+            top: 15vh;
+        }
     }
 
     .slick-next {
         position: absolute;
-        top: 15vh;
-        right: 20px;
+        top: 25vh;
+        right: 30px;
         z-index: 10;
+
+        @media (max-width: 500px) {
+            top: 15vh;
+        }
     }
 
     .slick-dots {
@@ -150,7 +173,7 @@ const BannerSlider = styled(Slider)` // 배너 슬라이더
 
     .slick-prev:before, .slick-next:before {
         color: black;
-        font-size: 30px;
+        font-size: 40px;
     }
 `;
 
