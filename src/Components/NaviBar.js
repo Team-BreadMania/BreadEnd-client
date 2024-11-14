@@ -12,7 +12,7 @@ export default function NaviBar() {
     const location = useLocation();
     const navigate = useNavigate(); // useNavigate로 변경
     const [userLogin, setUserLogin] = useState(true);
-    const [userAuth, setUserAuth] = useState('seller');
+    const [userAuth, setUserAuth] = useState('buyer');
 
     const buyerMenuItems = [
         { to: '/Search', icon: search_icon, text: '검색' },
