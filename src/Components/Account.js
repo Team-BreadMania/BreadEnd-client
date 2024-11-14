@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import Avata from '../Images/Generic_avatar.png';
 import MannerTemperature from './MannerTemperature';
+import EditUserInfo from './EditUserInform'
+import edit_button from '../Images/edit_button.png'
 
 export default function Account() {
     const [nickname, setNickname] = useState('이름');
@@ -9,10 +11,36 @@ export default function Account() {
     const [registDate, setRegistDate] = useState('2024-11-13');
     const [detail, setDetail] = useState('자기소개');
     const [location, setLocation] = useState('지역');
+    const [temp,setTemp] = useState(75);
+    const [view, setViwe] = useState(false);
 
+    const MenuToggle = (e) => {
+        e.stopPropagation();
+        setViwe(!view);
+    };
+
+    const renderInformationContainer = () => {
+        if (view) {
+            return (
+                <EditUserInfo 
+                    nickname={nickname} 
+                    setNickname={setNickname} 
+                    email={email} 
+                    setEmail={setEmail} 
+                    location={location} 
+                    setLocation={setLocation} 
+                    detail={detail} 
+                    setDetail={setDetail} 
+                    MenuToggle={MenuToggle} // Pass MenuToggle function
+                />
+            );
+        }
+        return null;
+    };
+    
     return (
         <Container>
-            <PCUserContainer>
+            <UserContainer>
                 <UserImage />
                 <AllInformContainer>
                     <UserUpperContainer>
@@ -20,14 +48,20 @@ export default function Account() {
                             <UserNameContainer>{nickname}</UserNameContainer>
                             <UserEmail>{email}</UserEmail>
                         </UserInform>
-                        <MannerTemperature percentage={75} />
+                        <MannerTemperature percentage={temp}/>
                     </UserUpperContainer>
+                    <UserLowerContainer>
                     <UserDetailInform>
                         <UserDate>가입일자 : {registDate}</UserDate>
                         <UserLocation>지역 : {location}</UserLocation>
-                    </UserDetailInform>
+                    </UserDetailInform>  
+                    <EditButton onClick={MenuToggle}/>            
+                    </UserLowerContainer>
                 </AllInformContainer>
-            </PCUserContainer>
+            </UserContainer> 
+            <RenderContainer>
+                {renderInformationContainer()}
+                </RenderContainer>           
         </Container>
     );
 }
@@ -37,18 +71,21 @@ const Container = styled.div`
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    width:100%;
     @media (max-width: 800px) {
         padding: 15px;
+    }
+    @media (max-width: 400px) {
+        padding: 8px 15px; 
     }
 `;
 
 // 유저 정보 컨테이너
-const PCUserContainer = styled.div`
+const UserContainer = styled.div`
     display: flex;
     align-items: center;
     justify-content: flex-start; /* 기본적으로 왼쪽 정렬 */
     background-color: white;
-    margin-bottom: 30px;
     border-radius: 20px;
     width: 100%;
     padding: 10px; /* 여백 추가 */
@@ -127,13 +164,13 @@ const UserImage = styled.div`
     background-repeat: no-repeat;
     margin-right: 20px;
     @media (max-width: 800px) {
-        width: 70px;
-        height: 70px;
+        width: 80px;
+        height: 80px;
         margin-right: 10px;
     }
     @media (max-width: 400px) {
-        width: 60px;
-        height: 60px;
+        width: 70px;
+        height: 70px;
         margin-right: 7px;
     }
 `;
@@ -156,13 +193,48 @@ const UserDetailInform = styled.div`
 // 유저 모든 정보 담는 컨테이너
 const AllInformContainer = styled.div`
     display: flex;
+    width:100%;
     flex-direction: column;
     align-items: flex-start; /* 왼쪽 정렬 */
     margin-right: 10px;
+    &:last-child{
+        justify-content:flex-end;
+    }
 `;
-
+//이름, 이메일, 매너온도 묶은 컨테이너
 const UserUpperContainer = styled.div`
     display: flex;
     width: 100%;
     justify-content: space-between;
+`;
+//가입일자, 지역, 에딧버튼 컴포넌트
+const UserLowerContainer = styled.div`
+display: flex;
+    width: 100%;
+    justify-content: space-between;
+    `;
+
+//정보 수정 렌더링되는 컨테이너
+const RenderContainer = styled.div`
+width:100%;
+    background-color:white;
+`;
+const EditButton = styled.button`
+    width:30px;
+    height:30px;
+    background-size:contain;
+    background-image: url(${edit_button});
+    background-color:white;
+    background-repeat:no-repeat;
+    &:hover, :active{
+        background-color:grey;
+    }
+    @media (max-width:800px) {
+        width:25px;
+        height:25px;   
+    }
+    @media (max-width:400px) {
+        width:20px;
+        height:20px;   
+    }
 `;

@@ -5,13 +5,13 @@ import Reservation from '../Components/Reservation';
 import Item from '../Components/Item';
 import Review from '../Components/Review';
 import Inquiry from '../Components/Inquiry';
-import Location from '../Components/Location';
 import MenuIcon from '../Images/menu_icon1.jpg';
+import SellerHome from './Home_seller';
 
 export default function MyPageBuyer() {
     const [isMobile, setIsMobile] = useState(false);
     const [userLogin, setUserLogin] = useState(true);
-    const [userAuth, setUserAuth] = useState('buyer');
+    const [userAuth, setUserAuth] = useState('seller');
     const [menuVisible, setMenuVisible] = useState(false);
 
     const MenuToggle = (e) => {
@@ -24,47 +24,45 @@ export default function MyPageBuyer() {
         { tab: 'Reservation', text: '찜 한 매장' },
         { tab: 'Item', text: '구매 내역' },
         { tab: 'Review', text: '리뷰관리' },
-        { tab: 'Location', text: '내 지역관리' },
         { tab: 'Inquiry', text: '문의내역', protected: true },
     ];
-
-    const sellerMenuItems = [
-        { tab: 'Account', text: '내 계정 정보' },
-        { tab: 'Review', text: '리뷰조회' },
-        { tab: 'Inquiry', text: '문의내역', protected: true },
-    ];
-
-    const menuItems = !userLogin ? buyerMenuItems : userAuth === 'seller' ? sellerMenuItems : buyerMenuItems;
 
     const renderInformationContainer = () => {
-        switch (activeTab) {
-            case 'Account':
-                return <Account />;
-            case 'Reservation':
-                return <Reservation />;
-            case 'Item':
-                return <Item />;
-            case 'Review':
-                return <Review />;
-            case 'Inquiry':
-                return <Inquiry />;
-            case 'Location':
-                return <Location />;
-            default:
-                return <Account />;
+        if(userAuth ==='buyer'){
+            switch (activeTab) {
+                case 'Account':
+                    return <Account />;
+                case 'Reservation':
+                    return <Reservation />;
+                case 'Item':
+                    return <Item />;
+                case 'Review':
+                    return <Review />;
+                case 'Inquiry':
+                    return <Inquiry />;
+                default:
+                    return <Account />;
+            }
+        }
+        else if(userAuth === 'seller'){
+            switch(activeTab){
+                default:
+                    return <SellerHome/>;
+                }
         }
     };
 
     const [activeTab, setActiveTab] = useState('Account');
 
-    return (
-        <Container onClick={() => setMenuVisible(false)}>
+    const Buyer = ()=>{
+        return(
+            <Container onClick={() => setMenuVisible(false)}>
             <MobileNav isVisible={menuVisible}>
                 <MobileMenuContent>
                     <MypageContainer onClick={() => setActiveTab('Account')} isSelected={activeTab === 'Account'}>
                         마이페이지
                     </MypageContainer>
-                    {menuItems.map((item, index) => (
+                    {buyerMenuItems.map((item, index) => (
                         <LinkContainer
                             key={index}
                             onClick={() => {
@@ -78,28 +76,39 @@ export default function MyPageBuyer() {
                     ))}
                 </MobileMenuContent>
             </MobileNav>
-
             <LeftContainer>
                 <ImformationContainer>
                     <MypageContainer onClick={() => setActiveTab('Account')} isSelected={activeTab === 'Account'}>
                         마이페이지
                     </MypageContainer>
-                    {menuItems.map((item, index) => (
+                    {buyerMenuItems.map((item, index) => (
                         <LinkContainer key={index} onClick={() => setActiveTab(item.tab)} isSelected={activeTab === item.tab}>
                             {item.text}
                         </LinkContainer>
                     ))}
                 </ImformationContainer>
             </LeftContainer>
-
             <RightContainer>
                 <MenuBox onClick={MenuToggle}>
                     <MenuButton src={MenuIcon} />
-                    <MenuTitle>{menuItems.find((item) => item.tab === activeTab)?.text || '마이페이지'}</MenuTitle>
+                    <MenuTitle>{buyerMenuItems.find((item) => item.tab === activeTab)?.text || '마이페이지'}</MenuTitle>
                 </MenuBox>
                 <ToolContainer>{renderInformationContainer()}</ToolContainer>
             </RightContainer>
         </Container>
+        )
+    }
+    const Seller=()=>{
+        return (
+            <Container>
+                <ToolContainer>{renderInformationContainer()}</ToolContainer>
+            </Container>
+        )
+    }
+    return (
+        <>
+            {userAuth === 'buyer' ? <Buyer /> : <Seller />}
+        </>
     );
 }
 
@@ -173,9 +182,10 @@ const RightContainer = styled.div`
     background-color: #faf6e3;
 
     @media (max-width: 800px) {
-        min-width: 100%;
+        width: 100%;
         padding: 20px;
     }
+    
 `;
 
 const ImformationContainer = styled.div`
@@ -205,7 +215,7 @@ const LinkContainer = styled.div`
     cursor: pointer;
 
     &:hover {
-        background-color: #b5b7ba;
+        background-color: #f3f5f6;
     }
 
     @media (max-width: 2560px) {
@@ -226,7 +236,7 @@ const LinkContainer = styled.div`
 const ToolContainer = styled.div`
     display: flex;
     flex-direction: row;
-    flex-grow: 1;
+    flex-grow: 2;
     width: 100%;
     border-radius: 10px;
     background-color: white;
