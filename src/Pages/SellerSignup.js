@@ -15,15 +15,18 @@ export default function SellerSignup() {
         detaillocation: '',
         contact: '',
         shopName: '',
-        shopNumber: ''
+        shopNumber: '',
+        name: '', // 이름 필드 추가
+        likedCategory: '', // 좋아하는 카테고리 추가
     });
 
+    const [imageFile, setImageFile] = useState(null);
     const [idCheckMessage, setIdCheckMessage] = useState('');
     const [isIdAvailable, setIsIdAvailable] = useState(false);
     const [isIdEntered, setIsIdEntered] = useState(false);
 
     useEffect(() => {
-        setIsIdEntered(formData.id.length > 0); // 아이디가 입력되었는지 여부 확인
+        setIsIdEntered(formData.id.length > 0);
     }, [formData.id]);
 
     const handleChange = (e) => {
@@ -32,6 +35,10 @@ export default function SellerSignup() {
             ...formData,
             [name]: value,
         });
+    };
+
+    const handleImageChange = (e) => {
+        setImageFile(e.target.files[0]);
     };
 
     const handleIdCheck = () => {
@@ -43,22 +50,30 @@ export default function SellerSignup() {
         e.preventDefault();
         if (isIdAvailable) {
             try {
-                const response = await axios.post('/user/sign-up', {
-                    userid: formData.id,
-                    password: formData.password,
-                    name: formData.nickname,
-                    phoneNumber: formData.contact,
-                    nickname: formData.nickname,
-                    registDate: new Date().toISOString(),
-                    shopName: formData.shopName,
-                    shopNumber: formData.shopNumber,
-                    userType: 'seller',
-                    location: formData.region,
-                    detaillocation: formData.detaillocation
-                }, {
+                const requestData = new FormData();
+                requestData.append('userid', formData.id);
+                requestData.append('password', formData.password);
+                requestData.append('name', formData.name);
+                requestData.append('phoneNumber', formData.contact);
+                requestData.append('nickname', formData.nickname);
+                requestData.append('registDate', new Date().toISOString());
+                requestData.append('shopName', formData.shopName);
+                requestData.append('shopNumber', formData.shopNumber);
+                requestData.append('userType', 'seller');
+                requestData.append('location', formData.region);
+                requestData.append('detaillocation', formData.detaillocation);
+                requestData.append('liked_category', formData.likedCategory); // 좋아하는 카테고리 추가
+
+                if (imageFile) {
+                    requestData.append('image', imageFile); // 이미지 파일 추가
+                }
+
+                console.log('요청 데이터:', requestData);
+
+                const response = await axios.post('http://43.203.241.42/user/regist', requestData, {
                     headers: {
-                        'Content-Type': 'application/json'
-                    }
+                        'Content-Type': 'multipart/form-data', // 파일 전송 시 Content-Type 설정
+                    },
                 });
 
                 if (response.status === 200) {
@@ -111,6 +126,18 @@ export default function SellerSignup() {
                         {isIdAvailable && <button type="button" className="use-id-button">사용</button>}
                     </div>
                 )}
+                <div className="form-group">
+                    <label htmlFor="name">이름</label>
+                    <input
+                        type="text"
+                        id="name"
+                        name="name"
+                        value={formData.name}
+                        onChange={handleChange}
+                        placeholder="이름 입력"
+                        required
+                    />
+                </div>
                 <div className="form-group">
                     <label htmlFor="password">비밀번호</label>
                     <input
@@ -205,6 +232,28 @@ export default function SellerSignup() {
                         onChange={handleChange}
                         placeholder="판매지점 번호 입력..."
                         required
+                    />
+                </div>
+                <div className="form-group">
+                    <label htmlFor="likedCategory">좋아하는 카테고리</label>
+                    <input
+                        type="text"
+                        id="likedCategory"
+                        name="likedCategory"
+                        value={formData.likedCategory}
+                        onChange={handleChange}
+                        placeholder="좋아하는 카테고리 입력"
+                        required
+                    />
+                </div>
+                <div className="form-group">
+                    <label htmlFor="image">프로필 이미지</label>
+                    <input
+                        type="file"
+                        id="image"
+                        name="image"
+                        onChange={handleImageChange}
+                        accept="image/*"
                     />
                 </div>
                 <div className="button-group">

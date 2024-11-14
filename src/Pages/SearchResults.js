@@ -1,8 +1,10 @@
 import React, { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import styled from 'styled-components';
-import Product from "../Components/Product";
-import Shop from "../Components/Shop";
+import bannerImg_01 from '../Images/bread_img.png';
+import bannerImg_02 from '../Images/bread_img01.jpg';
+import bannerImg_03 from '../Images/bread_img02.jpg';
+import bannerImg_04 from '../Images/bread_img03.png';
 import Slider from 'react-slick';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -17,37 +19,36 @@ function SearchResults() {
 
     // 임시 데이터
     const dummyData = {
-    빵: Array.from({ length: 10 }).map((_, index) => (
-        <ProductBox key={index}>
-            <Product />
-        </ProductBox>
-    )),
-        빵집: Array.from({ length: 10 }).map((_, index) => (
-        <ProductBox key={index}>
-            <Shop />
-        </ProductBox>
-    )),
-        지역: Array.from({ length: 10 }).map((_, index) => (
-        <ProductBox key={index}>
-            <Shop />
-        </ProductBox>
-    )),
+        빵: [bannerImg_01, bannerImg_02, bannerImg_03,bannerImg_04 ],
+        빵집: [bannerImg_02, bannerImg_03, bannerImg_01,bannerImg_04],
+        내주변: [bannerImg_03, bannerImg_01, bannerImg_02,bannerImg_04],
     };
 
     const settings = {
-    infinite: true,
-    speed: 500,
-    slidesToShow: 1, // Ensure only one item is shown at a time to maximize space
-    
-    
-    autoplay: false,
-        
-        
+        infinite: false,
+        speed: 500,
+        slidesToShow: 3,
+        slidesToScroll: 1,
+        arrows: true,
+        responsive: [
+            {
+                breakpoint: 1000,
+                settings: {
+                    slidesToShow: 2,
+                },
+            },
+            {
+                breakpoint: 600,
+                settings: {
+                    slidesToShow: 1,
+                },
+            },
+        ],
     };
 
     return (
         <Container>
-            <Title>{query ? `"${query}"에 대한 검색결과입니다.` : "검색결과 페이지입니다."}</Title>
+            <Title>{query ? `"${query}"에 대한 검색결과입니다.` : "검색결과가 없습니다😓."}</Title>
             {query && Object.keys(dummyData).map((category, idx) => (
                 <Category key={idx}>
                     <CategoryTitle>{category}</CategoryTitle>
@@ -55,7 +56,7 @@ function SearchResults() {
                         <ProductSlider {...settings}>
                             {dummyData[category].map((image, index) => (
                                 <ProductBox key={index}>
-                                    {image}
+                                    <Image src={image} />
                                 </ProductBox>
                             ))}
                         </ProductSlider>
@@ -70,8 +71,8 @@ export default SearchResults;
 
 // Styled-components CSS 설정
 const Container = styled.div`
-    width: 90%;
-    padding: 40px;
+    width: 100%;
+    padding: 20px;
     background-color: #fff;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -85,13 +86,16 @@ const Title = styled.h2`
 `;
 
 const Category = styled.div`
-    margin-bottom: 60px;
+    margin-bottom: 40px;
+    background-color: #fff;
 `;
 
 const CategoryTitle = styled.h3`
     font-size: 20px;
     color: #d4b896;
     border-bottom: 2px solid #d4b896;
+    background-color: #f5f5dc; /* 베이지 색상 */
+    border-radius: 8px;
     padding-bottom: 10px;
     margin-bottom: 20px;
 `;
@@ -102,60 +106,38 @@ const SliderContainer = styled.div`
 `;
 
 const ProductSlider = styled(Slider)`
-    width: 90%;
-    height: 100%;
-
     .slick-list {
-        height: 100%;
+        padding: 10px;
     }
-
     .slick-slide {
         display: flex;
         justify-content: center;
         align-items: center;
     }
+   .slick-prev:before, .slick-next:before {
+    color: #d4b896;
+    font-size: 30px;
+   }
 
-    .slick-prev {
-        position: absolute;
-        top: 50%;
-        transform: translateY(-50%);
-        left: 10px;
-        z-index: 10;
-
-        &:hover {
-            color: #1E6BB8; 
-        }
-    }
-
-    .slick-next {
-        position: absolute;
-        top: 50%;
-        transform: translateY(-50%);
-        right: 20px;
-        z-index: 10;
-
-        &:hover {
-            color: #1E6BB8;
-        }
-    }
-
-    .slick-prev:before, .slick-next:before {
-        color: #2590F1;
-        font-size: 30px;
-    }
 `;
-
 const ProductBox = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 20px; width: 90%;
+    padding: 10px;
     box-sizing: border-box;
+    transition: transform 0.3s ease;
+    cursor: pointer;
+
+    &:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
 `;
 
 const Image = styled.img`
-    width: 90%;
-    height: 100%;
-    object-fit: contain;
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
     border-radius: 10px;
 `;

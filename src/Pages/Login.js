@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import axios from 'axios';
+import Cookies from 'js-cookie';
+
 function Login() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
@@ -10,7 +12,7 @@ function Login() {
         e.preventDefault();
         if (username && password) {
             try {
-                const response = await axios.post('/user/sign-in', {
+                const response = await axios.post('http://43.203.241.42/user/sign-in', {
                     userid: username,
                     password: password
                 }, {
@@ -21,6 +23,7 @@ function Login() {
                 
                 if (response.status === 200) {
                     console.log('로그인 성공:', response.data);
+                    Cookies.set('token', response.data.token, { expires: 365 }); // 7일 동안 유효한 쿠키 설정
                     navigate('/Home');
                 } else {
                     console.log('로그인 실패:', response.data);

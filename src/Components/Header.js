@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import React from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import Cookies from 'js-cookie';
 import axios from 'axios';
 import styled from 'styled-components';
 import menu_icon from "../Images/menu_icon.svg";
@@ -8,20 +9,36 @@ import alarm_icon from "../Images/alarm_icon.svg";
 import "../Fonts/font.css";
 
 export default function Header() {
+    const navigate = useNavigate();
+
+    // 로그아웃 버튼 클릭 시 호출되는 함수
+    const handleLogout = () => {
+        Cookies.remove('token'); // 쿠키에서 토큰 삭제
+        navigate('/'); // 홈으로 이동
+    };
+
     return (
         <Container>
-            <Box><MenuButton/></Box>
+            <Box><MenuButton /></Box>
             <Box style={{ width: "60%" }}>
                 <LogoButton to="/Home">
-                    <LogoIcon/>
+                    <LogoIcon />
                     <LogoText>빵끝마켓</LogoText>
                 </LogoButton>
             </Box>
             <Box style={{ width: "20%", justifyContent: "flex-end" }}> {/* 로그인과 회원가입 박스를 담는 박스 */}
-                <LoginBox to="/Login">로그인</LoginBox>
-                <SignupBox to="/Signup">회원가입</SignupBox>
+                {Cookies.get('token') ? (
+                    // 로그인 상태인 경우
+                    <LogoutBox onClick={handleLogout}>로그아웃</LogoutBox>
+                ) : (
+                    // 로그인되지 않은 경우
+                    <>
+                        <LoginBox to="/Login">로그인</LoginBox>
+                        <SignupBox to="/Signup">회원가입</SignupBox>
+                    </>
+                )}
             </Box>
-            <Box><AlarmButton/></Box>
+            <Box><AlarmButton /></Box>
         </Container>
     );
 }
@@ -99,6 +116,31 @@ const SignupBox = styled(Link)`
     @media (max-width: 600px) {
         font-size: 10px;
         padding-left: 5px; /* 왼쪽 여백 더 줄이기 */
+    }
+`;
+
+const LogoutBox = styled.div`
+    display: flex;
+    width: auto;
+    padding-right: 15px;
+    height: 100%;
+    justify-content: right;
+    align-items: center;
+    font-size: 13px;
+    font-weight: bold;
+    color: black;
+    text-decoration: none;
+    white-space: nowrap;
+    cursor: pointer;
+
+    @media (max-width: 800px) {
+        font-size: 11px;
+        padding-right: 10px;
+    }
+
+    @media (max-width: 600px) {
+        font-size: 10px;
+        padding-right: 5px;
     }
 `;
 
