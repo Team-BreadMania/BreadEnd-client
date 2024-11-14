@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import axios from 'axios';
@@ -7,25 +7,43 @@ import Cookies from 'js-cookie';
 function Login() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [userAuth, setUserAuth] = useState(null);
+
     const navigate = useNavigate();
+
+    useEffect(() => {
+        const userType = Cookies.get('userType');
+        setUserAuth(userType);
+    }, []);
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (username && password) {
             try {
-                const response = await axios.post('http://43.203.241.42/user/sign-in', {
-                    userid: username,
-                    password: password
-                }, {
-                    headers: {
-                        'Content-Type': 'application/json'
+                const response = await axios.post(
+                    'http://43.203.241.42/user/sign-in',
+                    {
+                        userid: username,
+                        password: password,
+                    },
+                    {
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
                     }
-                });
-                
+                );
+
                 if (response.status === 200) {
                     console.log('로그인 성공:', response.data);
-                    Cookies.set('accessToken', response.data.accessToken, { expires: 14 }); 
+                    Cookies.set('accessToken', response.data.accessToken, { expires: 14 });
                     Cookies.set('refreshToken', response.data.accessToken, { expires: 14 });
-                    navigate('/Home');
+                    Cookies.set('userType', response.data.userType);
+                    // userAuth에 따라 리디렉션
+                    if (userAuth === 'buyer') {
+                        navigate('/Home');
+                    } else if (userAuth === 'seller') {
+                        navigate('/MyPage');
+                    }
                 } else {
                     console.log('로그인 실패:', response.data);
                     alert('로그인 실패: 아이디 또는 비밀번호를 확인하세요.');
@@ -42,38 +60,24 @@ function Login() {
     return (
         <LoginPage>
             <IconContainer>
-                <Icon
-                    src="https://cdn-icons-png.flaticon.com/512/121/121046.png"
-                    alt="아이콘"
-                />
+                <Icon src="https://cdn-icons-png.flaticon.com/512/121/121046.png" alt="아이콘" />
             </IconContainer>
             <LoginFormContainer>
                 <Title>빵끝마켓🍞</Title>
                 <LoginForm onSubmit={handleSubmit}>
                     <InputContainer>
-                        <InputField
-                            type="text"
-                            value={username}
-                            onChange={(e) => setUsername(e.target.value)}
-                            placeholder="아이디"
-                            required
-                        />
+                        <InputField type="text" value={username} onChange={(e) => setUsername(e.target.value)} placeholder="아이디" required />
                     </InputContainer>
                     <InputContainer>
-                        <InputField
-                            type="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            placeholder="비밀번호"
-                            required
-                        />
+                        <InputField type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="비밀번호" required />
                     </InputContainer>
                     <LoginButton type="submit">로그인</LoginButton>
                 </LoginForm>
             </LoginFormContainer>
         </LoginPage>
     );
-}export default Login;
+}
+export default Login;
 const LoginPage = styled.div`
     display: flex;
     justify-content: center;

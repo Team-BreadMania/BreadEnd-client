@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import Cookies from 'js-cookie';
 import styled from 'styled-components';
 import Account from '../Components/Account';
 import Reservation from '../Components/Reservation';
@@ -11,8 +12,13 @@ import SellerHome from './Home_seller';
 export default function MyPageBuyer() {
     const [isMobile, setIsMobile] = useState(false);
     const [userLogin, setUserLogin] = useState(true);
-    const [userAuth, setUserAuth] = useState('seller');
+    const [userAuth, setUserAuth] = useState('buyer');
     const [menuVisible, setMenuVisible] = useState(false);
+
+    useEffect(() => {
+        const userType = Cookies.get('userType');
+        setUserAuth(userType);
+    }, []);
 
     const MenuToggle = (e) => {
         e.stopPropagation();

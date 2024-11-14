@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Cookies from 'js-cookie';
 import styled from 'styled-components';
 import menu_icon from '../Images/menu_icon.svg';
@@ -10,12 +10,18 @@ import '../Fonts/font.css';
 
 export default function Header() {
     const navigate = useNavigate();
-    const [userAuth, setUserAuth] = useState('seller');
+    const [userAuth, setUserAuth] = useState(null);
+
+    useEffect(() => {
+        const userType = Cookies.get('userType');
+        setUserAuth(userType);
+    }, []);
 
     // 로그아웃 버튼 클릭 시 호출되는 함수
     const handleLogout = () => {
         Cookies.remove('accessToken');
-        Cookies.remove('refreshToken'); 
+        Cookies.remove('refreshToken');
+        Cookies.remove('userType');
         navigate('/'); // 홈으로 이동
     };
 
@@ -26,6 +32,7 @@ export default function Header() {
         } else {
             navigate('/Home'); // 나머지 경우는 Home으로 이동
         }
+        console.log(userAuth);
     };
 
     return (
@@ -39,7 +46,9 @@ export default function Header() {
                     <LogoText>빵끝마켓</LogoText>
                 </LogoButton>
             </Box>
-            <Box style={{ width: "20%", justifyContent: "flex-end" }}> {/* 로그인과 회원가입 박스를 담는 박스 */}
+            <Box style={{ width: '20%', justifyContent: 'flex-end' }}>
+                {' '}
+                {/* 로그인과 회원가입 박스를 담는 박스 */}
                 {Cookies.get('accessToken') ? (
                     // 로그인 상태인 경우
                     <LogoutBox onClick={handleLogout}>로그아웃</LogoutBox>

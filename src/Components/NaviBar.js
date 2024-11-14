@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import Cookies from 'js-cookie';
 import styled from 'styled-components';
 import search_icon from '../Images/search_icon.svg';
 import map_icon from '../Images/map_icon.svg';
@@ -12,7 +13,13 @@ export default function NaviBar() {
     const location = useLocation();
     const navigate = useNavigate(); // useNavigate로 변경
     const [userLogin, setUserLogin] = useState(true);
-    const [userAuth, setUserAuth] = useState('seller');
+    const [userAuth, setUserAuth] = useState(null);
+
+    useEffect(() => {
+        const userType = Cookies.get('userType');
+        setUserAuth(userType);
+        console.log(userAuth);
+    }, []);
 
     const buyerMenuItems = [
         { to: '/Search', icon: search_icon, text: '검색' },
@@ -26,7 +33,6 @@ export default function NaviBar() {
         { to: '/Map', icon: edit_icon1, text: '상품 등록' },
         { to: '/MyPage', icon: home_icon, text: '홈' },
         { to: '/MySeller', icon: cart_icon, text: '상품 관리' },
-        // { to: '/MyPage', icon: my_icon, text: '마이페이지', protected: true },
     ];
 
     const menuItems = !userLogin ? buyerMenuItems : userAuth === 'seller' ? sellerMenuItems : buyerMenuItems;
@@ -38,6 +44,7 @@ export default function NaviBar() {
         } else {
             navigate(item.to); // 정상적인 이동
         }
+        console.log(userAuth);
     };
 
     return (

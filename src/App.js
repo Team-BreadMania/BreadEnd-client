@@ -25,7 +25,6 @@ function App() {
         <div style={{ width: '100%', height: '100vh' }}>
             {/* 특정 경로에서는 Header를 렌더링하지 않음 */}
             {!hideHeader && <Header />}
-
             <Routes>
                 <Route path="/" element={<Navigate to="/Home" />} />
                 <Route path="/Home" element={<Home />} />
