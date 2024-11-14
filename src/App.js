@@ -7,22 +7,23 @@ import Login from './Pages/Login';
 import Signup from './Pages/Signup';
 import NormalSignup from './Pages/NormalSignup';
 import SellerSignup from './Pages/SellerSignup';
-import MyPageBuyer from './Pages/MyPageBuyer';
-import MyPageSeller from './Pages/MyPageSeller';
-import MyCart from "./Pages/MyCart";
-import ProductDetailPage from "./Pages/ProductDetailPage";
-import Search from "./Pages/Search"; 
-import Map from "./Pages/Map";       
-import SearchResults from "./Pages/SearchResults"; // 검색결과 페이지 추가
+import MyPageSeller from './Pages/MyPage';
+import MyCart from './Pages/MyCart';
+import ProductDetailPage from './Pages/ProductDetailPage';
+import Search from './Pages/Search'; // Search 페이지 추가
+import Map from './Pages/Map'; // Map 페이지 추가
+import SearchResults from './Pages/SearchResults';
 
 function App() {
-    const location = useLocation(); 
+    const location = useLocation(); // 현재 경로를 확인하기 위한 useLocation
 
+    // Header와 NaviBar를 각 페이지별로 숨김 처리
     const hideHeader = location.pathname === '/normal' || location.pathname === '/seller' || location.pathname === '/Search';
     const hideNaviBar = location.pathname === '/normal' || location.pathname === '/seller';
 
     return (
         <div style={{ width: '100%', height: '100vh' }}>
+            {/* 특정 경로에서는 Header를 렌더링하지 않음 */}
             {!hideHeader && <Header />}
 
             <Routes>
@@ -32,15 +33,15 @@ function App() {
                 <Route path="/Signup" element={<Signup />} />
                 <Route path="/normal" element={<NormalSignup />} />
                 <Route path="/seller" element={<SellerSignup />} />
-                <Route path="/MyPageBuyer" element={<MyPageBuyer />} />
-                <Route path="/MyPageSeller" element={<MyPageSeller />} />
+                <Route path="/MyPage" element={<MyPageSeller />} />
                 <Route path="/MyCart" element={<MyCart />} />
                 <Route path="/ProductDetailPage" element={<ProductDetailPage />} />
-                <Route path="/Search" element={<Search />} />
-                <Route path="/Map" element={<Map />} />
-                <Route path="/SearchResults" element={<SearchResults />} /> {/* 검색결과 페이지 경로 추가 */}
+                <Route path="/Search" element={<Search />} /> 
+                <Route path="/SearchResults" element={<SearchResults />} />{/* Search 경로 추가 */}
+                <Route path="/Map" element={<Map />} /> {/* Map 경로 추가 */}
             </Routes>
 
+            {/* 특정 경로에서는 NaviBar를 렌더링하지 않음 */}
             {!hideNaviBar && <NaviBar />}
         </div>
     );
@@ -49,6 +50,7 @@ function App() {
 export default function AppWrapper() {
     return (
         <Router>
+            {/* Router 내부에서 App 컴포넌트를 렌더링하여 useLocation이 정상적으로 작동하도록 수정 */}
             <Routes>
                 <Route path="/*" element={<App />} />
             </Routes>

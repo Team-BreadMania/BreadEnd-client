@@ -3,16 +3,8 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import styled from 'styled-components';
 import bread_img from "../Images/bread_img.png";
-import dibs_before from "../Images/dibs_before.png";
-import dibs_after from "../Images/dibs_after.png";
 
 export default function Product() {
-
-    const [dibs, setDibs] = useState(false); // 찜하기 상태
-
-    const toggleDibs = () => { // 찜상태 토클 메서드
-        setDibs(prev => !prev); 
-    };
 
     return (
         <Container>
@@ -21,7 +13,6 @@ export default function Product() {
             <ShopName>그리다 빵집</ShopName>
             <BottomBox>
                 <Price>2,000원</Price>
-                <Dibs onClick = {toggleDibs} dib = {dibs}/>
             </BottomBox>
         </Container>
     );
@@ -82,7 +73,7 @@ const BottomBox = styled.div` // 상품정보 하단박스
 `;
 
 const Price = styled.div` // 상품 가격
-    width: 75%;
+    width: 100%;
     height: 100%;
     font-size: 15px;
     font-weight: bold;
@@ -94,13 +85,4 @@ const Price = styled.div` // 상품 가격
     @media (max-width: 600px) {
         font-size: 12px; 
     }
-`;
-
-const Dibs = styled.div` // 상품 찜하기 아이콘
-    width: 15%;
-    height: 100%;
-    background-image: url(${props => (props.dib ? dibs_after : dibs_before)});
-    background-size: cover;
-    cursor: pointer;
-    transition: background-image 0.2s ease;
 `;
