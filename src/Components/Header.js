@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
+import { AuthContext } from '../AuthContext';
 import Cookies from 'js-cookie';
 import styled from 'styled-components';
 import menu_icon from '../Images/menu_icon.svg';
@@ -10,12 +11,13 @@ import '../Fonts/font.css';
 
 export default function Header() {
     const navigate = useNavigate();
-    const [userAuth, setUserAuth] = useState(null);
+    // const [userAuth, setUserAuth] = useState(null);
+    const { userAuth, setUserAuth } = useContext(AuthContext);
 
     useEffect(() => {
         const userType = Cookies.get('userType');
         setUserAuth(userType);
-    }, []);
+    }, [setUserAuth]);
 
     // 로그아웃 버튼 클릭 시 호출되는 함수
     const handleLogout = () => {

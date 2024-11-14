@@ -1,20 +1,21 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import axios from 'axios';
 import Cookies from 'js-cookie';
+import { AuthContext } from '../AuthContext';
 
 function Login() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const [userAuth, setUserAuth] = useState(null);
+    const { userAuth, setUserAuth } = useContext(AuthContext);
 
     const navigate = useNavigate();
 
     useEffect(() => {
         const userType = Cookies.get('userType');
         setUserAuth(userType);
-    }, []);
+    }, [setUserAuth]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();

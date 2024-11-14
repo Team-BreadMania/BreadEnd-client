@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { AuthContext } from '../AuthContext';
 import Cookies from 'js-cookie';
 import styled from 'styled-components';
 import search_icon from '../Images/search_icon.svg';
@@ -13,13 +14,13 @@ export default function NaviBar() {
     const location = useLocation();
     const navigate = useNavigate(); // useNavigate로 변경
     const [userLogin, setUserLogin] = useState(true);
-    const [userAuth, setUserAuth] = useState(null);
+    const { userAuth, setUserAuth } = useContext(AuthContext);
 
     useEffect(() => {
         const userType = Cookies.get('userType');
         setUserAuth(userType);
         console.log(userAuth);
-    }, []);
+    }, [setUserAuth]);
 
     const buyerMenuItems = [
         { to: '/Search', icon: search_icon, text: '검색' },

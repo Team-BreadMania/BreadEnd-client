@@ -13,6 +13,7 @@ import ProductDetailPage from './Pages/ProductDetailPage';
 import Search from './Pages/Search'; // Search 페이지 추가
 import Map from './Pages/Map'; // Map 페이지 추가
 import SearchResults from './Pages/SearchResults';
+import { AuthProvider } from './AuthContext';
 
 function App() {
     const location = useLocation(); // 현재 경로를 확인하기 위한 useLocation
@@ -22,28 +23,30 @@ function App() {
     const hideNaviBar = location.pathname === '/normal' || location.pathname === '/seller';
 
     return (
-        <div style={{ width: '100%', height: '100vh' }}>
-            {/* 특정 경로에서는 Header를 렌더링하지 않음 */}
-            {!hideHeader && <Header />}
-            <Routes>
-                <Route path="/" element={<Navigate to="/Home" />} />
-                <Route path="/Home" element={<Home />} />
-                <Route path="/Login" element={<Login />} />
-                <Route path="/Signup" element={<Signup />} />
-                <Route path="/normal" element={<NormalSignup />} />
-                <Route path="/seller" element={<SellerSignup />} />
-                <Route path="/MyPage" element={<MyPage />} />
-                <Route path="/MyCart" element={<MyCart />} />
-                <Route path="/ProductDetailPage" element={<ProductDetailPage />} />
-                <Route path="/Search" element={<Search />} />
-                <Route path="/SearchResults" element={<SearchResults />} />
-                {/* Search 경로 추가 */}
-                <Route path="/Map" element={<Map />} /> {/* Map 경로 추가 */}
-            </Routes>
+        <AuthProvider>
+            <div style={{ width: '100%', height: '100vh' }}>
+                {/* 특정 경로에서는 Header를 렌더링하지 않음 */}
+                {!hideHeader && <Header />}
+                <Routes>
+                    <Route path="/" element={<Navigate to="/Home" />} />
+                    <Route path="/Home" element={<Home />} />
+                    <Route path="/Login" element={<Login />} />
+                    <Route path="/Signup" element={<Signup />} />
+                    <Route path="/normal" element={<NormalSignup />} />
+                    <Route path="/seller" element={<SellerSignup />} />
+                    <Route path="/MyPage" element={<MyPage />} />
+                    <Route path="/MyCart" element={<MyCart />} />
+                    <Route path="/ProductDetailPage" element={<ProductDetailPage />} />
+                    <Route path="/Search" element={<Search />} />
+                    <Route path="/SearchResults" element={<SearchResults />} />
+                    {/* Search 경로 추가 */}
+                    <Route path="/Map" element={<Map />} /> {/* Map 경로 추가 */}
+                </Routes>
 
-            {/* 특정 경로에서는 NaviBar를 렌더링하지 않음 */}
-            {!hideNaviBar && <NaviBar />}
-        </div>
+                {/* 특정 경로에서는 NaviBar를 렌더링하지 않음 */}
+                {!hideNaviBar && <NaviBar />}
+            </div>
+        </AuthProvider>
     );
 }
 
