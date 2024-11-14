@@ -7,12 +7,11 @@ import Login from './Pages/Login';
 import Signup from './Pages/Signup';
 import NormalSignup from './Pages/NormalSignup';
 import SellerSignup from './Pages/SellerSignup';
-import MyPageBuyer from './Pages/MyPageBuyer';
-import MyPageSeller from './Pages/MyPageSeller';
-import MyCart from "./Pages/MyCart";
-import ProductDetailPage from "./Pages/ProductDetailPage";
-import Search from "./Pages/Search"; // Search 페이지 추가 
-import Map from "./Pages/Map";       // Map 페이지 추가
+import MyPageSeller from './Pages/MyPage';
+import MyCart from './Pages/MyCart';
+import ProductDetailPage from './Pages/ProductDetailPage';
+import Search from './Pages/Search'; // Search 페이지 추가
+import Map from './Pages/Map'; // Map 페이지 추가
 
 function App() {
     const location = useLocation(); // 현재 경로를 확인하기 위한 useLocation
@@ -33,12 +32,11 @@ function App() {
                 <Route path="/Signup" element={<Signup />} />
                 <Route path="/normal" element={<NormalSignup />} />
                 <Route path="/seller" element={<SellerSignup />} />
-                <Route path="/MyPageBuyer" element={<MyPageBuyer />} />
-                <Route path="/MyPageSeller" element={<MyPageSeller />} />
+                <Route path="/MyPage" element={<MyPageSeller />} />
                 <Route path="/MyCart" element={<MyCart />} />
                 <Route path="/ProductDetailPage" element={<ProductDetailPage />} />
-                <Route path="/Search" element={<Search />} />       {/* Search 경로 추가 */}
-                <Route path="/Map" element={<Map />} />             {/* Map 경로 추가 */}
+                <Route path="/Search" element={<Search />} /> {/* Search 경로 추가 */}
+                <Route path="/Map" element={<Map />} /> {/* Map 경로 추가 */}
             </Routes>
 
             {/* 특정 경로에서는 NaviBar를 렌더링하지 않음 */}
