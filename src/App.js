@@ -7,7 +7,7 @@ import Login from './Pages/Login';
 import Signup from './Pages/Signup';
 import NormalSignup from './Pages/NormalSignup';
 import SellerSignup from './Pages/SellerSignup';
-import MyPageSeller from './Pages/MyPage';
+import MyPage from './Pages/MyPage';
 import MyCart from './Pages/MyCart';
 import ProductDetailPage from './Pages/ProductDetailPage';
 import Search from './Pages/Search'; // Search 페이지 추가
@@ -33,11 +33,12 @@ function App() {
                 <Route path="/Signup" element={<Signup />} />
                 <Route path="/normal" element={<NormalSignup />} />
                 <Route path="/seller" element={<SellerSignup />} />
-                <Route path="/MyPage" element={<MyPageSeller />} />
+                <Route path="/MyPage" element={<MyPage />} />
                 <Route path="/MyCart" element={<MyCart />} />
                 <Route path="/ProductDetailPage" element={<ProductDetailPage />} />
-                <Route path="/Search" element={<Search />} /> 
-                <Route path="/SearchResults" element={<SearchResults />} />{/* Search 경로 추가 */}
+                <Route path="/Search" element={<Search />} />
+                <Route path="/SearchResults" element={<SearchResults />} />
+                {/* Search 경로 추가 */}
                 <Route path="/Map" element={<Map />} /> {/* Map 경로 추가 */}
             </Routes>
 

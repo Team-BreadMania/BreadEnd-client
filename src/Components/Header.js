@@ -1,15 +1,17 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 import Cookies from 'js-cookie';
 import axios from 'axios';
 import styled from 'styled-components';
-import menu_icon from "../Images/menu_icon.svg";
-import logo_icon from "../Images/logo_icon.png";
-import alarm_icon from "../Images/alarm_icon.svg";
-import "../Fonts/font.css";
+import menu_icon from '../Images/menu_icon.svg';
+import logo_icon from '../Images/logo_icon.png';
+import alarm_icon from '../Images/alarm_icon.svg';
+import '../Fonts/font.css';
 
 export default function Header() {
     const navigate = useNavigate();
+    const [userAuth, setUserAuth] = useState('seller');
 
     // 로그아웃 버튼 클릭 시 호출되는 함수
     const handleLogout = () => {
@@ -19,14 +21,18 @@ export default function Header() {
 
     return (
         <Container>
-            <Box><MenuButton /></Box>
-            <Box style={{ width: "60%" }}>
+            <Box>
+                <MenuButton />
+            </Box>
+            <Box style={{ width: '60%' }}>
                 <LogoButton to="/Home">
                     <LogoIcon />
                     <LogoText>빵끝마켓</LogoText>
                 </LogoButton>
             </Box>
-            <Box style={{ width: "20%", justifyContent: "flex-end" }}> {/* 로그인과 회원가입 박스를 담는 박스 */}
+            <Box style={{ width: '20%', justifyContent: 'flex-end' }}>
+                {' '}
+                {/* 로그인과 회원가입 박스를 담는 박스 */}
                 {Cookies.get('token') ? (
                     // 로그인 상태인 경우
                     <LogoutBox onClick={handleLogout}>로그아웃</LogoutBox>
@@ -38,7 +44,9 @@ export default function Header() {
                     </>
                 )}
             </Box>
-            <Box><AlarmButton /></Box>
+            <Box>
+                <AlarmButton />
+            </Box>
         </Container>
     );
 }
@@ -53,13 +61,13 @@ const Container = styled.div`
     padding: 0 5%;
 
     @media (max-width: 800px) {
-        width: 95%; 
-        padding: 0 2.5%; 
+        width: 95%;
+        padding: 0 2.5%;
     }
 
     @media (max-width: 600px) {
-        width: 100%; 
-        padding: 0 0; 
+        width: 100%;
+        padding: 0 0;
     }
 `;
 
@@ -155,7 +163,7 @@ const MenuButton = styled.div`
 
     @media (max-width: 600px) {
         width: 40%;
-        height: 40%; 
+        height: 40%;
     }
 `;
 
@@ -170,7 +178,7 @@ const AlarmButton = styled.div`
 
     @media (max-width: 600px) {
         width: 40%;
-        height: 40%; 
+        height: 40%;
     }
 `;
 
