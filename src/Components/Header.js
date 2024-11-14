@@ -209,6 +209,9 @@ const LogoIcon = styled.div`
     @media (max-width: 500px) {
         width: 25%;
     }
+    &:hover {
+        cursor: pointer;
+    }
 `;
 
 const LogoText = styled.div`
@@ -221,5 +224,8 @@ const LogoText = styled.div`
 
     @media (max-width: 400px) {
         font-size: 22.5px;
+    }
+    &:hover {
+        cursor: pointer;
     }
 `;
