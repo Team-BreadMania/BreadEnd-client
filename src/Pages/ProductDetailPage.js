@@ -89,7 +89,7 @@ export default function ProductDetailPage() {
                             </ShopButton>
                             <ShopButton style = {{marginBottom: "15%"}}>
                                 <SearchIcon/>
-                                <ButtonText style = {{fontSize: "10px"}}>매장 전체상품 검색</ButtonText>
+                                <ButtonText style = {{fontSize: "10px"}}>현재 매장의<br/> 전체상품 검색</ButtonText>
                             </ShopButton>
                         </ShopButtonBox>
                     </ShopContainer>
@@ -164,6 +164,18 @@ export default function ProductDetailPage() {
 const Container = styled.div` // 최상단 컨테이너
     width: 80%;
     margin: 0 auto;
+
+    @media (max-width: 1300px) {
+        width: 90%;
+    }
+
+    @media (max-width: 1200px) {
+        width: 95%;
+    }
+
+    @media (max-width: 1000px) { // 여기서부터 모바일 뷰
+        width: 100%;
+    }
 `;
 
 const TopContainer = styled.div` // 상단 컨테이너
@@ -171,11 +183,22 @@ const TopContainer = styled.div` // 상단 컨테이너
     width: 100%;
     height: 500px;
     margin-top: 5%;
+
+    @media (max-width: 1000px) {
+        flex-direction: column;
+        height: 1000px;
+        margin-top: 0%;
+    }
 `;
 
 const ProductImageBox = styled.div` // 상품 이미지 슬라이드 컨테이너
     width: 45%;
     height: 100%;
+
+    @media (max-width: 1000px) {
+        width: 100%;
+        height: 50%;
+    }
 `;
 
 const ImageSlider = styled(Slider)` // 상품 이미지 슬라이더
@@ -195,6 +218,10 @@ const ImageSlider = styled(Slider)` // 상품 이미지 슬라이더
         &:hover {
             color: #2A2A2A; 
         }
+
+        @media (max-width: 450px) {
+            top: 22.5vh;
+        }
     }
 
     .slick-next {
@@ -205,6 +232,10 @@ const ImageSlider = styled(Slider)` // 상품 이미지 슬라이더
 
         &:hover {
             color: #2A2A2A; 
+        }
+
+        @media (max-width: 450px) {
+            top: 22.5vh;
         }
     }
 
@@ -310,6 +341,14 @@ const ShopInfo = styled.div` // 매장 상세정보
     font-size: 12px;
     font-weight: bold;
     margin-top: 5px;
+
+    @media (max-width: 1100px) {
+        font-size: 11px;
+    }
+
+    @media (min-width: 1000px) and (max-width: 1050px) {
+        font-size: 10px;
+    }
 `;
 
 const ShopButtonBox = styled.div` // 매장 버튼 박스
@@ -337,25 +376,36 @@ const ShopButton = styled.div` // 매장 버튼
 `;
 
 const Dibs = styled.div` // 매장 찜하기 아이콘
-    width: 18%;
-    height: 45%;
+    width: 20px;
+    height: 20px;
     margin-right: 5px;
     background-image: url(${props => (props.dib ? dibs_after : dibs_before)});
     background-size: cover;
     transition: background-image 0.2s ease;
+
+    @media (min-width: 1000px) and (max-width: 1050px) {
+        width: 15px;
+        height: 15px;
+    }
 `;
 
 const SearchIcon = styled.div` // 검색 아이콘
-    width: 15%;
-    height: 40%;
+    width: 20px;
+    height: 20px;
     margin-right: 5px;
     background-image: url(${search_icon});
     background-size: cover;
+
+    @media (min-width: 1000px) and (max-width: 1050px) {
+        width: 15px;
+        height: 15px;
+    }
 `;
 
 const ButtonText = styled.div` // 버튼 텍스트
     font-size: 12.5px;
     font-weight: bold;
+    text-align: center;
 `;
 
 const ProductInfoContainer = styled.div` // 상품정보 컨테이너
