@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './NormalSignup.css';
 
-export default function NormalSignup() {
+export default function SellerSignup() {
     const navigate = useNavigate();
 
     const [formData, setFormData] = useState({
@@ -15,7 +15,9 @@ export default function NormalSignup() {
         detaillocation: '',
         contact: '',
         name: '',
-        likedCategory: '',    
+        likedCategory: '',
+        shopName: '',
+        shopNumber: '',
     });
 
     const [imageFile, setImageFile] = useState(null);
@@ -36,13 +38,19 @@ export default function NormalSignup() {
     };
 
     const handleImageChange = (e) => {
-        setImageFile(e.target.files[0]);
+        const file = e.target.files[0];
+        setImageFile(file);
     };
 
     const handleIdCheck = () => {
+        if (formData.userId.trim() === '') {
+            alert('아이디를 입력하세요.');
+            return;
+        }
         setIsIdAvailable(true);
         setIdCheckMessage(`${formData.userId}는 사용 가능한 아이디입니다.`);
     };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (isIdAvailable) {
@@ -50,38 +58,36 @@ export default function NormalSignup() {
                 alert('비밀번호가 일치하지 않습니다.');
                 return;
             }
+
             try {
                 const requestData = new FormData();
-                requestData.append('userid', formData.userId);
-                requestData.append('password', formData.password);
-                requestData.append('name', formData.name);
-                requestData.append('phoneNumber', formData.contact);
-                requestData.append('nickname', formData.nickname);
-                requestData.append('liked_category', formData.likedCategory);
-                requestData.append('registDate', new Date().toISOString());
-                requestData.append('userType', 'buyer');
-                requestData.append('location', formData.region);
-                requestData.append('detaillocation', formData.detaillocation);
-    
-                // 선택적 필드만 추가
-                if (formData.shopName) requestData.append('shopName', formData.shopName);
-                if (formData.shopNumber) requestData.append('shopNumber', formData.shopNumber);
-    
+
+                const userObject = {
+                    userid: formData.userId,
+                    password: formData.password,
+                    name: formData.name,
+                    phoneNumber: formData.contact,
+                    nickname: formData.nickname,
+                    liked_category: formData.likedCategory,
+                    registDate: new Date().toISOString(),
+                    userType: 'seller',
+                    location: formData.region,
+                    detaillocation: formData.detaillocation,
+                    shopName: formData.shopName,
+                    shopNumber: formData.shopNumber,
+                };
+
+                requestData.append('user', JSON.stringify(userObject));
                 if (imageFile) {
                     requestData.append('image', imageFile);
                 }
-    
-                console.log('요청 데이터:');
-                for (let pair of requestData.entries()) {
-                    console.log(`${pair[0]}: ${pair[1]}`);
-                }
-    
+
                 const response = await axios.post('http://43.203.241.42/user/regist', requestData, {
                     headers: {
                         'Content-Type': 'multipart/form-data',
                     },
                 });
-    
+
                 if (response.status === 200) {
                     console.log('회원가입 성공:', response.data);
                     navigate('/home');
@@ -92,7 +98,6 @@ export default function NormalSignup() {
             } catch (error) {
                 console.error('회원가입 중 오류 발생:', error);
                 if (error.response) {
-                    // 서버에서 오류 메시지가 있는 경우 표시
                     console.error('서버 응답 데이터:', error.response.data);
                     alert(`회원가입 실패: ${error.response.data.message}`);
                 } else {
@@ -103,14 +108,14 @@ export default function NormalSignup() {
             alert('아이디 중복 확인을 해주세요.');
         }
     };
-    
+
     const handleCancel = () => {
         navigate('/home');
     };
 
     return (
         <div className="signup-container">
-            <h2>일반 사용자 가입 페이지</h2>
+            <h2>판매자 가입 페이지</h2>
             <form onSubmit={handleSubmit}>
                 <div className="form-group">
                     <label htmlFor="userId">아이디</label>
@@ -219,6 +224,30 @@ export default function NormalSignup() {
                         value={formData.contact}
                         onChange={handleChange}
                         placeholder="(+82) 010xxxxxxxx"
+                        required
+                    />
+                </div>
+                <div className="form-group">
+                    <label htmlFor="shopName">판매지점 이름</label>
+                    <input
+                        type="text"
+                        id="shopName"
+                        name="shopName"
+                        value={formData.shopName}
+                        onChange={handleChange}
+                        placeholder="판매지점 이름 입력..."
+                        required
+                    />
+                </div>
+                <div className="form-group">
+                    <label htmlFor="shopNumber">판매지점 번호</label>
+                    <input
+                        type="text"
+                        id="shopNumber"
+                        name="shopNumber"
+                        value={formData.shopNumber}
+                        onChange={handleChange}
+                        placeholder="판매지점 번호 입력..."
                         required
                     />
                 </div>
