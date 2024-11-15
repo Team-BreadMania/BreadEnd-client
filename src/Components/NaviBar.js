@@ -29,7 +29,7 @@ export default function NaviBar() {
         // { to: '/MyPage', icon: my_icon, text: '마이페이지', protected: true },
     ];
 
-    const menuItems = !userLogin ? buyerMenuItems : userAuth === 'seller' ? sellerMenuItems : buyerMenuItems;
+    const menuItems = !userLogin ? buyerMenuItems : userAuth === 'buyer' ? sellerMenuItems : buyerMenuItems;
 
     const handleMenuClick = (item) => {
         if (item.protected && !userLogin) {

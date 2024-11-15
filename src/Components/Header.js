@@ -12,7 +12,6 @@ export default function Header() {
     const navigate = useNavigate();
     const [userAuth, setUserAuth] = useState('seller');
 
-    // 로그아웃 버튼 클릭 시 호출되는 함수
     const handleLogout = () => {
         Cookies.remove('accessToken');
         Cookies.remove('refreshToken'); 
