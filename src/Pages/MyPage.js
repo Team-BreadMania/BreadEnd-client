@@ -28,7 +28,7 @@ export default function MyPageBuyer() {
     ];
 
     const renderInformationContainer = () => {
-        if(userAuth ==='buyer'){
+        if (userAuth === 'buyer') {
             switch (activeTab) {
                 case 'Account':
                     return <Account />;
@@ -43,73 +43,68 @@ export default function MyPageBuyer() {
                 default:
                     return <Account />;
             }
-        }
-        else if(userAuth === 'seller'){
-            switch(activeTab){
+        } else if (userAuth === 'seller') {
+            switch (activeTab) {
                 default:
-                    return <SellerHome/>;
-                }
+                    return <SellerHome />;
+            }
         }
     };
 
     const [activeTab, setActiveTab] = useState('Account');
 
-    const Buyer = ()=>{
-        return(
+    const Buyer = () => {
+        return (
             <Container onClick={() => setMenuVisible(false)}>
-            <MobileNav isVisible={menuVisible}>
-                <MobileMenuContent>
-                    <MypageContainer onClick={() => setActiveTab('Account')} isSelected={activeTab === 'Account'}>
-                        마이페이지
-                    </MypageContainer>
-                    {buyerMenuItems.map((item, index) => (
-                        <LinkContainer
-                            key={index}
-                            onClick={() => {
-                                setActiveTab(item.tab);
-                                setMenuVisible(false);
-                            }}
-                            isSelected={activeTab === item.tab}
-                        >
-                            {item.text}
-                        </LinkContainer>
-                    ))}
-                </MobileMenuContent>
-            </MobileNav>
-            <LeftContainer>
-                <ImformationContainer>
-                    <MypageContainer onClick={() => setActiveTab('Account')} isSelected={activeTab === 'Account'}>
-                        마이페이지
-                    </MypageContainer>
-                    {buyerMenuItems.map((item, index) => (
-                        <LinkContainer key={index} onClick={() => setActiveTab(item.tab)} isSelected={activeTab === item.tab}>
-                            {item.text}
-                        </LinkContainer>
-                    ))}
-                </ImformationContainer>
-            </LeftContainer>
-            <RightContainer>
-                <MenuBox onClick={MenuToggle}>
-                    <MenuButton src={MenuIcon} />
-                    <MenuTitle>{buyerMenuItems.find((item) => item.tab === activeTab)?.text || '마이페이지'}</MenuTitle>
-                </MenuBox>
-                <ToolContainer>{renderInformationContainer()}</ToolContainer>
-            </RightContainer>
-        </Container>
-        )
-    }
-    const Seller=()=>{
+                <MobileNav isVisible={menuVisible}>
+                    <MobileMenuContent>
+                        <MypageContainer onClick={() => setActiveTab('Account')} isSelected={activeTab === 'Account'}>
+                            마이페이지
+                        </MypageContainer>
+                        {buyerMenuItems.map((item, index) => (
+                            <LinkContainer
+                                key={index}
+                                onClick={() => {
+                                    setActiveTab(item.tab);
+                                    setMenuVisible(false);
+                                }}
+                                isSelected={activeTab === item.tab}
+                            >
+                                {item.text}
+                            </LinkContainer>
+                        ))}
+                    </MobileMenuContent>
+                </MobileNav>
+                <LeftContainer>
+                    <ImformationContainer>
+                        <MypageContainer onClick={() => setActiveTab('Account')} isSelected={activeTab === 'Account'}>
+                            마이페이지
+                        </MypageContainer>
+                        {buyerMenuItems.map((item, index) => (
+                            <LinkContainer key={index} onClick={() => setActiveTab(item.tab)} isSelected={activeTab === item.tab}>
+                                {item.text}
+                            </LinkContainer>
+                        ))}
+                    </ImformationContainer>
+                </LeftContainer>
+                <RightContainer>
+                    <MenuBox onClick={MenuToggle}>
+                        <MenuButton src={MenuIcon} />
+                        <MenuTitle>{buyerMenuItems.find((item) => item.tab === activeTab)?.text || '마이페이지'}</MenuTitle>
+                    </MenuBox>
+                    <ToolContainer>{renderInformationContainer()}</ToolContainer>
+                </RightContainer>
+            </Container>
+        );
+    };
+    const Seller = () => {
         return (
             <Container>
                 <ToolContainer>{renderInformationContainer()}</ToolContainer>
             </Container>
-        )
-    }
-    return (
-        <>
-            {userAuth === 'buyer' ? <Buyer /> : <Seller />}
-        </>
-    );
+        );
+    };
+    return <>{userAuth === 'buyer' ? <Buyer /> : <Seller />}</>;
 }
 
 const Container = styled.div`
@@ -185,7 +180,6 @@ const RightContainer = styled.div`
         width: 100%;
         padding: 20px;
     }
-    
 `;
 
 const ImformationContainer = styled.div`
