@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './NormalSignup.css';
 
-export default function SellerSignup() {
+export default function NormalSignup() {
     const navigate = useNavigate();
 
     const [formData, setFormData] = useState({
@@ -15,9 +15,7 @@ export default function SellerSignup() {
         detaillocation: '',
         contact: '',
         name: '',
-        likedCategory: '',
-        shopName: '',
-        shopNumber: '',
+        likedCategory: '',    
     });
 
     const [imageFile, setImageFile] = useState(null);
@@ -39,7 +37,7 @@ export default function SellerSignup() {
 
     const handleImageChange = (e) => {
         const file = e.target.files[0];
-        setImageFile(file);
+        setImageFile(file); // 실제 파일을 상태로 저장
     };
 
     const handleIdCheck = () => {
@@ -61,7 +59,7 @@ export default function SellerSignup() {
 
             try {
                 const requestData = new FormData();
-
+                
                 const userObject = {
                     userid: formData.userId,
                     password: formData.password,
@@ -70,21 +68,22 @@ export default function SellerSignup() {
                     nickname: formData.nickname,
                     liked_category: formData.likedCategory,
                     registDate: new Date().toISOString(),
-                    userType: 'seller',
+                    userType: 'buyer',
                     location: formData.region,
                     detaillocation: formData.detaillocation,
-                    shopName: formData.shopName,
-                    shopNumber: formData.shopNumber,
                 };
 
-                requestData.append('user', JSON.stringify(userObject));
+                if (formData.shopName) userObject.shopName = formData.shopName;
+                if (formData.shopNumber) userObject.shopNumber = formData.shopNumber;
+
+                requestData.append('user', JSON.stringify(userObject)); // JSON 문자열로 변환하여 추가
                 if (imageFile) {
-                    requestData.append('image', imageFile);
+                    requestData.append('image', imageFile); // 이미지 파일 추가
                 }
 
                 const response = await axios.post('http://43.203.241.42/user/regist', requestData, {
                     headers: {
-                        'Content-Type': 'multipart/form-data',
+                        'Content-Type': 'multipart/form-data', // 필요 시 설정, 자동 설정되도록 생략해도 됨
                     },
                 });
 
@@ -115,7 +114,7 @@ export default function SellerSignup() {
 
     return (
         <div className="signup-container">
-            <h2>판매자 가입 페이지</h2>
+            <h2>일반 사용자 가입 페이지</h2>
             <form onSubmit={handleSubmit}>
                 <div className="form-group">
                     <label htmlFor="userId">아이디</label>
@@ -224,30 +223,6 @@ export default function SellerSignup() {
                         value={formData.contact}
                         onChange={handleChange}
                         placeholder="(+82) 010xxxxxxxx"
-                        required
-                    />
-                </div>
-                <div className="form-group">
-                    <label htmlFor="shopName">판매지점 이름</label>
-                    <input
-                        type="text"
-                        id="shopName"
-                        name="shopName"
-                        value={formData.shopName}
-                        onChange={handleChange}
-                        placeholder="판매지점 이름 입력..."
-                        required
-                    />
-                </div>
-                <div className="form-group">
-                    <label htmlFor="shopNumber">판매지점 번호</label>
-                    <input
-                        type="text"
-                        id="shopNumber"
-                        name="shopNumber"
-                        value={formData.shopNumber}
-                        onChange={handleChange}
-                        placeholder="판매지점 번호 입력..."
                         required
                     />
                 </div>
