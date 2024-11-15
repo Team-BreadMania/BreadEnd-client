@@ -11,9 +11,9 @@ import "../Fonts/font.css";
 export default function Header() {
     const navigate = useNavigate();
 
-    // 로그아웃 버튼 클릭 시 호출되는 함수
     const handleLogout = () => {
-        Cookies.remove('token'); // 쿠키에서 토큰 삭제
+        Cookies.remove('accessToken');
+        Cookies.remove('refreshToken'); 
         navigate('/'); // 홈으로 이동
     };
 
@@ -27,7 +27,7 @@ export default function Header() {
                 </LogoButton>
             </Box>
             <Box style={{ width: "20%", justifyContent: "flex-end" }}> {/* 로그인과 회원가입 박스를 담는 박스 */}
-                {Cookies.get('token') ? (
+                {Cookies.get('accessToken') ? (
                     // 로그인 상태인 경우
                     <LogoutBox onClick={handleLogout}>로그아웃</LogoutBox>
                 ) : (

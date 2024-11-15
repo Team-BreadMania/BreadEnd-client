@@ -23,7 +23,8 @@ function Login() {
                 
                 if (response.status === 200) {
                     console.log('로그인 성공:', response.data);
-                    Cookies.set('token', response.data.token, { expires: 365 }); // 7일 동안 유효한 쿠키 설정
+                    Cookies.set('accessToken', response.data.accessToken, { expires: 14 }); 
+                    Cookies.set('refreshToken', response.data.accessToken, { expires: 14 });
                     navigate('/Home');
                 } else {
                     console.log('로그인 실패:', response.data);

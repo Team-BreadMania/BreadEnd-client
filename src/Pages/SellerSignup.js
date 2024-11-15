@@ -76,7 +76,6 @@ export default function SellerSignup() {
                     shopName: formData.shopName,
                     shopNumber: formData.shopNumber,
                 };
-
                 requestData.append('user', JSON.stringify(userObject));
                 if (imageFile) {
                     requestData.append('image', imageFile);
