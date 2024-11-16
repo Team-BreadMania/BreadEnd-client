@@ -14,26 +14,24 @@ export default function Reservation() {
     ]);
 
     const toggleSelect = (id) => {
-        setStores(stores.map(store => 
-            store.id === id ? { ...store, selected: !store.selected } : store
-        ));
+        setStores(stores.map((store) => (store.id === id ? { ...store, selected: !store.selected } : store)));
     };
 
     const deleteSelected = () => {
-        setStores(stores.filter(store => !store.selected));
+        setStores(stores.filter((store) => !store.selected));
     };
 
     const checkAll = (event) => {
         const isChecked = event.target.checked;
-        setStores(stores.map(store => ({ ...store, selected: isChecked })));
+        setStores(stores.map((store) => ({ ...store, selected: isChecked })));
     };
 
     return (
         <Container>
-            <NameContainer>찜 한 매장</NameContainer>   
-            <div style={{ display: 'flex', alignItems: 'center',marginBottom:'10px' }}>
+            <NameContainer>찜 한 매장</NameContainer>
+            <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
                 <CheckAllBox /> 모두 선택
-            </div>       
+            </div>
             <StoreContainer>
                 <ItemContainer>
                     <CheckboxContainer>
@@ -60,7 +58,7 @@ export default function Reservation() {
                     </InformationConatiner>
                 </ItemContainer>
             </StoreContainer>
-            <div >
+            <div>
                 <DeleteSelectButton onClick={deleteSelected}>선택 삭제</DeleteSelectButton>
             </div>
         </Container>
@@ -79,11 +77,11 @@ const Container = styled.div`
     @media (max-width: 450px) {
         padding: 8px;
     }
-    box-sizing : border-box;
+    box-sizing: border-box;
 `;
 
 const StoreContainer = styled.div`
-    margin : 0 0 2% 0;
+    margin: 0 0 2% 0;
 `;
 
 const NameContainer = styled.div`
@@ -164,7 +162,6 @@ const InformationConatiner = styled.div`
     @media (max-width: 1024px) {
         padding-left: 16px;
     }
-    
 `;
 //체크박스 컨테이너
 const CheckboxContainer = styled.div`
@@ -210,7 +207,6 @@ const ShopNameContainer = styled.div`
     @media (max-width: 600px) {
         font-size: 14px;
     }
-    
 `;
 const ShopNumberContainer = styled.div`
     font-size: 20px;
@@ -229,7 +225,6 @@ const ShopNumberContainer = styled.div`
     @media (max-width: 600px) {
         font-size: 10.5px;
     }
-    
 `;
 const ShopLocationContainer = styled.div`
     font-size: 20px;
@@ -275,10 +270,9 @@ const DeleteSelectButton = styled.button`
     cursor: pointer;
     transition: background-color 0.2s;
     width: 100%;
-    &:hover, :active {
+    &:hover,
+    :active {
         background: #3e3e3e;
         color: white;
     }
-
-    
 `;

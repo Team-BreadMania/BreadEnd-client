@@ -11,7 +11,6 @@ import '../Fonts/font.css';
 
 export default function Header() {
     const navigate = useNavigate();
-    // const [userAuth, setUserAuth] = useState(null);
     const { userAuth, setUserAuth } = useContext(AuthContext);
 
     useEffect(() => {
@@ -24,6 +23,7 @@ export default function Header() {
         Cookies.remove('accessToken');
         Cookies.remove('refreshToken');
         Cookies.remove('userType');
+        setUserAuth(null);
         navigate('/'); // 홈으로 이동
     };
 

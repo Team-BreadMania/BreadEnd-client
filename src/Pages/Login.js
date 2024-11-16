@@ -40,6 +40,8 @@ function Login() {
                     Cookies.set('refreshToken', response.data.accessToken, { expires: 14 });
                     Cookies.set('userType', response.data.userType);
                     // userAuth에 따라 리디렉션
+                    const userType = response.data.userType;
+                    setUserAuth(userType);
                     if (userAuth === 'buyer') {
                         navigate('/Home');
                     } else if (userAuth === 'seller') {
