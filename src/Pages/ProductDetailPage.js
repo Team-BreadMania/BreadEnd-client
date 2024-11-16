@@ -7,6 +7,7 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Review from "../Components/Review";
 import Map from "../Components/ShopLocation";
+import MobilePD from "../Components/MobilePD";
 import bread_img01 from "../Images/bread_img01.jpg";
 import bread_img02 from "../Images/bread_img02.jpg";
 import bread_img03 from "../Images/bread_img03.png";
@@ -36,6 +37,18 @@ export default function ProductDetailPage() {
     const [dibs, setDibs] = useState(false); // 찜하기 상태
     const [quantity, setQuantity] = useState(1); // 구매수량 초기상태
     const [activeMenu, setActiveMenu] = useState("매장 리뷰"); // 현재 활성화상태 메뉴
+    const [isMobile, setIsMobile] = useState(window.innerWidth <= 1000); // 모바일 뷰 상태
+
+    useEffect(() => {
+        const handleResize = () => {
+            setIsMobile(window.innerWidth <= 1000);
+        };
+
+        window.addEventListener('resize', handleResize);
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
+    }, []);
 
     const toggleDibs = () => { // 찜상태 토클 메서드
         setDibs(prev => !prev); 
@@ -65,6 +78,7 @@ export default function ProductDetailPage() {
                         ))}
                     </ImageSlider>
                 </ProductImageBox>
+                {isMobile ? <MobileBox><MobilePD /></MobileBox> :
                 <ProductInfoBox>
                     <Header>
                         <ProfileBox>
@@ -117,7 +131,7 @@ export default function ProductDetailPage() {
                             </LeftInnerBox>
                         </LeftBox>
                         <RightBox>
-                            <SubTitle>제품설명 & 제빵사의 말</SubTitle>
+                            <SubTitle>제품설명 & 상세내용</SubTitle>
                             <ProductDescription>
                                 김오둥 회심의 역작. 민트초코맛 마늘바게트 출시!<br /><br />
                                 ※ 이거 괴식 아닙니다. 치약 대신 쓰지마세요.
@@ -135,10 +149,11 @@ export default function ProductDetailPage() {
                         <TotalAmount>12,000원</TotalAmount>
                     </PriceBox>
                     <ButtonContainer>
-                        <Button style = {{backgroundColor: "#4285F4", borderRadius: "0 0 0 12px"}}>장바구니 담기</Button>
-                        <Button style = {{backgroundColor: "black", borderRadius: "0 0 12px 0"}}>바로 구매예약</Button>
+                        <Button style = {{backgroundColor: "#F0E9DD", borderRadius: "0 0 0 12px"}}>장바구니 담기</Button>
+                        <Button style = {{backgroundColor: "#D3B795", borderRadius: "0 0 12px 0"}}>바로 구매예약</Button>
                     </ButtonContainer>
                 </ProductInfoBox>
+                }
             </TopContainer>
             <BottomContainer>
                 <MenuBox>
@@ -194,10 +209,32 @@ const TopContainer = styled.div` // 상단 컨테이너
 const ProductImageBox = styled.div` // 상품 이미지 슬라이드 컨테이너
     width: 45%;
     height: 100%;
+    margin: 0 auto;
 
     @media (max-width: 1000px) {
-        width: 100%;
+        width: 50%;
         height: 50%;
+    }
+
+    @media (max-width: 900px) {
+        width: 60%;
+    }
+
+    @media (max-width: 800px) {
+        width: 70%;
+    }
+
+    @media (max-width: 700px) {
+        width: 80%;
+    }
+
+    @media (max-width: 600px) {
+        width: 90%;
+    }
+
+    @media (max-width: 500px) {
+        width: 100%;
+        height: 35%;
     }
 `;
 
@@ -220,7 +257,11 @@ const ImageSlider = styled(Slider)` // 상품 이미지 슬라이더
         }
 
         @media (max-width: 450px) {
-            top: 22.5vh;
+            top: 17.5vh;
+        }
+
+        @media (max-width: 400px) {
+            top: 25vh;
         }
     }
 
@@ -235,7 +276,11 @@ const ImageSlider = styled(Slider)` // 상품 이미지 슬라이더
         }
 
         @media (max-width: 450px) {
-            top: 22.5vh;
+            top: 17.5vh;
+        }
+
+         @media (max-width: 400px) {
+            top: 25vh;
         }
     }
 
@@ -271,10 +316,19 @@ const ProductInfoBox = styled.div` // 상품 상세정보 컨테이너
     width: 52.5%;
     height: 100%;
     margin-left: 2.5%;
-    border: 3px solid black;
+    border: 3px solid #D3B795;
     border-radius: 15px;
     box-sizing: border-box;
 `; 
+
+const MobileBox = styled.div` // 모바일뷰 컨테이너
+    width: 100%;
+    height: 50%;
+
+    @media (max-width: 500px) {
+        height: 65%;
+    }
+`;
 
 const Header = styled.div` // 헤더
     display: flex;
@@ -283,7 +337,7 @@ const Header = styled.div` // 헤더
     width: 100%;
     height: 10%;
     border-radius: 12px 12px 0 0;
-    background-color: #F1F1F1;
+    background-color: #D3B795;
 `;
 
 const ProfileBox = styled.div` // 판매자 프로필 박스
@@ -318,7 +372,7 @@ const ShopContainer = styled.div` // 매장정보 컨테이너
     display: flex;
     width: 100%;
     height: 30%;
-    border-bottom: 3px solid black;
+    border-bottom: 3px solid #D3B795;
     box-sizing: border-box;
 `;
 
@@ -367,11 +421,12 @@ const ShopButton = styled.div` // 매장 버튼
     width: 90%;
     height: 30%;
     border-radius: 10px;
-    background-color: #F1F1F1;
+    background-color: #F0E9DD;
     cursor: pointer;
 
     &:hover {
-        background-color: #CDCDCD;
+        background-color: #D3B795;
+        color: white;
     }
 `;
 
@@ -412,14 +467,14 @@ const ProductInfoContainer = styled.div` // 상품정보 컨테이너
     display: flex;
     width: 100%;
     height: 40%;
-    border-bottom: 3px solid black;
+    border-bottom: 3px solid #D3B795;
     box-sizing: border-box;
 `;
 
 const LeftBox = styled.div` // 좌측 상세정보 박스
     display: flex;
     flex-direction: column;
-    border-right: 3px solid black;
+    border-right: 3px solid #D3B795;
     width: 60%;
     height: 100%;
     box-sizing: border-box;
@@ -427,7 +482,7 @@ const LeftBox = styled.div` // 좌측 상세정보 박스
 
 const LeftInnerBox = styled.div` // 좌측 내부 박스
     display: flex;
-    border-bottom: 1px solid black;
+    border-bottom: 1px solid #D3B795;
     box-sizing: border-box;
     width: 100%;
     height: 20%;
@@ -441,8 +496,8 @@ const LabelBox = styled.div` // 라벨 박스
     height: 100%;
     font-size: 15px;
     font-weight: bold;
-    border-right: 1px solid black;
-    background-color: #F1F1F1;
+    border-right: 1px solid #D3B795;
+    background-color: #F0E9DD;
 `;
 
 const DescriptionBox = styled.div` // 설명 박스
@@ -469,7 +524,7 @@ const SubTitle = styled.div` // 우측 내부박스 제목
     height: 15%;
     font-size: 12.5px;
     font-weight: bold;
-    background-color: #F1F1F1;
+    background-color: #F0E9DD;
 `;
 
 const ProductDescription = styled.div` // 제품설명 & 제빵사의 말
@@ -488,7 +543,7 @@ const MiniTitle = styled.div` // 우측 내부박스 소제목
     font-size: 15px;
     font-weight: bold;
     color: white;
-    background-color: black;
+    background-color: #D3B795;
 `;
 
 const SelectPurchaseQuantity = styled.div` // 구매수량 선택버튼 박스
@@ -505,11 +560,12 @@ const PMbutton = styled.div` // +, - 버튼
     font-weight: bold;
     width: 25%;
     height: 100%;
-    background-color: #F1F1F1;
+    background-color: #F0E9DD;
     cursor: pointer;
 
     &:hover {
-        background-color: #D1D1D1;
+        background-color: #DCC5AA;
+        color: white;
     }
 `;
 
@@ -536,7 +592,7 @@ const PriceTitle = styled.div` // 가격 제목 박스
     width: 25%;
     height: 100%;
     color: white;
-    background-color: black;
+    background-color: #D3B795;
     font-size: 15px;
     font-weight: bold;
 `;
@@ -565,7 +621,6 @@ const Button = styled.div` // 우측 하단 버튼
     height: 100%;
     font-size: 20px;
     font-weight: bold;
-    color: white;
     cursor: pointer;
 
     &:hover {
@@ -579,8 +634,12 @@ const BottomContainer = styled.div` // 하단 컨테이너
     width: 100%;
     height: 750px;
     margin-top: 2.5%;
-    border: 3px solid black;
+    border: 3px solid #D3B795;
     box-sizing: border-box;
+
+    @media (max-width: 500px) {
+        margin-top: 0%;
+    }
 `;
 
 const Void = styled.div` // 제일 아래 여백
@@ -602,13 +661,9 @@ const TogleMenu = styled.div` // 토글 메뉴
     height: 100%;
     font-size: 20px;
     font-weight: bold;
-    background-color: ${props => (props.active ? 'black' : '#F1F1F1')}; 
+    background-color: ${props => (props.active ? '#D3B795' : '#F0E9DD')}; 
     color: ${props => (props.active ? 'white' : 'black')}; 
     cursor: pointer;
-
-    &:hover {
-        background-color: ${props => (props.active ? '#black' : '#D1D1D1')}; 
-    }
 `;
 
 const ContentBox = styled.div` // 컨텐츠 박스

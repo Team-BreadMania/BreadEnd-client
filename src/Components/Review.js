@@ -14,8 +14,20 @@ export default function Review() {
     const [ratingDistribution, setRatingDistribution] = useState([0, 0, 0, 0, 0]); // 별점 분포도
     const [currentPage, setCurrentPage] = useState(0); // 현재 리뷰 페이지
     const reviewsPerPage = 3; // 한 페이지당 리뷰 개수
+    const [isMobile, setIsMobile] = useState(window.innerWidth <= 600); // 모바일 뷰
 
     const displayedReviews = reviews.slice(currentPage * reviewsPerPage, (currentPage + 1) * reviewsPerPage);
+
+    useEffect(() => {
+        const handleResize = () => {
+            setIsMobile(window.innerWidth <= 600);
+        };
+
+        window.addEventListener('resize', handleResize);
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
+    }, []);
 
     useEffect(() => {
         const dummyReviews = [
@@ -95,12 +107,20 @@ export default function Review() {
             <TotalRating>
                 <LeftBox>
                     <AverageRating>{averageRating}</AverageRating>
-                    <StarRatings rating={parseFloat(averageRating)} starRatedColor="gold" starEmptyColor="lightgray" numberOfStars={5} name="rating" starDimension="25px" starSpacing="0px" readonly />
+                    <StarRatings rating = {parseFloat(averageRating)} 
+                                 starRatedColor = "gold" 
+                                 starEmptyColor = "lightgray" 
+                                 numberOfStars = {5} 
+                                 name = "rating" 
+                                 starDimension = {isMobile ? "20px" : "25px"} 
+                                 starSpacing = "0px" 
+                                 readonly 
+                    />
                 </LeftBox>
                 <RightBox>
                     <Bar
-                        data={chartData}
-                        options={{
+                        data = {chartData}
+                        options = {{
                             indexAxis: 'y',
                             scales: {
                                 x: {
@@ -148,7 +168,7 @@ export default function Review() {
                 </RightBox>
             </TotalRating>
             {displayedReviews.map((review) => (
-                <ReviewBox key={review.id}>
+                <ReviewBox key = {review.id}>
                     <TopBox>
                         <ProfileBox />
                         <ProfileInfoBox>
@@ -156,13 +176,13 @@ export default function Review() {
                             <ScoreBox>
                                 <StarBox>
                                     <StarRatings
-                                        rating={review.rating}
-                                        starRatedColor="gold"
-                                        starEmptyColor="lightgray"
-                                        numberOfStars={5}
-                                        name="reviewRating"
-                                        starDimension="15px"
-                                        starSpacing="0px"
+                                        rating = {review.rating}
+                                        starRatedColor = "gold"
+                                        starEmptyColor = "lightgray"
+                                        numberOfStars = {5}
+                                        name = "reviewRating"
+                                        starDimension = "15px"
+                                        starSpacing = "0px"
                                         readonly
                                     />
                                 </StarBox>
@@ -195,29 +215,25 @@ export default function Review() {
 
 // 아래부터 styled-components CSS 설정
 
-const Container = styled.div`
-    // 최상단 컨테이너
+const Container = styled.div` // 최상단 컨테이너
     display: flex;
     flex-direction: column;
     width: 100%;
     height: 100%;
 `;
 
-const Title = styled.div`
-    // 제목
+const Title = styled.div` // 제목
     font-size: 17.5px;
     font-weight: bold;
     margin: 2.5% 0 0 2.5%;
 `;
 
-const ReviewCount = styled.span`
-    // 작성된 리뷰 수
+const ReviewCount = styled.span` // 작성된 리뷰 수
     font-size: 20px;
     color: #4285f4;
 `;
 
-const TotalRating = styled.div`
-    // 전체 별점 박스
+const TotalRating = styled.div` // 전체 별점 박스
     display: flex;
     align-items: center;
     width: 95%;
@@ -227,8 +243,7 @@ const TotalRating = styled.div`
     border-radius: 10px;
 `;
 
-const LeftBox = styled.div`
-    // 좌측 전체 평균 별점 박스
+const LeftBox = styled.div` // 좌측 전체 평균 별점 박스
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -236,55 +251,85 @@ const LeftBox = styled.div`
     width: 50%;
     height: 80%;
     border-right: 3px solid #c1c1c1;
+
+    @media (max-width: 700px) {
+        width: 45%;
+        border-right: 1px solid #c1c1c1;
+    }
+
+    @media (max-width: 600px) {
+        width: 40%;
+    }
 `;
 
-const AverageRating = styled.div`
-    // 평균 평점 표시
+const AverageRating = styled.div` // 평균 평점 표시
     font-size: 50px;
     font-weight: bold;
+
+    @media (max-width: 700px) {
+        font-size: 45px;
+    }
+
+    @media (max-width: 600px) {
+        font-size: 40px;
+    }
 `;
 
-const RightBox = styled.div`
-    // 우측 전체 별점 점수 분포 그래프
+const RightBox = styled.div` // 우측 전체 별점 점수 분포 그래프
     display: flex;
     justify-content: center;
     align-items: center;
     width: 50%;
     height: 80%;
+
+    @media (max-width: 700px) {
+        margin-left: 2.5%;
+    }
+
+    @media (max-width: 600px) {
+        width: 55%;
+    }
 `;
 
-const ScoreContainer = styled.div`
-    // 별점 점수 박스
+const ScoreContainer = styled.div` // 별점 점수 박스
     display: flex;
     flex-direction: column;
     margin-left: 5px;
 `;
 
-const ScoreLabel = styled.div`
-    // 각 별점 점수 갯수
+const ScoreLabel = styled.div` // 각 별점 점수 갯수
     font-size: 15px;
     color: #828282;
     margin-bottom: 3px;
+
+    @media (max-width: 500px) {
+        font-size: 11px;
+    }
+
+    @media (max-width: 400px) {
+        font-size: 10px;
+    }
 `;
 
-const ReviewBox = styled.div`
-    // 리뷰 박스
+const ReviewBox = styled.div` // 리뷰 박스
     display: flex;
     flex-direction: column;
     width: 95%;
     height: 15%;
     margin: 20px 0 0 2.5%;
+
+    @media (max-width: 500px) {
+        height: 17%;
+    }
 `;
 
-const TopBox = styled.div`
-    // 리뷰박스 내부 상단박스
+const TopBox = styled.div` // 리뷰박스 내부 상단박스
     display: flex;
     width: 100%;
     height: 40%;
 `;
 
-const ProfileBox = styled.div`
-    // 프로필 사진 박스
+const ProfileBox = styled.div` // 프로필 사진 박스
     width: 40px;
     height: 40px;
     border-radius: 50%;
@@ -292,8 +337,7 @@ const ProfileBox = styled.div`
     background-size: cover;
 `;
 
-const ProfileInfoBox = styled.div`
-    // 프로필 정보 박스
+const ProfileInfoBox = styled.div` // 프로필 정보 박스
     display: flex;
     flex-direction: column;
     width: 50%;
@@ -301,30 +345,26 @@ const ProfileInfoBox = styled.div`
     margin-left: 10px;
 `;
 
-const NickNameBox = styled.div`
-    // 닉네임 박스
+const NickNameBox = styled.div` // 닉네임 박스
     display: flex;
     height: 50%;
     font-size: 15px;
     font-weight: bold;
 `;
 
-const ScoreBox = styled.div`
-    // 평가 정보 박스
+const ScoreBox = styled.div` // 평가 정보 박스
     display: flex;
     width: 100%;
     height: 50%;
 `;
 
-const StarBox = styled.div`
-    // 리뷰 별점
+const StarBox = styled.div` // 리뷰 별점
     display: flex;
     align-items: center;
     height: 100%;
 `;
 
-const RecordDateBox = styled.div`
-    // 리뷰 등록일자
+const RecordDateBox = styled.div` // 리뷰 등록일자
     display: flex;
     align-items: center;
     height: 100%;
@@ -333,16 +373,14 @@ const RecordDateBox = styled.div`
     margin-left: 10px;
 `;
 
-const MiddleBox = styled.div`
-    // 리뷰박스 내부 중간박스
+const MiddleBox = styled.div` // 리뷰박스 내부 중간박스
     display: flex;
     width: 100%;
     height: 25%;
     margin-top: 5px;
 `;
 
-const SubTitle = styled.div`
-    // 부제목
+const SubTitle = styled.div` // 부제목
     display: flex;
     justify-content: center;
     align-items: center;
@@ -354,8 +392,7 @@ const SubTitle = styled.div`
     font-size: 10px;
 `;
 
-const PurchasedProduct = styled.div`
-    // 구매상품
+const PurchasedProduct = styled.div` // 구매상품
     display: flex;
     align-items: center;
     height: 100%;
@@ -364,8 +401,7 @@ const PurchasedProduct = styled.div`
     margin-left: 5px;
 `;
 
-const BottomBox = styled.div`
-    // 리뷰내용 박스
+const BottomBox = styled.div` // 리뷰내용 박스
     display: flex;
     align-items: center;
     width: 100%;
@@ -373,8 +409,7 @@ const BottomBox = styled.div`
     font-size: 12px;
 `;
 
-const ButtonBox = styled.div`
-    // 최하단 버튼 박스
+const ButtonBox = styled.div` // 최하단 버튼 박스
     display: flex;
     justify-content: center;
     align-items: center;
@@ -383,8 +418,7 @@ const ButtonBox = styled.div`
     margin-top: auto;
 `;
 
-const Button = styled.div`
-    // ◀, ▶ 버튼
+const Button = styled.div` // ◀, ▶ 버튼
     display: flex;
     justify-content: center;
     align-items: center;
@@ -401,8 +435,7 @@ const Button = styled.div`
     }
 `;
 
-const ReviewPageNumber = styled.div`
-    // 리뷰페이지 숫자
+const ReviewPageNumber = styled.div` // 리뷰페이지 숫자
     display: flex;
     justify-content: center;
     align-items: center;
