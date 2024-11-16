@@ -31,12 +31,12 @@ export default function NaviBar() {
     ];
 
     const sellerMenuItems = [
-        { to: '/ItemRegistration', icon: edit_icon1, text: '상품 등록' },
+        { to: '/ProductRegistration', icon: edit_icon1, text: '상품 등록' },
         { to: '/MyPage', icon: home_icon, text: '홈' },
-        { to: '/ItemManagement', icon: cart_icon, text: '상품 관리' },
+        { to: '/ProductManagement', icon: cart_icon, text: '상품 관리' },
     ];
 
-    const menuItems = !userLogin ? buyerMenuItems : userAuth === 'seller' ? sellerMenuItems : buyerMenuItems;
+    const menuItems = !userLogin ? buyerMenuItems : userAuth === 'buyer' ? buyerMenuItems : sellerMenuItems;
 
     const handleMenuClick = (item) => {
         if (item.protected && !userLogin) {

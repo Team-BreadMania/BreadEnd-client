@@ -77,7 +77,6 @@ export default function SellerHome() {
 
             if (response.status === 200) {
                 console.log('유저정보 불러오기 성공:', response.data);
-
                 const { shop_name, shop_number, location, detaillocation } = response.data;
                 setStoreName(shop_name);
                 setNumber(shop_number);
@@ -178,7 +177,7 @@ export default function SellerHome() {
             <ButtonContainer>
                 {isEditing ? (
                     <>
-                        <div style={{ width: '100%', display: 'flex' }}>
+                        <div style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                             <EditText>
                                 <Text>가게이름 : &nbsp; </Text>
                                 <Text>전화번호 : &nbsp; </Text>
@@ -383,6 +382,7 @@ const ButtonContainer = styled.div`
     flex-direction: column;
     width: 30%;
     margin-right: 20px;
+    align-items: center;
     @media (max-width: 1650px) {
         width: 25%;
     }
@@ -400,10 +400,10 @@ const Input = styled.input`
     max-height: 20px;
     margin-bottom: 6px;
     @media (max-width: 1100px) {
-        width: 150%;
+        width: 100%;
     }
     @media (max-width: 800px) {
-        width: 135%;
+        width: 100%;
     }
 `;
 const Text = styled.div`

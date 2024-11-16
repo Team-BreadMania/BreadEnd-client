@@ -13,7 +13,7 @@ import ProductDetailPage from './Pages/ProductDetailPage';
 import Search from './Pages/Search'; // Search 페이지 추가
 import Map from './Pages/Map'; // Map 페이지 추가
 import SearchResults from './Pages/SearchResults';
-import ItemManagement from './Pages/ItemManagement';
+import ProductManagement from './Pages/ProductManagement';
 import { AuthProvider } from './AuthContext';
 
 function App() {
@@ -40,7 +40,7 @@ function App() {
                     <Route path="/ProductDetailPage" element={<ProductDetailPage />} />
                     <Route path="/Search" element={<Search />} />
                     <Route path="/SearchResults" element={<SearchResults />} />
-                    <Route poth="/ItemRegistration" element={<ItemManagement />} />
+                    <Route path="/ProductManagement" element={<ProductManagement />} />
                     {/* Search 경로 추가 */}
                     <Route path="/Map" element={<Map />} /> {/* Map 경로 추가 */}
                 </Routes>

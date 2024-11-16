@@ -18,7 +18,6 @@ export default function Header() {
         setUserAuth(userType);
     }, [setUserAuth]);
 
-    // 로그아웃 버튼 클릭 시 호출되는 함수
     const handleLogout = () => {
         Cookies.remove('accessToken');
         Cookies.remove('refreshToken');
