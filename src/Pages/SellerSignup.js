@@ -84,7 +84,7 @@ export default function SellerSignup() {
                 const response = await axios.post('http://43.203.241.42/user/regist', requestData, {
                     headers: {
                         'Content-Type': 'multipart/form-data',
-                    },
+                    },  
                 });
 
                 if (response.status === 200) {
