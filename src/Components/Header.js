@@ -1,15 +1,16 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 import Cookies from 'js-cookie';
-import axios from 'axios';
 import styled from 'styled-components';
-import menu_icon from "../Images/menu_icon.svg";
-import logo_icon from "../Images/logo_icon.png";
-import alarm_icon from "../Images/alarm_icon.svg";
-import "../Fonts/font.css";
+import menu_icon from '../Images/menu_icon.svg';
+import logo_icon from '../Images/logo_icon.png';
+import alarm_icon from '../Images/alarm_icon.svg';
+import '../Fonts/font.css';
 
 export default function Header() {
     const navigate = useNavigate();
+    const [userAuth, setUserAuth] = useState('seller');
 
     const handleLogout = () => {
         Cookies.remove('accessToken');
@@ -17,11 +18,22 @@ export default function Header() {
         navigate('/'); // 홈으로 이동
     };
 
+    // 로고 클릭 시 호출되는 함수
+    const handleLogoClick = () => {
+        if (userAuth === 'seller') {
+            navigate('/MyPage'); // seller일 때 MyPage로 이동
+        } else {
+            navigate('/Home'); // 나머지 경우는 Home으로 이동
+        }
+    };
+
     return (
         <Container>
-            <Box><MenuButton /></Box>
-            <Box style={{ width: "60%" }}>
-                <LogoButton to="/Home">
+            <Box>
+                <MenuButton />
+            </Box>
+            <Box style={{ width: '60%' }}>
+                <LogoButton onClick={handleLogoClick}>
                     <LogoIcon />
                     <LogoText>빵끝마켓</LogoText>
                 </LogoButton>
@@ -31,14 +43,15 @@ export default function Header() {
                     // 로그인 상태인 경우
                     <LogoutBox onClick={handleLogout}>로그아웃</LogoutBox>
                 ) : (
-                    // 로그인되지 않은 경우
                     <>
                         <LoginBox to="/Login">로그인</LoginBox>
                         <SignupBox to="/Signup">회원가입</SignupBox>
                     </>
                 )}
             </Box>
-            <Box><AlarmButton /></Box>
+            <Box>
+                <AlarmButton />
+            </Box>
         </Container>
     );
 }
@@ -53,13 +66,13 @@ const Container = styled.div`
     padding: 0 5%;
 
     @media (max-width: 800px) {
-        width: 95%; 
-        padding: 0 2.5%; 
+        width: 95%;
+        padding: 0 2.5%;
     }
 
     @media (max-width: 600px) {
-        width: 100%; 
-        padding: 0 0; 
+        width: 100%;
+        padding: 0 0;
     }
 `;
 
@@ -155,7 +168,7 @@ const MenuButton = styled.div`
 
     @media (max-width: 600px) {
         width: 40%;
-        height: 40%; 
+        height: 40%;
     }
 `;
 
@@ -170,11 +183,11 @@ const AlarmButton = styled.div`
 
     @media (max-width: 600px) {
         width: 40%;
-        height: 40%; 
+        height: 40%;
     }
 `;
 
-const LogoButton = styled(Link)`
+const LogoButton = styled.div`
     display: flex;
     width: 60%;
     height: 100%;
