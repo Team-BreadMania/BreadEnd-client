@@ -4,15 +4,16 @@ import profile_img from '../Images/profileimg.png';
 import shop_img from '../Images/breadshop_img.jpg';
 import Cookies from 'js-cookie';
 import axios from 'axios';
+import Review from '../Components/Review';
 
 export default function SellerHome() {
     // 유저정보
-    const [storeName, setStoreName] = useState('오둥이 빵집');
+    const [storeName, setStoreName] = useState(null);
     const [isEditing, setIsEditing] = useState(false);
-    const [workTime, setWorkTime] = useState('08:30~19:00');
-    const [number, setNumber] = useState('02-546-7588');
-    const [location, setLocation] = useState('서울특별시 강남구 압구정동');
-    const [detailLocation, setDetailLocation] = useState('서울특별시 강남구 압구정로30길 9');
+    const [workTime, setWorkTime] = useState('09:00~20:00');
+    const [number, setNumber] = useState(null);
+    const [location, setLocation] = useState(null);
+    const [detailLocation, setDetailLocation] = useState(null);
 
     // 유저 정보 수정
     const [isMobile, setIsMobile] = useState(false);
@@ -65,6 +66,10 @@ export default function SellerHome() {
             fetchUserData(accessToken);
         }
     }, [accessToken]); // accessToken이 변경될 때마다 사용자 데이터를 가져옴
+
+    const renderInformationContainer = () => {
+        return <Review />;
+    };
 
     const fetchUserData = async (accessToken) => {
         try {
