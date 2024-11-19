@@ -36,7 +36,7 @@ export default function NaviBar() {
         { to: '/ProductManagement', icon: cart_icon, text: '상품 관리' },
     ];
 
-    const menuItems = !userLogin ? buyerMenuItems : userAuth === 'buyer' ? buyerMenuItems : sellerMenuItems;
+    const menuItems = userLogin ? buyerMenuItems : userAuth === 'buyer' ? buyerMenuItems : sellerMenuItems;
 
     const handleMenuClick = (item) => {
         if (item.protected && !userLogin) {
