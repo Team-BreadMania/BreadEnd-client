@@ -7,17 +7,17 @@ export default function SellerSignup() {
     const navigate = useNavigate();
 
     const [formData, setFormData] = useState({
-        id: '',
+        userId: '',
         password: '',
         confirmPassword: '',
         nickname: '',
         region: '',
         detaillocation: '',
         contact: '',
+        name: '',
+        likedCategory: '',
         shopName: '',
         shopNumber: '',
-        name: '', // 이름 필드 추가
-        likedCategory: '', // 좋아하는 카테고리 추가
     });
 
     const [imageFile, setImageFile] = useState(null);
@@ -26,8 +26,8 @@ export default function SellerSignup() {
     const [isIdEntered, setIsIdEntered] = useState(false);
 
     useEffect(() => {
-        setIsIdEntered(formData.id.length > 0);
-    }, [formData.id]);
+        setIsIdEntered(formData.userId.length > 0);
+    }, [formData.userId]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -38,42 +38,53 @@ export default function SellerSignup() {
     };
 
     const handleImageChange = (e) => {
-        setImageFile(e.target.files[0]);
+        const file = e.target.files[0];
+        setImageFile(file);
     };
 
     const handleIdCheck = () => {
+        if (formData.userId.trim() === '') {
+            alert('아이디를 입력하세요.');
+            return;
+        }
         setIsIdAvailable(true);
-        setIdCheckMessage(`${formData.id}는 사용 가능한 아이디입니다.`);
+        setIdCheckMessage(`${formData.userId}는 사용 가능한 아이디입니다.`);
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (isIdAvailable) {
+            if (formData.password !== formData.confirmPassword) {
+                alert('비밀번호가 일치하지 않습니다.');
+                return;
+            }
+
             try {
                 const requestData = new FormData();
-                requestData.append('userid', formData.id);
-                requestData.append('password', formData.password);
-                requestData.append('name', formData.name);
-                requestData.append('phoneNumber', formData.contact);
-                requestData.append('nickname', formData.nickname);
-                requestData.append('registDate', new Date().toISOString());
-                requestData.append('shopName', formData.shopName);
-                requestData.append('shopNumber', formData.shopNumber);
-                requestData.append('userType', 'seller');
-                requestData.append('location', formData.region);
-                requestData.append('detaillocation', formData.detaillocation);
-                requestData.append('liked_category', formData.likedCategory); // 좋아하는 카테고리 추가
 
+                const userObject = {
+                    userid: formData.userId,
+                    password: formData.password,
+                    name: formData.name,
+                    phoneNumber: formData.contact,
+                    nickname: formData.nickname,
+                    liked_category: formData.likedCategory,
+                    registDate: new Date().toISOString(),
+                    userType: 'seller',
+                    location: formData.region,
+                    detaillocation: formData.detaillocation,
+                    shopName: formData.shopName,
+                    shopNumber: formData.shopNumber,
+                };
+                requestData.append('user', JSON.stringify(userObject));
                 if (imageFile) {
-                    requestData.append('image', imageFile); // 이미지 파일 추가
+                    requestData.append('image', imageFile);
                 }
-
-                console.log('요청 데이터:', requestData);
 
                 const response = await axios.post('http://43.203.241.42/user/regist', requestData, {
                     headers: {
-                        'Content-Type': 'multipart/form-data', // 파일 전송 시 Content-Type 설정
-                    },
+                        'Content-Type': 'multipart/form-data',
+                    },  
                 });
 
                 if (response.status === 200) {
@@ -85,7 +96,12 @@ export default function SellerSignup() {
                 }
             } catch (error) {
                 console.error('회원가입 중 오류 발생:', error);
-                alert('회원가입 실패: 서버 오류가 발생했습니다.');
+                if (error.response) {
+                    console.error('서버 응답 데이터:', error.response.data);
+                    alert(`회원가입 실패: ${error.response.data.message}`);
+                } else {
+                    alert('회원가입 실패: 서버 오류가 발생했습니다.');
+                }
             }
         } else {
             alert('아이디 중복 확인을 해주세요.');
@@ -98,15 +114,15 @@ export default function SellerSignup() {
 
     return (
         <div className="signup-container">
-            <h1>판매자 가입 페이지</h1>
+            <h2>판매자 가입 페이지</h2>
             <form onSubmit={handleSubmit}>
                 <div className="form-group">
-                    <label htmlFor="id">아이디</label>
+                    <label htmlFor="userId">아이디</label>
                     <input
                         type="text"
-                        id="id"
-                        name="id"
-                        value={formData.id}
+                        id="userId"
+                        name="userId"
+                        value={formData.userId}
                         onChange={handleChange}
                         placeholder="아이디 (13자 이내 중복확인)"
                         required
@@ -175,7 +191,7 @@ export default function SellerSignup() {
                     />
                 </div>
                 <div className="form-group">
-                    <label htmlFor="region">판매지점등록</label>
+                    <label htmlFor="region">지역</label>
                     <input
                         type="text"
                         id="region"
@@ -199,7 +215,7 @@ export default function SellerSignup() {
                     />
                 </div>
                 <div className="form-group">
-                    <label htmlFor="contact">판매지점연락처</label>
+                    <label htmlFor="contact">연락처</label>
                     <input
                         type="text"
                         id="contact"
