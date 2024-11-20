@@ -20,7 +20,7 @@ export default function NaviBar() {
         const userType = Cookies.get('userType');
         setUserAuth(userType);
         console.log(userAuth);
-    }, [setUserAuth]);
+    }, [userAuth, setUserAuth]);
 
     const buyerMenuItems = [
         { to: '/Search', icon: search_icon, text: '검색' },
