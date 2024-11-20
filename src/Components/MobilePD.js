@@ -56,8 +56,8 @@ export default function MobilePD() {
             </ShopButtonBox>
             <InfoBox>
                 <InnerBox style = {{width: "100%"}}>
-                    <Label_Box>제품 이름</Label_Box>
-                    <Description_Box>민트초코맛 마늘바게트</Description_Box>
+                    <LabelBox2>제품 이름</LabelBox2>
+                    <DescriptionBox2>민트초코맛 마늘바게트</DescriptionBox2>
                 </InnerBox>
             </InfoBox>
             <InfoBox>
@@ -82,14 +82,14 @@ export default function MobilePD() {
             </InfoBox>
             <InfoBox style = {{height: "15%"}}>
                 <InnerBox style = {{width: "100%"}}>
-                    <Label_Box>
+                    <LabelBox2>
                         제품설명<br/>&<br/>
                         상세내용
-                    </Label_Box>
-                    <Description_Box>
+                    </LabelBox2>
+                    <DescriptionBox2>
                         김오둥 회심의 역작. 민트초코맛 마늘바게트 출시!<br /><br />
                         ※ 이거 괴식 아닙니다. 치약 대신 쓰지마세요.
-                    </Description_Box>
+                    </DescriptionBox2>
                 </InnerBox>
             </InfoBox>
             <UnderBox>
@@ -305,7 +305,7 @@ const LabelBox = styled.div` // 라벨 박스
     }
 `;
 
-const Label_Box = styled.div` // 라벨 박스2
+const LabelBox2 = styled.div` // 라벨 박스2
     display: flex;
     justify-content: center;
     align-items: center;
@@ -343,7 +343,7 @@ const DescriptionBox = styled.div` // 설명 박스
     }
 `;
 
-const Description_Box = styled.div` // 설명 박스2
+const DescriptionBox2 = styled.div` // 설명 박스2
     display: flex;
     justify-content: center;
     align-items: center;
