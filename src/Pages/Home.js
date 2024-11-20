@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import styled from 'styled-components';
 import Slider from 'react-slick';
@@ -16,6 +17,7 @@ const imgset = [bannerImg_01, bannerImg_02, bannerImg_03, bannerImg_04, bannerIm
 
 export default function Home() {
 
+    const navigate = useNavigate();
     const [slidesToShow, setSlidesToShow] = useState(6); // 한번에 보이는 슬라이드의 수
 
     useEffect(() => {
@@ -60,6 +62,10 @@ export default function Home() {
         arrows: true,
     };
 
+    const handleProductClick = () => {
+        navigate(`/ProductDetailPage?id=7`); 
+    };
+
     return (
         <Container>
             <Banner>
@@ -75,7 +81,7 @@ export default function Home() {
             <ProductContainer>
                 <ProductSlider {...product_settings}>
                     {Array.from({ length: 10 }).map((_, index) => (
-                        <ProductBox key = {index}>
+                        <ProductBox key = {index} onClick = {handleProductClick}>
                             <Product/>
                         </ProductBox>
                     ))}
@@ -85,7 +91,7 @@ export default function Home() {
             <ProductContainer>
                 <ProductSlider {...product_settings}>
                     {Array.from({ length: 10 }).map((_, index) => (
-                        <ProductBox key = {index}>
+                        <ProductBox key = {index} onClick = {handleProductClick}>
                             <Shop/>
                         </ProductBox>
                     ))}
@@ -95,7 +101,7 @@ export default function Home() {
             <ProductContainer>
                 <ProductSlider {...product_settings}>
                     {Array.from({ length: 10 }).map((_, index) => (
-                        <ProductBox key = {index}>
+                        <ProductBox key = {index} onClick = {handleProductClick}>
                             <Product/>
                         </ProductBox>
                     ))}
@@ -105,7 +111,7 @@ export default function Home() {
             <ProductContainer>
                 <ProductSlider {...product_settings}>
                     {Array.from({ length: 10 }).map((_, index) => (
-                        <ProductBox key = {index}>
+                        <ProductBox key = {index} onClick = {handleProductClick}>
                             <Product/>
                         </ProductBox>
                     ))}
@@ -333,6 +339,13 @@ const ProductSlider = styled(Slider)` // 상품 슬라이드 컨테이너
 const ProductBox = styled.div` // 상품 박스
     height: 100%;
     box-sizing: border-box;
+    cursor: pointer;
+
+    &:hover {
+        height: 95%;
+        transform: translateY(5px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
 `;
 
 const Empty = styled.div` // 여백
