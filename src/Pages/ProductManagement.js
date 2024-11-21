@@ -1,16 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Search, ChevronDown, MoreVertical } from 'lucide-react';
 import breadImg1 from '../Images/breadImg1.jfif';
 import breadImg2 from '../Images/breadImg2.jpg';
 import { useNavigate } from 'react-router-dom';
+import Cookies from 'js-cookie';
+import axios from 'axios';
+
 export default function ProductManagement() {
     const navigate = useNavigate();
     const handleSubmit = () => {
         navigate('/ProductRegistration');
     };
 
-    const [products] = useState([
+    const accessToken = Cookies.get('accessToken');
+
+    const [products, setProducts] = useState([
         {
             img: breadImg1,
             id: 106,
@@ -38,6 +43,41 @@ export default function ProductManagement() {
         },
     ]);
 
+    const fetchUserData = async (accessToken) => {
+        try {
+            const response = await axios.get('http://43.203.241.42/seller/show/wait', {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${accessToken}`, 
+                },
+            });
+
+            if (response.status === 200) {
+                console.log('유저정보 불러오기 성공:', response.data);
+
+                const transformedProducts = response.data.map(product => ({
+                    img: product.imgpaths,
+                    id: product.productid,
+                    name: product.itemname,
+                    category: product.itemtype,
+                    price: product.price,
+                    status: '판매중',
+                    count: product.count,
+                    createdAt: product.makedate ,
+                    saleAt: product.expireddate,
+                }));
+                setProducts(transformedProducts);
+            }
+        } catch (error) {
+            console.log(error.response);
+        }
+    };
+
+    useEffect(() => {
+        if (accessToken) {
+            fetchUserData(accessToken);
+        }
+    }, [accessToken]); // accessToken이 변경될 때마다 사용자 데이터를 가져옴
     return (
         <Container>
             <Header>
@@ -58,11 +98,7 @@ export default function ProductManagement() {
                         <StatValue>2</StatValue>
                     </StatBox>
                     <StatBox>
-                        <StatLabel>품절</StatLabel>
-                        <StatValue>0</StatValue>
-                    </StatBox>
-                    <StatBox>
-                        <StatLabel>숨김</StatLabel>
+                        <StatLabel>판매완료</StatLabel>
                         <StatValue>0</StatValue>
                     </StatBox>
                 </StatsContainer>
@@ -79,7 +115,7 @@ export default function ProductManagement() {
                         <div>상태</div>
                         <div>재고</div>
                         <div>등록일</div>
-                        <div>판매가능일</div>
+                        <div>수정일</div>
                     </ProductHeader>
 
                     {products.map((product) => (
@@ -121,7 +157,7 @@ export default function ProductManagement() {
 }
 const Container = styled.div`
     min-height: 100vh;
-    background-color: #f5f5f5;
+    background-color: #f0e9dd;
 `;
 
 const Header = styled.header`
@@ -174,7 +210,7 @@ const MainContent = styled.main`
 
 const StatsContainer = styled.div`
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: 1rem;
     margin-bottom: 1rem;
 
@@ -214,8 +250,8 @@ const ProductHeader = styled.div`
     display: grid;
     grid-template-columns: 40px 60px 2fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
     padding: 1rem;
-    background: #f9fafb;
-    font-weight: 500;
+    background: #d3b790;
+    font-weight: bold;
     color: #374151;
     border-bottom: 1px solid #e5e7eb;
     gap: 1rem;
@@ -249,17 +285,17 @@ const ProductCell = styled.div`
 
         ${(props) =>
             !props.mobileHidden &&
-        `
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        
-        &:before {
-            // content: '${(props) => props.label}';
-            font-weight: 500;
-            color: #374151;
-        }
-        `}
+            `
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      
+      &:before {
+        content: '${(props) => props.label}';
+        font-weight: 500;
+        color: #374151;
+      }
+    `}
     }
 `;
 
@@ -307,6 +343,7 @@ const ProductInfo = styled.div`
     display: flex;
     gap: 1rem;
     align-items: center;
+
     @media (max-width: 1024px) {
         flex-direction: column;
         gap: 0.5rem;

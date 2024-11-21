@@ -74,7 +74,7 @@ export default function SellerHome() {
     const fetchUserData = async (accessToken) => {
         try {
             const response = await axios.get('http://43.203.241.42/user/get-userinfo', {
-                headers: {
+                headers: { 
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${accessToken}`, // accessToken을 헤더에 포함
                 },
