@@ -9,6 +9,8 @@ import axios from 'axios';
 
 export default function ProductManagement() {
     const navigate = useNavigate();
+    const [waitItem, setWaitItem] = useState("");
+    const [sellItem, setSellItem] = useState("");
     const handleSubmit = () => {
         navigate('/ProductRegistration');
     };
@@ -43,7 +45,7 @@ export default function ProductManagement() {
         },
     ]);
 
-    const fetchUserData = async (accessToken) => {
+    const SellingItemData = async (accessToken) => {
         try {
             const response = await axios.get('http://43.203.241.42/seller/show/wait', {
                 headers: {
@@ -51,33 +53,39 @@ export default function ProductManagement() {
                     Authorization: `Bearer ${accessToken}`, 
                 },
             });
-
+    
             if (response.status === 200) {
                 console.log('유저정보 불러오기 성공:', response.data);
-
+    
                 const transformedProducts = response.data.map(product => ({
-                    img: product.imgpaths,
+                    // img: product.imgpaths[0], // 첫 번째 이미지 경로 사용
                     id: product.productid,
                     name: product.itemname,
                     category: product.itemtype,
                     price: product.price,
                     status: '판매중',
                     count: product.count,
-                    createdAt: product.makedate ,
-                    saleAt: product.expireddate,
+                    createdAt: product.makedate, // 등록일
+                    saleAt: product.expireddate, // 만료일
                 }));
+    
                 setProducts(transformedProducts);
             }
+            else{
+                console.log('데이터 가져오기 실패:', response.data);
+            }
         } catch (error) {
-            console.log(error.response);
+            console.error('상품 데이터를 가져오는 데 실패했습니다:', error.response);
+            // 사용자에게 에러 메시지를 표시하는 방법 추가
         }
     };
-
+    
     useEffect(() => {
         if (accessToken) {
-            fetchUserData(accessToken);
+            SellingItemData(accessToken);
         }
     }, [accessToken]); // accessToken이 변경될 때마다 사용자 데이터를 가져옴
+
     return (
         <Container>
             <Header>
@@ -291,7 +299,7 @@ const ProductCell = styled.div`
       align-items: center;
       
       &:before {
-        content: '${(props) => props.label}';
+        // content: '${(props) => props.label}';
         font-weight: 500;
         color: #374151;
       }
