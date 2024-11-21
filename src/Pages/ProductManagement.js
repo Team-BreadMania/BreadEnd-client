@@ -79,7 +79,7 @@ export default function ProductManagement() {
                         <div>상태</div>
                         <div>재고</div>
                         <div>등록일</div>
-                        <div>수정일</div>
+                        <div>판매가능일</div>
                     </ProductHeader>
 
                     {products.map((product) => (
@@ -92,13 +92,13 @@ export default function ProductManagement() {
                                 <ProductInfo>
                                     <ProductImage src={product.img} />
                                     <ProductDetails>
-                                        <div>
+                                        {/* <div>
                                             {product.badges?.map((badge) => (
                                                 <Badge key={badge} type={badge}>
                                                     {badge}
                                                 </Badge>
                                             ))}
-                                        </div>
+                                        </div> */}
                                         <div>{product.name}</div>
                                     </ProductDetails>
                                     <MobileActions>
@@ -249,17 +249,17 @@ const ProductCell = styled.div`
 
         ${(props) =>
             !props.mobileHidden &&
-            `
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      
-      &:before {
-        content: '${(props) => props.label}';
-        font-weight: 500;
-        color: #374151;
-      }
-    `}
+        `
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        
+        &:before {
+            // content: '${(props) => props.label}';
+            font-weight: 500;
+            color: #374151;
+        }
+        `}
     }
 `;
 
@@ -306,8 +306,7 @@ const ProductImage = styled.div`
 const ProductInfo = styled.div`
     display: flex;
     gap: 1rem;
-    align-items: flex-start;
-
+    align-items: center;
     @media (max-width: 1024px) {
         flex-direction: column;
         gap: 0.5rem;

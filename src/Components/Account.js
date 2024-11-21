@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import Avata from '../Images/Generic_avatar.png';
 import MannerTemperature from './MannerTemperature';
 import EditUserInfo from './EditUserInform'
 import edit_button from '../Images/edit_button.png'
+import axios from 'axios';
+import Cookies from 'js-cookie';
 
 export default function Account() {
     const [nickname, setNickname] = useState('이름');
@@ -11,9 +13,40 @@ export default function Account() {
     const [registDate, setRegistDate] = useState('2024-11-13');
     const [detail, setDetail] = useState('자기소개');
     const [location, setLocation] = useState('지역');
+    const [number, setNumber] = useState(null);
     const [temp,setTemp] = useState(75);
     const [view, setViwe] = useState(false);
 
+    const accessToken = Cookies.get('accessToken');
+
+    useEffect(() => {
+        if (accessToken) {
+            fetchUserData(accessToken);
+        }
+    }, [accessToken]); // accessToken이 변경될 때마다 사용자 데이터를 가져옴
+
+
+    const fetchUserData = async (accessToken) => {
+        try {
+            const response = await axios.get('http://43.203.241.42/user/get-userinfo', {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${accessToken}`, // accessToken을 헤더에 포함
+                },
+            });
+
+            if (response.status === 200) {
+                console.log('유저정보 불러오기 성공:', response.data);
+                const { nickname, phonenumber, location, regist_date } = response.data;
+                setNickname(nickname);
+                setNumber(phonenumber);
+                setLocation(location);
+                setRegistDate(regist_date);
+            }
+        } catch (error) {
+            console.log(error.response);
+        }
+    };
     const MenuToggle = (e) => {
         e.stopPropagation();
         setViwe(!view);
@@ -25,7 +58,7 @@ export default function Account() {
                 <EditUserInfo 
                     nickname={nickname} 
                     setNickname={setNickname} 
-                    email={email} 
+                    setNumber={setNumber} 
                     setEmail={setEmail} 
                     location={location} 
                     setLocation={setLocation} 
@@ -46,7 +79,7 @@ export default function Account() {
                     <UserUpperContainer>
                         <UserInform>
                             <UserNameContainer>{nickname}</UserNameContainer>
-                            <UserEmail>{email}</UserEmail>
+                            <UserEmail>{number}</UserEmail>
                         </UserInform>
                         <MannerTemperature percentage={temp}/>
                     </UserUpperContainer>
