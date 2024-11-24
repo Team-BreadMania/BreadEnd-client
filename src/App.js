@@ -10,6 +10,7 @@ import SellerSignup from './Pages/SellerSignup';
 import MyPage from './Pages/MyPage';
 import MyCart from './Pages/MyCart';
 import ProductDetailPage from './Pages/ProductDetailPage';
+import ProductRegistration from './Pages/ProductRegistration';
 import Search from './Pages/Search'; // Search 페이지 추가
 import Map from './Pages/Map'; // Map 페이지 추가
 import SearchResults from './Pages/SearchResults';
@@ -38,6 +39,7 @@ function App() {
                     <Route path="/MyPage" element={<MyPage />} />
                     <Route path="/MyCart" element={<MyCart />} />
                     <Route path="/ProductDetailPage" element={<ProductDetailPage />} />
+                    <Route path="/ProductRegistration" element={<ProductRegistration />} />
                     <Route path="/Search" element={<Search />} />
                     <Route path="/SearchResults" element={<SearchResults />} />
                     <Route path="/ProductManagement" element={<ProductManagement />} />
