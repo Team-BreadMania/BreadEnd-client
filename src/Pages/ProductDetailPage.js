@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import axios from 'axios';
 import styled from 'styled-components';
 import Slider from 'react-slick';
@@ -8,16 +9,11 @@ import "slick-carousel/slick/slick-theme.css";
 import Review from "../Components/Review";
 import Map from "../Components/ShopLocation";
 import MobilePD from "../Components/MobilePD";
-import bread_img01 from "../Images/bread_img01.jpg";
-import bread_img02 from "../Images/bread_img02.jpg";
-import bread_img03 from "../Images/bread_img03.png";
 import profile_img from "../Images/profileimg.png";
 import shop_img from "../Images/breadshop_img.jpg";
 import dibs_before from "../Images/dibs_before.png";
 import dibs_after from "../Images/dibs_after.png";
 import search_icon from "../Images/search_icon.png";
-
-const imgset = [bread_img01, bread_img02, bread_img03];
 
 export default function ProductDetailPage() {
 
@@ -33,11 +29,30 @@ export default function ProductDetailPage() {
         pauseOnHover: true,
     };
 
+    const location = useLocation(); 
+    const query = new URLSearchParams(location.search); 
+    const id = query.get("id"); 
+    const [productDetails, setProductDetails] = useState(null); // 상품 상세 정보를 저장할 상태
     const [shopAddress, setShopAddress] = useState("서울특별시 강남구 테헤란로 231"); // 매장 상세주소 상태
     const [dibs, setDibs] = useState(false); // 찜하기 상태
     const [quantity, setQuantity] = useState(1); // 구매수량 초기상태
     const [activeMenu, setActiveMenu] = useState("매장 리뷰"); // 현재 활성화상태 메뉴
     const [isMobile, setIsMobile] = useState(window.innerWidth <= 1000); // 모바일 뷰 상태
+
+    useEffect(() => {
+        const fetchProductDetails = async () => {
+            try {
+                const response = await axios.get(`http://43.203.241.42/detailpage/details?productid=${id}`);
+                console.log("API 응답 데이터 :", response.data);
+                setProductDetails(response.data); 
+            } catch (error) {
+                alert("상품 상세 정보를 가져오는 데 실패했습니다. 다시 시도해 주세요."); 
+                console.error("API 요청 에러 :", error);
+            }
+        };
+
+        fetchProductDetails();
+    }, [id]); 
 
     useEffect(() => {
         const handleResize = () => {
@@ -55,7 +70,11 @@ export default function ProductDetailPage() {
     };
 
     const increaseQuantity = () => { // 구매수량 증가 메서드
-        setQuantity(prevQuantity => prevQuantity + 1);
+        if (quantity < productDetails.count) { 
+            setQuantity(prevQuantity => prevQuantity + 1);
+        } else {
+            alert("현재 남은수량보다 더 구매할순 없습니다."); 
+        }
     };
 
     const decreaseQuantity = () => { // 구매수량 감소 메서드
@@ -66,12 +85,16 @@ export default function ProductDetailPage() {
         setActiveMenu(menu); 
     };
 
+    if (!productDetails) {
+        return <div>로딩 중...</div>;
+    }
+
     return (
         <Container>
             <TopContainer>
                 <ProductImageBox>
                     <ImageSlider {...settings}>
-                        {imgset.map((image, index) => (
+                        {productDetails.imgpath.map((image, index) => (
                             <Slide key = {index}>
                                 <Image src = {image}/>
                             </Slide>
@@ -83,9 +106,9 @@ export default function ProductDetailPage() {
                     <Header>
                         <ProfileBox>
                             <Profile/>
-                            <NickName>제빵왕 김오둥</NickName>
+                            <NickName>{productDetails.seller_name}</NickName>
                         </ProfileBox>
-                        <RegistrationTime>등록시간 : 2024.12.25-15:30</RegistrationTime>
+                        <RegistrationTime>등록시간 : {new Date(productDetails.itemregistdate).toLocaleString()}</RegistrationTime>
                     </Header>
                     <ShopContainer>
                         <ShopImage/>
@@ -93,8 +116,8 @@ export default function ProductDetailPage() {
                             <ShopInfo style = {{fontSize: "20px", margin: "10px 0"}}>&lt;오둥이 빵집&gt;</ShopInfo>
                             <ShopInfo>영업 시간 : 08:30 ~ 19:00</ShopInfo>
                             <ShopInfo>매장 전화번호 : 02-546-7588</ShopInfo>
-                            <ShopInfo>매장 위치 : 서울특별시 강남구 역삼동</ShopInfo>
-                            <ShopInfo>매장 상세주소 : 서울특별시 강남구 테헤란로 231</ShopInfo>
+                            <ShopInfo>매장 위치 : {productDetails.location}</ShopInfo>
+                            <ShopInfo>매장 상세주소 : {productDetails.detail_location}</ShopInfo>
                         </ShopInfoBox>
                         <ShopButtonBox>
                             <ShopButton style = {{marginTop: "15%"}} onClick = {toggleDibs}>
@@ -110,31 +133,30 @@ export default function ProductDetailPage() {
                     <ProductInfoContainer>
                         <LeftBox>
                             <LeftInnerBox>
-                                <LabelBox>제품 이름</LabelBox>
-                                <DescriptionBox>민트초코맛 마늘바게트</DescriptionBox>
+                                <LabelBox>상품 이름</LabelBox>
+                                <DescriptionBox>{productDetails.product_name}</DescriptionBox>
                             </LeftInnerBox>
                             <LeftInnerBox>
                                 <LabelBox>남은 수량</LabelBox>
-                                <DescriptionBox>5개</DescriptionBox>
+                                <DescriptionBox>{productDetails.count}개</DescriptionBox>
                             </LeftInnerBox>
                             <LeftInnerBox>
                                 <LabelBox>개당 가격</LabelBox>
-                                <DescriptionBox>3,000원</DescriptionBox>
+                                <DescriptionBox>{productDetails.price.toLocaleString()}원</DescriptionBox>
                             </LeftInnerBox>
                             <LeftInnerBox>
                                 <LabelBox>제조 일자</LabelBox>
-                                <DescriptionBox>금일(2024.12.25) 오전 10시</DescriptionBox>
+                                <DescriptionBox>{productDetails.make_date}</DescriptionBox>
                             </LeftInnerBox>
                             <LeftInnerBox style = {{border: "none"}}>
                                 <LabelBox>판매 시간</LabelBox>
-                                <DescriptionBox>금일 오후 7시까지</DescriptionBox>
+                                <DescriptionBox>오늘 오후 7시까지</DescriptionBox>
                             </LeftInnerBox>
                         </LeftBox>
                         <RightBox>
-                            <SubTitle>제품설명 & 상세내용</SubTitle>
+                            <SubTitle>상품설명 & 상세내용</SubTitle>
                             <ProductDescription>
-                                김오둥 회심의 역작. 민트초코맛 마늘바게트 출시!<br /><br />
-                                ※ 이거 괴식 아닙니다. 치약 대신 쓰지마세요.
+                                {productDetails.info}
                             </ProductDescription>
                             <MiniTitle>구매수량 선택</MiniTitle>
                             <SelectPurchaseQuantity>
@@ -146,7 +168,7 @@ export default function ProductDetailPage() {
                     </ProductInfoContainer>
                     <PriceBox>
                         <PriceTitle>최종 구매 금액</PriceTitle>
-                        <TotalAmount>12,000원</TotalAmount>
+                        <TotalAmount>{(productDetails.price * quantity).toLocaleString()}원</TotalAmount>
                     </PriceBox>
                     <ButtonContainer>
                         <Button style = {{backgroundColor: "#F0E9DD", borderRadius: "0 0 0 12px"}}>장바구니 담기</Button>

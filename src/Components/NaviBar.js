@@ -20,7 +20,7 @@ export default function NaviBar() {
         const userType = Cookies.get('userType');
         setUserAuth(userType);
         console.log(userAuth);
-    }, [setUserAuth]);
+    }, [userAuth, setUserAuth]);
 
     const buyerMenuItems = [
         { to: '/Search', icon: search_icon, text: '검색' },
@@ -36,7 +36,16 @@ export default function NaviBar() {
         { to: '/ProductManagement', icon: cart_icon, text: '상품 관리' },
     ];
 
-    const menuItems = userLogin ? buyerMenuItems : userAuth === 'buyer' ? buyerMenuItems : sellerMenuItems;
+    // const menuItems = userLogin ? buyerMenuItems : userAuth === 'buyer' ? buyerMenuItems : sellerMenuItems;
+    let menuItems;
+
+    if (!userLogin || userAuth === 'buyer') {
+        menuItems = buyerMenuItems;
+    } else if (userLogin && userAuth === 'seller') {
+        menuItems = sellerMenuItems;
+    } else {
+        menuItems = buyerMenuItems; // 기본값 설정
+    }
 
     const handleMenuClick = (item) => {
         if (item.protected && !userLogin) {
