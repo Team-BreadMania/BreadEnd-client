@@ -16,8 +16,7 @@ export default function ProductManagement() {
     //판매 대기 제품 저장 배열
     const [waitProducts, setWaitProducts] = useState([]);
     //판매 완료 제품 저장 배열
-    const [sellProducts, setSellProducts] = useState([
-    ]);
+    const [sellProducts, setSellProducts] = useState([]);
     //판매중인 제품 개수
     const waitProductLength = waitProducts.length;
     //판매완료 제품 개수
@@ -26,17 +25,17 @@ export default function ProductManagement() {
     //판매 대기 제품 api불러오기
     const WaitItemData = async (accessToken) => {
         try {
-            const response = await axios.get('https://breadend.shop/seller/show/wait', {
+            const response = await axios.get('http://breadend.shop/seller/show/wait', {
                 headers: {
                     'Content-Type': 'application/json',
-                    Authorization: `Bearer ${accessToken}`, 
+                    Authorization: `Bearer ${accessToken}`, // accessToken을 헤더에 포함
                 },
             });
-    
+
             if (response.status === 200) {
-                console.log('유저정보 불러오기 성공:', response.data);
-    
-                const transformedProducts = response.data.map(product => ({
+                console.log('판매 대기 상품 불러오기 성공:', response.data);
+
+                const transformedProducts = response.data.map((product) => ({
                     img: product.imgpaths[0], // 첫 번째 이미지 경로 사용
                     id: product.productid,
                     name: product.itemname,
@@ -47,14 +46,22 @@ export default function ProductManagement() {
                     createdAt: product.makedate, // 등록일
                     saleAt: product.expireddate, // 만료일
                 }));
-    
+
                 setWaitProducts(transformedProducts);
-            }
-            else{
+            } else {
                 console.log('데이터 가져오기 실패:', response.data);
             }
         } catch (error) {
-            console.error('판매중 상품 데이터를 가져오는 데 실패했습니다:', error.response);
+            if (error.response) {
+                // 서버 응답 있음
+                console.error('서버 응답 에러:', error.response.status, error.response.data);
+            } else if (error.request) {
+                // 요청은 보냈으나 응답 없음
+                console.error('서버 응답 없음:', error.request);
+            } else {
+                // 요청 설정 중 에러
+                console.error('요청 에러:', error.message);
+            }
         }
     };
     //판매 완료 제품 api 불러오기
@@ -63,14 +70,14 @@ export default function ProductManagement() {
             const response = await axios.get('https://breadend.shop/seller/show/sell', {
                 headers: {
                     'Content-Type': 'application/json',
-                    Authorization: `Bearer ${accessToken}`, 
+                    Authorization: `Bearer ${accessToken}`, // accessToken을 헤더에 포함
                 },
             });
-    
+
             if (response.status === 200) {
-                console.log('유저정보 불러오기 성공:', response.data);
-    
-                const transformedProducts = response.data.map(product => ({
+                console.log('판매 완료 상품 불러오기 성공:', response.data);
+
+                const transformedProducts = response.data.map((product) => ({
                     img: product.imgpaths[0], // 첫 번째 이미지 경로 사용
                     id: product.productid,
                     name: product.itemname,
@@ -81,21 +88,57 @@ export default function ProductManagement() {
                     createdAt: product.makedate, // 등록일
                     saleAt: product.expireddate, // 만료일
                 }));
-    
+
                 setSellProducts(transformedProducts);
-            }
-            else{
+            } else {
                 console.log('데이터 가져오기 실패:', response.data);
             }
         } catch (error) {
-            console.error('판매완료 상품 데이터를 가져오는 데 실패했습니다:', error.response);
+            if (error.response) {
+                // 서버 응답 있음
+                console.error('서버 응답 에러:', error.response.status, error.response.data);
+            } else if (error.request) {
+                // 요청은 보냈으나 응답 없음
+                console.error('서버 응답 없음:', error.request);
+            } else {
+                // 요청 설정 중 에러
+                console.error('요청 에러:', error.message);
+            }
         }
     };
-    //유저 토큰 바뀔때마다 불러오기    
+    //판매 완료 제품 api 불러오기
+    const reservItemData = async (accessToken) => {
+        try {
+            const response = await axios.get('https://breadend.shop/seller/update', {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${accessToken}`, // accessToken을 헤더에 포함
+                },
+            });
+
+            if (response.status === 200) {
+                console.log('예약 상품 불러오기 성공:', response.data);
+            } else {
+                console.log('데이터 가져오기 실패:', response.data);
+            }
+        } catch (error) {
+            if (error.response) {
+                // 서버 응답 있음
+                console.error('서버 응답 에러:', error.response.status, error.response.data);
+            } else if (error.request) {
+                // 요청은 보냈으나 응답 없음
+                console.error('서버 응답 없음:', error.request);
+            } else {
+                // 요청 설정 중 에러
+                console.error('요청 에러:', error.message);
+            }
+        }
+    };
     useEffect(() => {
         if (accessToken) {
             WaitItemData(accessToken);
             SellItemData(accessToken);
+            reservItemData(accessToken);
         }
     }, [accessToken]); // accessToken이 변경될 때마다 사용자 데이터를 가져옴
 
@@ -112,7 +155,7 @@ export default function ProductManagement() {
                 <StatsContainer>
                     <StatBox>
                         <StatLabel>전체</StatLabel>
-                        <StatValue>{waitProductLength+sellProductLenght}</StatValue>
+                        <StatValue>{waitProductLength + sellProductLenght}</StatValue>
                     </StatBox>
                     <StatBox>
                         <StatLabel>판매중</StatLabel>
@@ -173,7 +216,7 @@ export default function ProductManagement() {
                     ))}
                 </ProductGrid>
                 <ProductGrid>
-                        {sellProducts.map((product) => (
+                    {sellProducts.map((product) => (
                         <ProductRow key={product.id}>
                             <ProductCell mobileHidden>
                                 <input type="checkbox" />
