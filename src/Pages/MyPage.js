@@ -13,12 +13,12 @@ import axios from 'axios';
 
 export default function MyPageBuyer() {
     const [isMobile, setIsMobile] = useState(false);
-    
+
     const { userAuth, setUserAuth } = useContext(AuthContext);
     const [menuVisible, setMenuVisible] = useState(false);
 
     const accessToken = Cookies.get('accessToken');
-    
+
     useEffect(() => {
         const userType = Cookies.get('userType');
         setUserAuth(userType);
@@ -271,7 +271,7 @@ const MenuButton = styled.img`
     width: 24px;
     height: 24px;
     margin-right: 10px;
-    background-color:none;
+    background-color: none;
 `;
 
 const MenuTitle = styled.div`
