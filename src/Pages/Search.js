@@ -11,9 +11,10 @@ export default function Search() {
     // 최근 검색어 로컬스토리지에서 불러오기
     useEffect(() => {
         const storedSearches = JSON.parse(localStorage.getItem('recentSearches')) || [];
+        console.log("불러온 검색어: ", storedSearches); // 저장된 데이터를 확인
         setRecentSearches(storedSearches);
     }, []);
-
+    
     // 검색어 입력 핸들러
     const handleSearchChange = (e) => {
         setSearchTerm(e.target.value);
@@ -208,42 +209,58 @@ export default function Search() {
     `;
 
     const SearchTag = styled.div`
-        display: flex;
-        align-items: center;
-        padding: 10px;
-        margin: 5px;
-        background-color: #f0e9dd;
-        border-radius: 20px;
-        font-size: 14px;
-        cursor: pointer;
-        transition: background-color 0.3s;
+    display: flex; /* 가로 정렬 */
+    align-items: center; /* 수직 가운데 정렬 */
+    flex-direction: row; /* 콘텐츠를 가로 방향으로 배치 */
+    justify-content: space-between; /* 텍스트와 버튼 간 적절한 간격 */
+    padding: 8px 12px; /* 내부 여백 조정 */
+    margin: 5px;
+    background-color: #f0e9dd; /* 배경색 */
+    border-radius: 20px; /* 둥근 모서리 */
+    font-size: 14px; /* 텍스트 크기 */
+    cursor: pointer;
+    transition: background-color 0.3s;
 
-        &:hover {
-            background-color: #e0d8c8;
-        }
+    white-space: nowrap; /* 텍스트 줄바꿈 방지 */
+    overflow: hidden; /* 텍스트가 길면 잘리도록 설정 */
+    text-overflow: ellipsis; /* 텍스트가 잘릴 때 "..." 표시 */
 
-        @media (max-width: 768px) {
-            padding: 8px;
-            font-size: 12px;
-        }
-    `;
+    &:hover {
+        background-color: #e0d8c8;
+    }
 
-    const DeleteButton = styled.button`
-        margin-left: 10px;
-        background: none;
-        border: none;
-        color: #b22222;
-        cursor: pointer;
-        font-size: 14px;
+    @media (max-width: 768px) {
+        padding: 6px 10px; /* 모바일에서 적절한 여백 */
+        font-size: 12px;
+    }
+`;
 
-        &:hover {
-            font-weight: bold;
-        }
 
-        @media (max-width: 768px) {
-            font-size: 12px;
-        }
-    `;
+
+   const DeleteButton = styled.button`
+   margin-left: 5px; /* 검색어와 버튼 간 간격 */
+   background: none; /* 기본 배경 제거 */
+   border: none; /* 테두리 제거 */
+   color: #000000  ; /* 기본 텍스트 색상 */
+   cursor: pointer;
+   font-size: 12px; /* 폰트 크기 조정 */
+   padding: 2px 4px; /* 버튼 내부 여백 최소화 */
+   line-height: 1.3; /* 텍스트 정렬 문제 방지 */
+   transition: background-color 0.3s, color 0.3s; /* 부드러운 전환 효과 */
+
+   &:hover {
+    background-color: #ffffff; /* 호버 시 배경색 흰색으로 변경 */
+    color: #000000; /* 텍스트 색상 유지 */
+    border-radius: 4px; /* 모서리 둥글게 */
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2); /* 약간의 그림자 효과 */
+   }
+
+   @media (max-width: 768px) {
+    font-size: 10px; /* 모바일 화면에서 더 작은 크기 */
+  }
+` ;
+
+
 
     const NoRecentSearches = styled.div`
         font-size: 14px;

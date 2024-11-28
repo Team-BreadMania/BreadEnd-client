@@ -21,7 +21,7 @@ function SearchResults() {
     const dummyData = {
         빵: [bannerImg_01, bannerImg_02, bannerImg_03,bannerImg_04 ],
         빵집: [bannerImg_02, bannerImg_03, bannerImg_01,bannerImg_04],
-        내주변: [bannerImg_03, bannerImg_01, bannerImg_02,bannerImg_04],
+       
     };
 
     const settings = {
