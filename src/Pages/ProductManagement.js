@@ -21,6 +21,8 @@ export default function ProductManagement() {
     const [sellProducts, setSellProducts] = useState([]);
     //구매 예약 제품 저장 배열
     const [ongoingProducts, setOngoinProducts] = useState([]);
+     // 선택된 상품 ID들을 저장할 상태 추가
+     const [selectedProducts, setSelectedProducts] = useState([]);
     //판매중인 제품 개수
     const waitProductLength = waitProducts.length;
     //판매예약 제품 개수
@@ -41,6 +43,31 @@ export default function ProductManagement() {
             window.removeEventListener('resize', resizeHandler);
         };
     }, []);
+
+    // 전체 선택/해제 핸들러
+    const handleSelectAll = (event) => {
+        const isChecked = event.target.checked;
+        if (isChecked) {
+            // 현재 보여지는 모든 제품의 ID 선택
+            const allProductIds = [
+                ...waitProducts.map(p => p.productid),
+                ...ongoingProducts.map(p => p.productid),
+                ...sellProducts.map(p => p.productid)
+            ];
+            setSelectedProducts(allProductIds);
+        } else {
+            // 모든 선택 해제
+            setSelectedProducts([]);
+        }
+    };
+     // 개별 상품 선택/해제 핸들러
+     const handleProductSelect = (productId) => {
+        setSelectedProducts(prev => 
+            prev.includes(productId) 
+                ? prev.filter(id => id !== productId)
+                : [...prev, productId]
+        );
+    };
 
     const fetchwaitItem = async () => {
         try {
@@ -87,6 +114,39 @@ export default function ProductManagement() {
             // Optionally, set an error state to show to the user
         }
     };
+
+    // 상품 삭제 핸들러
+    const handleDeleteProducts = async () => {
+        try {
+            // 선택된 각 상품에 대해 삭제 요청
+            const deletePromises = selectedProducts.map(productId => 
+                axios.delete(`https://breadend.shop/seller/delete?productid=${productId}`, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${accessToken}`,
+                    },
+                })
+            );
+
+            await Promise.all(deletePromises);
+
+            // 삭제 후 상품 목록 새로고침
+            await Promise.all([
+                fetchwaitItem(),
+                fetchsellItem(),
+                fetchOngoingItem()
+            ]);
+
+            // 선택 상태 초기화
+            setSelectedProducts([]);
+
+            alert('선택한 상품들이 삭제되었습니다.');
+        } catch (error) {
+            console.error('상품 삭제 중 오류:', error);
+            alert('상품 삭제에 실패했습니다. 다시 시도해주세요.');
+        }
+    };
+
     useEffect(() => {
         if (accessToken) {
             fetchwaitItem();
@@ -127,9 +187,11 @@ export default function ProductManagement() {
 
                     <ProductGrid>
                         <ProductHeader>
-                            <div>
-                                <input type="checkbox" />
-                            </div>
+                            <input 
+                                type="checkbox" 
+                                checked={selectedProducts.length === waitProductLength + ongoingProductsLength + sellProductLenght}
+                                onChange={handleSelectAll}
+                            />
                             <div>No</div>
                             <div>상품명</div>
                             <div>판매가</div>
@@ -142,9 +204,13 @@ export default function ProductManagement() {
 
                         {waitProducts.map((product) => (
                             <ProductRow key={product.productid}>
-                                <ProductCell mobileHidden>
-                                    <input type="checkbox" />
-                                </ProductCell>
+                                <input 
+                                    type="checkbox" 
+                                    value={product.productid}
+                                    checked={selectedProducts.includes(product.productid)}
+                                    onChange={() => handleProductSelect(product.productid)}
+                                    styled={{margin:'0px'}}
+                                />
                                 <ProductCell label="No">{product.productid}</ProductCell>
                                 <ProductCell label="상품명">
                                     <ProductInfo>
@@ -169,9 +235,12 @@ export default function ProductManagement() {
                     <ProductGrid>
                         {ongoingProducts.map((product) => (
                             <ProductRow key={product.productid}>
-                                <ProductCell mobileHidden>
-                                    <input type="checkbox" />
-                                </ProductCell>
+                                <input 
+                                    type="checkbox" 
+                                    value={product.productid}
+                                    checked={selectedProducts.includes(product.productid)}
+                                    onChange={() => handleProductSelect(product.productid)}
+                                />
                                 <ProductCell label="No">{product.productid}</ProductCell>
                                 <ProductCell label="상품명">
                                     <ProductInfo>
@@ -196,9 +265,12 @@ export default function ProductManagement() {
                     <ProductGrid>
                         {sellProducts.map((product) => (
                             <ProductRow key={product.productid}>
-                                <ProductCell mobileHidden>
-                                    <input type="checkbox" />
-                                </ProductCell>
+                                <input 
+                                    type="checkbox" 
+                                    value={product.productid}
+                                    checked={selectedProducts.includes(product.productid)}
+                                    onChange={() => handleProductSelect(product.productid)}
+                                />                               
                                 <ProductCell label="No">{product.productid}</ProductCell>
                                 <ProductCell label="상품명">
                                     <ProductInfo>
@@ -220,7 +292,10 @@ export default function ProductManagement() {
                             </ProductRow>
                         ))}
                     </ProductGrid>
-                    <ButtonContainer><EditButton>수정</EditButton><DeleteButton>삭제</DeleteButton></ButtonContainer>
+                    <ButtonContainer>
+                        <EditButton>수정</EditButton>
+                        <DeleteButton onClick={handleDeleteProducts}>삭제</DeleteButton>
+                    </ButtonContainer>
 
                 </MainContent>
 
@@ -291,7 +366,7 @@ const Container = styled.div`
     min-height: 100vh;
     background-color: #f0e9dd;
     height:100%;
-    padding-bottom:50px;
+    padding-bottom:150px;
 `;
 
 const Header = styled.header`
@@ -390,12 +465,12 @@ const ProductGrid = styled.div`
 const ProductHeader = styled.div`
     display: grid;
     grid-template-columns: 40px 60px 1.5fr 1fr 1fr 1fr 0.85fr 1fr 1fr;
+    gap: 0.8rem;
     padding: 1rem 0.7rem;
     background: #d3b790;
     font-weight: bold;
     color: #374151;
     border-bottom: 1px solid #e5e7eb;
-    gap: 0.8rem;
 
     @media (max-width: 1024px) {
         display: none;
@@ -405,7 +480,7 @@ const ProductHeader = styled.div`
 const ProductRow = styled.div`
     display: grid;
     grid-template-columns: 40px 60px 1.5fr 1fr 1fr 1fr 0.85fr 1fr 1fr;
-    gap: 0.7rem;
+    gap: 0.8rem;
     padding: 1rem 0.7rem;
     align-items: center;
     border-bottom: 1px solid #e5e7eb;
@@ -541,22 +616,24 @@ const ButtonContainer = styled.div`
     display:flex;   
     align-items:right;
     margin:20px 0px;
+    float:right;
 
 `;
 const EditButton = styled.div`
     background-color:#1cc88a;
     color:white;
     border-radius:5px;
-    padding:5px 10px;
+    padding:8px 16px;
     &:hover{
         background-color:#19b47c;
     }
+    margin-right:8px;
 `
 const DeleteButton = styled.div`
     background-color:#dc2e1c;
     color:white;
     border-radius:5px;
-    padding:5px 10px;
+    padding:8px 16px;
     &:hover{
         background-color:#c62919; 
     }
