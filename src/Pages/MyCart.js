@@ -1,76 +1,67 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import axios from 'axios';
 import styled from 'styled-components';
+import Cookies from 'js-cookie';
 import "../Fonts/font.css";
-import bread_img from "../Images/bread_img.png";
 import X_icon from "../Images/X_icon.png";
 import trachcan_icon from "../Images/trashcan_icon.png";
 
 export default function MyCart() {
+
+    const [cartItems, setCartItems] = useState([]); // 장바구니 항목 상태
+    const [totalPrice, setTotalPrice] = useState(0); // 전체 금액 상태
+
+    useEffect(() => {
+        const fetchCartItems = async () => {
+            const accessToken = Cookies.get("accessToken");
+            
+            try {
+                const response = await axios.get('https://breadend.shop/cart/view', {
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`,
+                    },
+                });
+                setCartItems(response.data);
+                
+                const total = response.data.reduce((acc, item) => acc + item.price * item.count, 0);
+                setTotalPrice(total);
+            } catch (error) {
+                console.error("장바구니 항목을 가져오는데 실패했습니다.", error);
+            }
+        };
+
+        fetchCartItems();
+    }, []);
 
     return (
         <Container>
             <MyCartContainer>
                 <Title>장바구니 목록</Title>
                 <MyCartBox>
-                    <ProductContainer>
-                        <CheckBoxContainer>
-                            <CheckBox/>
-                        </CheckBoxContainer>
-                        <ImageBox>
-                            <ProductImage/>
-                        </ImageBox>
-                        <ProductInfoBox>
-                            <ShopName>그리다 빵집</ShopName>
-                            <ProductName>[JMT 생크림 소금빵]</ProductName>
-                            <ProductQuantity>수량 : 1개</ProductQuantity>
-                            <ProductPrice>2,000원</ProductPrice>
-                        </ProductInfoBox>
-                        <DeleteBox>
-                            <DeleteIcon/>
-                        </DeleteBox>
-                    </ProductContainer>
-                    <ProductContainer>
-                        <CheckBoxContainer>
-                            <CheckBox/>
-                        </CheckBoxContainer>
-                        <ImageBox>
-                            <ProductImage/>
-                        </ImageBox>
-                        <ProductInfoBox>
-                            <ShopName>그리다 빵집</ShopName>
-                            <ProductName>[JMT 생크림 소금빵]</ProductName>
-                            <ProductQuantity>수량 : 1개</ProductQuantity>
-                            <ProductPrice>2,000원</ProductPrice>
-                        </ProductInfoBox>
-                        <DeleteBox>
-                            <DeleteIcon/>
-                        </DeleteBox>
-                    </ProductContainer>
-                    <ProductContainer>
-                        <CheckBoxContainer>
-                            <CheckBox/>
-                        </CheckBoxContainer>
-                        <ImageBox>
-                            <ProductImage/>
-                        </ImageBox>
-                        <ProductInfoBox>
-                            <ShopName>그리다 빵집</ShopName>
-                            <ProductName>[JMT 생크림 소금빵]</ProductName>
-                            <ProductQuantity>수량 : 1개</ProductQuantity>
-                            <ProductPrice>2,000원</ProductPrice>
-                        </ProductInfoBox>
-                        <DeleteBox>
-                            <DeleteIcon/>
-                        </DeleteBox>
-                    </ProductContainer>
+                    {cartItems.map((item) => (
+                        <ProductContainer key = {item.productid}>
+                            <CheckBoxContainer>
+                                <CheckBox />
+                            </CheckBoxContainer>
+                            <ImageBox>
+                                <ProductImage img = {item.imgpaths[0]}/>
+                            </ImageBox>
+                            <ProductInfoBox>
+                                <ShopName>그리다 빵집</ShopName>
+                                <ProductQuantity>수량 : {item.count}개</ProductQuantity>
+                                <ProductPrice>{item.price.toLocaleString()}원</ProductPrice>
+                            </ProductInfoBox>
+                            <DeleteBox>
+                                <DeleteIcon />
+                            </DeleteBox>
+                        </ProductContainer>
+                    ))}
                 </MyCartBox>
                 <TrashBox>
                     <TrashIcon/>
                     <Text>선택상품 일괄삭제</Text>
                 </TrashBox>
-                <TotalPrice>선택된 상품 금액 = 4,000원 / 전체 상품 금액 = 6,000원</TotalPrice>
+                <TotalPrice>선택된 상품 금액 = {totalPrice.toLocaleString()}원 / 전체 상품 금액 = 6,000원</TotalPrice>
                 <BuyBox>
                     <SelectedBuyButton>선택한 상품만 구매예약</SelectedBuyButton>
                     <TotalBuyButton>전체 상품 구매예약</TotalBuyButton>
@@ -192,7 +183,7 @@ const ImageBox = styled.div` // 상품 이미지 컨테이너
 const ProductImage = styled.div` // 상품 이미지
     width: 100%;
     height: 90%;
-    background-image: url(${bread_img});
+    background-image: url(${props => props.img});
     background-size: cover;
 
     @media (max-width: 500px) {

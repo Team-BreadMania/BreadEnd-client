@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import styled from 'styled-components';
 import Slider from 'react-slick';
@@ -9,11 +8,10 @@ import "slick-carousel/slick/slick-theme.css";
 import Review from "../Components/Review";
 import Map from "../Components/ShopLocation";
 import MobilePD from "../Components/MobilePD";
-import profile_img from "../Images/profileimg.png";
-import shop_img from "../Images/breadshop_img.jpg";
 import dibs_before from "../Images/dibs_before.png";
 import dibs_after from "../Images/dibs_after.png";
 import search_icon from "../Images/search_icon.png";
+import Cookies from 'js-cookie';
 
 export default function ProductDetailPage() {
 
@@ -30,10 +28,10 @@ export default function ProductDetailPage() {
     };
 
     const location = useLocation(); 
+    const navigate = useNavigate();
     const query = new URLSearchParams(location.search); 
     const id = query.get("id"); 
     const [productDetails, setProductDetails] = useState(null); // 상품 상세 정보를 저장할 상태
-    const [shopAddress, setShopAddress] = useState("서울특별시 강남구 테헤란로 231"); // 매장 상세주소 상태
     const [dibs, setDibs] = useState(false); // 찜하기 상태
     const [quantity, setQuantity] = useState(1); // 구매수량 초기상태
     const [activeMenu, setActiveMenu] = useState("매장 리뷰"); // 현재 활성화상태 메뉴
@@ -42,7 +40,7 @@ export default function ProductDetailPage() {
     useEffect(() => {
         const fetchProductDetails = async () => {
             try {
-                const response = await axios.get(`http://43.203.241.42/detailpage/details?productid=${id}`);
+                const response = await axios.get(`https://breadend.shop/detailpage/details?productid=${id}`);
                 console.log("API 응답 데이터 :", response.data);
                 setProductDetails(response.data); 
             } catch (error) {
@@ -85,6 +83,57 @@ export default function ProductDetailPage() {
         setActiveMenu(menu); 
     };
 
+    const addToCart = async () => { // 장바구니 상품추가 메서드
+        const accessToken = Cookies.get("accessToken"); 
+        
+        try {
+            const response = await axios.post('https://breadend.shop/detailpage/add/cart',
+                {
+                    productid: id, 
+                    count: quantity 
+                },
+                {
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`,
+                    },
+                }
+            );
+
+            if (response.status === 200) {
+                alert("장바구니에 상품이 추가되었습니다.");
+            }
+        } catch (error) {
+            alert("장바구니 상품추가에 실패하였습니다. 다시 시도해 주세요.");
+            console.error("API 요청 에러:", error);
+        }
+    };
+
+    const addToOrder = async () => { // 상품 바로구매 메서드
+        const accessToken = Cookies.get("accessToken");  
+        
+        try {
+            const response = await axios.post('https://breadend.shop/detailpage/add/order',
+                {
+                    productid: id, 
+                    count: quantity 
+                },
+                {
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`, 
+                    },
+                }
+            );
+
+            if (response.status === 200) {
+                alert("구매 예약이 완료되었습니다.");
+                navigate("/Home");
+            }
+        } catch (error) {
+            alert("구매 예약에 실패하였습니다. 다시 시도해 주세요.");
+            console.error("API 요청 에러:", error);
+        }
+    };
+
     if (!productDetails) {
         return <div>로딩 중...</div>;
     }
@@ -94,7 +143,7 @@ export default function ProductDetailPage() {
             <TopContainer>
                 <ProductImageBox>
                     <ImageSlider {...settings}>
-                        {productDetails.imgpath.map((image, index) => (
+                        {productDetails.product_imgpath.map((image, index) => (
                             <Slide key = {index}>
                                 <Image src = {image}/>
                             </Slide>
@@ -105,17 +154,17 @@ export default function ProductDetailPage() {
                 <ProductInfoBox>
                     <Header>
                         <ProfileBox>
-                            <Profile/>
+                            <Profile img = {productDetails.user_profile}/>
                             <NickName>{productDetails.seller_name}</NickName>
                         </ProfileBox>
                         <RegistrationTime>등록시간 : {new Date(productDetails.itemregistdate).toLocaleString()}</RegistrationTime>
                     </Header>
                     <ShopContainer>
-                        <ShopImage/>
+                        <ShopImage img = {productDetails.shop_thumbnail}/>
                         <ShopInfoBox>
-                            <ShopInfo style = {{fontSize: "20px", margin: "10px 0"}}>&lt;오둥이 빵집&gt;</ShopInfo>
-                            <ShopInfo>영업 시간 : 08:30 ~ 19:00</ShopInfo>
-                            <ShopInfo>매장 전화번호 : 02-546-7588</ShopInfo>
+                            <ShopInfo style = {{fontSize: "20px", margin: "10px 0"}}>&lt;{productDetails.shop_name}&gt;</ShopInfo>
+                            <ShopInfo>영업 시간 : {productDetails.opentime}</ShopInfo>
+                            <ShopInfo>매장 전화번호 : {productDetails.shop_number}</ShopInfo>
                             <ShopInfo>매장 위치 : {productDetails.location}</ShopInfo>
                             <ShopInfo>매장 상세주소 : {productDetails.detail_location}</ShopInfo>
                         </ShopInfoBox>
@@ -150,7 +199,7 @@ export default function ProductDetailPage() {
                             </LeftInnerBox>
                             <LeftInnerBox style = {{border: "none"}}>
                                 <LabelBox>판매 시간</LabelBox>
-                                <DescriptionBox>오늘 오후 7시까지</DescriptionBox>
+                                <DescriptionBox>{productDetails.expired_date}</DescriptionBox>
                             </LeftInnerBox>
                         </LeftBox>
                         <RightBox>
@@ -171,8 +220,8 @@ export default function ProductDetailPage() {
                         <TotalAmount>{(productDetails.price * quantity).toLocaleString()}원</TotalAmount>
                     </PriceBox>
                     <ButtonContainer>
-                        <Button style = {{backgroundColor: "#F0E9DD", borderRadius: "0 0 0 12px"}}>장바구니 담기</Button>
-                        <Button style = {{backgroundColor: "#D3B795", borderRadius: "0 0 12px 0"}}>바로 구매예약</Button>
+                        <Button style = {{backgroundColor: "#F0E9DD", borderRadius: "0 0 0 12px"}} onClick = {addToCart}>장바구니 담기</Button>
+                        <Button style = {{backgroundColor: "#D3B795", borderRadius: "0 0 12px 0"}} onClick = {addToOrder}>바로 구매예약</Button>
                     </ButtonContainer>
                 </ProductInfoBox>
                 }
@@ -187,8 +236,8 @@ export default function ProductDetailPage() {
                     </TogleMenu>
                 </MenuBox>
                 <ContentBox>
-                    {activeMenu === "매장 리뷰" && <ReviewContainer><Review/></ReviewContainer>}
-                    {activeMenu === "매장 위치(지도)" && <MapContainer><Map address = {shopAddress}/></MapContainer>}
+                    {activeMenu === "매장 리뷰" && <ReviewContainer><Review productId = {id}/></ReviewContainer>}
+                    {activeMenu === "매장 위치(지도)" && <MapContainer><Map address = {productDetails.detail_location}/></MapContainer>}
                 </ContentBox>
             </BottomContainer>
             <Void/>
@@ -374,7 +423,7 @@ const Profile = styled.div` // 판매자 프로필
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background-image: url(${profile_img});
+    background-image: url(${props => props.img});
     background-size: cover;
 `;
 
@@ -382,6 +431,7 @@ const NickName = styled.div` // 판매자 닉네임
     font-size: 12.5px;
     font-weight: bold;
     font-family: maple-font;
+    margin-left: 5px;
 `;
 
 const RegistrationTime = styled.div` // 판매상품 등록시간
@@ -401,7 +451,7 @@ const ShopContainer = styled.div` // 매장정보 컨테이너
 const ShopImage = styled.div` // 매장사진
     width: 30%;
     height: 100%;
-    background-image: url(${shop_img});
+    background-image: url(${props => props.img});
     background-size: cover;
 `;
 

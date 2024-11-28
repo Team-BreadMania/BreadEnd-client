@@ -27,7 +27,7 @@ export default function SellerHome() {
     // 모바일 뷰, 태블릿 뷰 식별
     const resizeHandler = () => {
         setIsMobile(window.innerWidth <= 550);
-        setIsTablet(window.innerWidth >= 768 && window.innerWidth <= 1100);
+        setIsTablet(window.innerWidth <= 1100);
     };
 
     // 뷰포트 확인 후 조절
@@ -74,7 +74,7 @@ export default function SellerHome() {
     const fetchUserData = async (accessToken) => {
         try {
             const response = await axios.get('http://43.203.241.42/user/get-userinfo', {
-                headers: { 
+                headers: {
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${accessToken}`, // accessToken을 헤더에 포함
                 },
@@ -150,6 +150,8 @@ export default function SellerHome() {
                         <StoreDetailLocation>상세주소 : {detailLocation}</StoreDetailLocation>
                     </StoreLocationContainer>
                 </StoreContainer>
+                {isTablet ? <TabletEditContainer /> : null}
+
                 <TextContainer>리뷰조회</TextContainer>
                 <div style={{ margin: '0 0 10px 5px' }}>등록된 리뷰가 없습니다</div>
                 <TextContainer>문의내역</TextContainer>
@@ -217,9 +219,11 @@ const Container = styled.div`
     display: flex;
     flex-direction: column;
     width: 100%;
-    @media (max-width: 800px) {
+    padding: 0 10%;
+    @media (max-width: 1200px) {
         padding: 10px 0 0 0;
     }
+    box-sizing: border-box;
 `;
 //해당 정보 명시 컨테이너
 const TextContainer = styled.div`
@@ -277,7 +281,7 @@ const StoreDetailPage = styled.div`
     align-items: center;
     border-bottom: 1px black solid;
     justify-content: space-between;
-    @media (min-width: 700px) {
+    @media (min-width: 550px) {
         border-bottom: 0px solid black;
     }
     @media (max-width: 1100px) {
@@ -291,7 +295,7 @@ const StoreImageContainer = styled.div`
     background-image: url(${shop_img});
     background-size: cover;
     background-position: center center;
-    @media (min-width: 700px) {
+    @media (min-width: 550px) {
         border-radius: 0 0 0 18px;
     }
     @media (max-width: 1500px) {
@@ -318,12 +322,12 @@ const StoreDetailInform = styled.div`
     text-align: left;
 `;
 const StoreWorkTime = styled.div`
-    font-size: 20px;
+    font-size: 18px;
     @media (max-width: 1500px) {
-        font-size: 17.5px;
+        font-size: 15.5px;
     }
     @media (max-width: 1350px) {
-        font-size: 16px;
+        font-size: 14px;
     }
     @media (max-width: 1200px) {
         font-size: 14.5px;
@@ -334,12 +338,12 @@ const StoreWorkTime = styled.div`
 `;
 
 const StoreNumber = styled.div`
-    font-size: 20px;
+    font-size: 18px;
     @media (max-width: 1500px) {
-        font-size: 17.5px;
+        font-size: 15.5px;
     }
     @media (max-width: 1350px) {
-        font-size: 16px;
+        font-size: 14px;
     }
     @media (max-width: 1200px) {
         font-size: 14.5px;
@@ -349,12 +353,12 @@ const StoreNumber = styled.div`
     }
 `;
 const StoreLocation = styled.div`
-    font-size: 20px;
+    font-size: 18px;
     @media (max-width: 1500px) {
-        font-size: 17.5px;
+        font-size: 15.5px;
     }
     @media (max-width: 1350px) {
-        font-size: 16px;
+        font-size: 14px;
     }
     @media (max-width: 1200px) {
         font-size: 14.5px;
@@ -364,12 +368,12 @@ const StoreLocation = styled.div`
     }
 `;
 const StoreDetailLocation = styled.div`
-    font-size: 20px;
+    font-size: 18px;
     @media (max-width: 1500px) {
-        font-size: 17.5px;
+        font-size: 15.5px;
     }
     @media (max-width: 1350px) {
-        font-size: 16px;
+        font-size: 14px;
     }
     @media (max-width: 1200px) {
         font-size: 14.5px;

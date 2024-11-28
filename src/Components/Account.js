@@ -13,8 +13,9 @@ export default function Account() {
     const [registDate, setRegistDate] = useState('2024-11-13');
     const [detail, setDetail] = useState('자기소개');
     const [location, setLocation] = useState('지역');
+    const [userImg, setUserImg] = useState(null);
     const [number, setNumber] = useState(null);
-    const [temp, setTemp] = useState(75);
+    const [temp, setTemp] = useState(80);
     const [view, setViwe] = useState(false);
 
     const accessToken = Cookies.get('accessToken');
@@ -36,11 +37,12 @@ export default function Account() {
 
             if (response.status === 200) {
                 console.log('유저 상세 정보 불러오기 성공:', response.data);
-                const { nickname, phonenumber, location, regist_date } = response.data;
+                const { nickname, phonenumber, location, regist_date, profileIMG } = response.data;
                 setNickname(nickname);
                 setNumber(phonenumber);
                 setLocation(location);
                 setRegistDate(regist_date);
+                setUserImg(profileIMG);
             }
         } catch (error) {
             console.log(error.response);
@@ -73,7 +75,7 @@ export default function Account() {
     return (
         <Container>
             <UserContainer>
-                <UserImage />
+                <UserImage src={userImg} />
                 <AllInformContainer>
                     <UserUpperContainer>
                         <UserInform>
@@ -188,7 +190,7 @@ const UserLocation = styled.div`
 const UserImage = styled.div`
     width: 100px;
     height: 100px;
-    background-image: url(${Avata});
+    background-image: url(${(props) => props.src||Avata});
     background-size: contain;
     background-position: center;
     background-repeat: no-repeat;

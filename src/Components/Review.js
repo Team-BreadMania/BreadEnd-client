@@ -5,10 +5,9 @@ import styled from 'styled-components';
 import StarRatings from 'react-star-ratings';
 import { Bar } from 'react-chartjs-2';
 import { Chart, registerables } from 'chart.js';
-import profile_img from '../Images/chocosora.jpg';
 Chart.register(...registerables);
 
-export default function Review() {
+export default function Review({ productId }) {
     const [reviews, setReviews] = useState([]); // 리뷰
     const [averageRating, setAverageRating] = useState(0); // 평균 별점
     const [ratingDistribution, setRatingDistribution] = useState([0, 0, 0, 0, 0]); // 별점 분포도
@@ -30,30 +29,28 @@ export default function Review() {
     }, []);
 
     useEffect(() => {
-        const dummyReviews = [
-            { id: 1, rating: 5 },
-            { id: 2, rating: 5 },
-            { id: 3, rating: 5 },
-            { id: 4, rating: 5 },
-            { id: 5, rating: 5 },
-            { id: 6, rating: 4 },
-            { id: 7, rating: 4 },
-            { id: 8, rating: 4 },
-            { id: 9, rating: 4 },
-            { id: 10, rating: 3 },
-        ];
+        const fetchReviews = async () => {
+            try {
+                const response = await axios.get(`https://breadend.shop/detailpage/review?productid=${productId}`);
+                const fetchedReviews = response.data;
+                
+                setReviews(fetchedReviews);
 
-        setReviews(dummyReviews);
+                const totalRating = fetchedReviews.reduce((acc, review) => acc + review.rating, 0);
+                setAverageRating((totalRating / fetchedReviews.length).toFixed(1));
 
-        const totalRating = dummyReviews.reduce((acc, review) => acc + review.rating, 0);
-        setAverageRating((totalRating / dummyReviews.length).toFixed(1));
+                const distribution = new Array(5).fill(0);
+                fetchedReviews.forEach((review) => {
+                    distribution[review.rating - 1] += 1;
+                });
+                setRatingDistribution([distribution[4], distribution[3], distribution[2], distribution[1], distribution[0]]);
+            } catch (error) {
+                console.error("리뷰 데이터를 가져오는데 실패했습니다.", error);
+            }
+        };
 
-        const distribution = new Array(5).fill(0);
-        dummyReviews.forEach((review) => {
-            distribution[review.rating - 1] += 1;
-        });
-        setRatingDistribution([distribution[4], distribution[3], distribution[2], distribution[1], distribution[0]]);
-    }, []);
+        fetchReviews();
+    }, [productId]); 
 
     const maxRatingCount = Math.max(...ratingDistribution);
 
@@ -85,15 +82,13 @@ export default function Review() {
         ],
     };
 
-    const handleNext = () => {
-        // 리뷰페이지 다음버튼 메서드
+    const handleNext = () => { // 리뷰페이지 다음버튼 메서드
         if ((currentPage + 1) * reviewsPerPage < reviews.length) {
             setCurrentPage(currentPage + 1);
         }
     };
 
-    const handlePrevious = () => {
-        // 리뷰페이지 이전버튼 메서드
+    const handlePrevious = () => { // 리뷰페이지 이전버튼 메서드
         if (currentPage > 0) {
             setCurrentPage(currentPage - 1);
         }
@@ -102,7 +97,7 @@ export default function Review() {
     return (
         <Container>
             <Title>
-                작성된 리뷰 <ReviewCount>10</ReviewCount>
+                작성된 리뷰 <ReviewCount>{reviews.length}</ReviewCount>
             </Title>
             <TotalRating>
                 <LeftBox>
@@ -162,7 +157,7 @@ export default function Review() {
                     />
                     <ScoreContainer>
                         {ratingDistribution.map((count, index) => (
-                            <ScoreLabel key={index}>{count}</ScoreLabel>
+                            <ScoreLabel key = {index}>{count}</ScoreLabel>
                         ))}
                     </ScoreContainer>
                 </RightBox>
@@ -170,9 +165,9 @@ export default function Review() {
             {displayedReviews.map((review) => (
                 <ReviewBox key = {review.id}>
                     <TopBox>
-                        <ProfileBox />
+                        <ProfileBox img = {review.userprofile}/>
                         <ProfileInfoBox>
-                            <NickNameBox>손님은 왕이다</NickNameBox>
+                            <NickNameBox>{review.buyerNickname || "익명"}</NickNameBox>
                             <ScoreBox>
                                 <StarBox>
                                     <StarRatings
@@ -186,17 +181,16 @@ export default function Review() {
                                         readonly
                                     />
                                 </StarBox>
-                                <RecordDateBox>2024.12.25</RecordDateBox>
+                                <RecordDateBox>{new Date(review.registdate).toLocaleDateString()}</RecordDateBox>
                             </ScoreBox>
                         </ProfileInfoBox>
                     </TopBox>
                     <MiddleBox>
                         <SubTitle>구매상품</SubTitle>
-                        <PurchasedProduct>피자빵, 단팥빵, 생크림빵</PurchasedProduct>
+                        <PurchasedProduct>{review.productname}</PurchasedProduct>
                     </MiddleBox>
                     <BottomBox>
-                        사장님이 친절하고 빵들이 맛있어요. 특히 민트초코맛 마늘바게트 강추합니다!
-                        <br />
+                        {review.reviewtext}
                     </BottomBox>
                 </ReviewBox>
             ))}
@@ -333,7 +327,7 @@ const ProfileBox = styled.div` // 프로필 사진 박스
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background-image: url(${profile_img});
+    background-image: url(${props => props.img});
     background-size: cover;
 `;
 
