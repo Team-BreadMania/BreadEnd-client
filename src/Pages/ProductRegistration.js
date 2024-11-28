@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import axios from 'axios';
 import styled from 'styled-components';
+import Cookies from 'js-cookie';
 
 export default function ProductRegistration() {
 
@@ -12,7 +12,8 @@ export default function ProductRegistration() {
     const [manufactureTime, setManufactureTime] = useState(""); // 제조일자
     const [saleTime, setSaleTime] = useState(""); // 판매시간
     const [productDescription, setProductDescription] = useState(""); // 상품설명
-    const [imageFiles, setImageFiles] = useState([]); // 상품 이미지 
+    const [imageFiles, setImageFiles] = useState([]); // 상품 이미지(파일 객체)
+    const [imagePreviews, setImagePreviews] = useState([]); // 이미지 미리보기(Base64 문자열)
 
     const handleInputChange = (setter) => (e) => { // 입력제한 메서드
         const value = e.target.value;
@@ -27,7 +28,7 @@ export default function ProductRegistration() {
             const period = index < 12 ? "오전" : "오후"; 
             const suffix = isSaleTime ? "까지" : ""; 
             return (
-                <option key = {index} value = {index}>
+                <option key = {index} value = {`오늘 ${period} ${hour}시${suffix}`}>
                     {`오늘 ${period} ${hour}시 ${suffix}`}
                 </option>
             );
@@ -40,21 +41,63 @@ export default function ProductRegistration() {
             return new Promise((resolve) => {
                 const reader = new FileReader();
                 reader.onloadend = () => {
-                    resolve(reader.result);
+                    resolve(reader.result); 
                 };
                 reader.readAsDataURL(file);
             });
         });
-    
+
         Promise.all(fileReaders).then((base64Images) => {
-            setImageFiles((prevImages) => [...prevImages, ...base64Images]); 
+            setImageFiles(files); 
+            setImagePreviews(base64Images); 
         });
     };
     
 
     const handleImageRemove = (index) => { // 이미지 삭제 메서드
         setImageFiles((prevImages) => prevImages.filter((_, i) => i !== index)); 
+        setImagePreviews((prevImages) => prevImages.filter((_, i) => i !== index)); 
     };    
+
+    const handleSubmit = async (e) => { // 상품 등록 메서드
+        e.preventDefault(); 
+
+        const formData = new FormData();
+        formData.append('product[itemName]', productName); 
+        formData.append('product[price]', price); 
+        formData.append('product[info]', productDescription); 
+        formData.append('product[itemType]', category); 
+        formData.append('product[count]', quantity); 
+        formData.append('product[makedate]', manufactureTime); 
+        formData.append('product[expireddate]', saleTime); 
+
+        imageFiles.forEach((image) => {
+            formData.append("images", image);
+        });
+
+        console.log('전송할 데이터:');
+        for (let [key, value] of formData.entries()) {
+            if (value instanceof File) {
+                console.log(`${key}: [파일] ${value.name}`); 
+            } else {
+                console.log(`${key}: ${value}`); 
+            }
+        }
+
+        const accessToken = Cookies.get("accessToken"); 
+
+        try {
+            const response = await axios.post('https://breadend.shop/product/add', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    'Authorization': `Bearer ${accessToken}`
+                },
+            });
+            console.log('상품 등록 성공 :', response.data);
+        } catch (error) {
+            console.error('상품 등록 실패 :', error);
+        }
+    };
 
     return (
         <Container>
@@ -145,23 +188,23 @@ export default function ProductRegistration() {
                     </InnerBox>
                     <InnerBox style = {{height: "200px", marginTop: "0px"}}>
                         <Label>상품 이미지 업로드</Label>
-                        <InputFile 
+                        <InputFile
                             type = "file" 
                             multiple 
                             accept = "image/*" 
                             onChange = {handleImageChange} 
                         />
                         <ImagePreview>
-                            {imageFiles.map((image, index) => (
-                                <ImageContainer key = {index}>
-                                    <img src = {image} alt = {`uploaded ${index}`} />
-                                    <RemoveButton onClick = {() => handleImageRemove(index)}>X</RemoveButton>
+                            {imagePreviews.map((image, index) => ( 
+                                <ImageContainer key={index}>
+                                    <img src={image} alt={`uploaded ${index}`} />
+                                    <RemoveButton onClick={() => handleImageRemove(index)}>X</RemoveButton>
                                 </ImageContainer>
                             ))}
                         </ImagePreview>
                     </InnerBox>
                 </InnerContainer>
-                <SubmitButton>상품 등록하기</SubmitButton>
+                <SubmitButton type = "button" onClick = {handleSubmit}>상품 등록하기</SubmitButton>
             </RegistrationBox>
         </Container>
     );

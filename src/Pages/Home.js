@@ -63,7 +63,7 @@ export default function Home() {
     };
 
     const handleProductClick = () => {
-        navigate(`/ProductDetailPage?id=7`); 
+        navigate(`/ProductDetailPage?id=17`); 
     };
 
     return (
@@ -340,12 +340,6 @@ const ProductBox = styled.div` // 상품 박스
     height: 100%;
     box-sizing: border-box;
     cursor: pointer;
-
-    &:hover {
-        height: 95%;
-        transform: translateY(5px);
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    }
 `;
 
 const Empty = styled.div` // 여백
