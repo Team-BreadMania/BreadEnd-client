@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import Avata from '../Images/Generic_avatar.png';
 import MannerTemperature from './MannerTemperature';
-import EditUserInfo from './EditUserInform'
-import edit_button from '../Images/edit_button.png'
+import EditUserInfo from './EditUserInform';
+import edit_button from '../Images/edit_button.png';
+import axios from 'axios';
+import Cookies from 'js-cookie';
 
 export default function Account() {
     const [nickname, setNickname] = useState('이름');
@@ -11,9 +13,41 @@ export default function Account() {
     const [registDate, setRegistDate] = useState('2024-11-13');
     const [detail, setDetail] = useState('자기소개');
     const [location, setLocation] = useState('지역');
-    const [temp,setTemp] = useState(75);
+    const [userImg, setUserImg] = useState(null);
+    const [number, setNumber] = useState(null);
+    const [temp, setTemp] = useState(80);
     const [view, setViwe] = useState(false);
 
+    const accessToken = Cookies.get('accessToken');
+
+    useEffect(() => {
+        if (accessToken) {
+            fetchUserData(accessToken);
+        }
+    }, [accessToken]); // accessToken이 변경될 때마다 사용자 데이터를 가져옴
+
+    const fetchUserData = async (accessToken) => {
+        try {
+            const response = await axios.get('https://breadend.shop/user/get-userinfo', {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${accessToken}`, // accessToken을 헤더에 포함
+                },
+            });
+
+            if (response.status === 200) {
+                console.log('유저 상세 정보 불러오기 성공:', response.data);
+                const { nickname, phonenumber, location, regist_date, profileIMG } = response.data;
+                setNickname(nickname);
+                setNumber(phonenumber);
+                setLocation(location);
+                setRegistDate(regist_date);
+                setUserImg(profileIMG);
+            }
+        } catch (error) {
+            console.log(error.response);
+        }
+    };
     const MenuToggle = (e) => {
         e.stopPropagation();
         setViwe(!view);
@@ -22,46 +56,44 @@ export default function Account() {
     const renderInformationContainer = () => {
         if (view) {
             return (
-                <EditUserInfo 
-                    nickname={nickname} 
-                    setNickname={setNickname} 
-                    email={email} 
-                    setEmail={setEmail} 
-                    location={location} 
-                    setLocation={setLocation} 
-                    detail={detail} 
-                    setDetail={setDetail} 
+                <EditUserInfo
+                    nickname={nickname}
+                    setNickname={setNickname}
+                    setNumber={setNumber}
+                    setEmail={setEmail}
+                    location={location}
+                    setLocation={setLocation}
+                    detail={detail}
+                    setDetail={setDetail}
                     MenuToggle={MenuToggle} // Pass MenuToggle function
                 />
             );
         }
         return null;
     };
-    
+
     return (
         <Container>
             <UserContainer>
-                <UserImage />
+                <UserImage src={userImg} />
                 <AllInformContainer>
                     <UserUpperContainer>
                         <UserInform>
                             <UserNameContainer>{nickname}</UserNameContainer>
-                            <UserEmail>{email}</UserEmail>
+                            <UserEmail>{number}</UserEmail>
                         </UserInform>
-                        <MannerTemperature percentage={temp}/>
+                        <MannerTemperature percentage={temp} />
                     </UserUpperContainer>
                     <UserLowerContainer>
-                    <UserDetailInform>
-                        <UserDate>가입일자 : {registDate}</UserDate>
-                        <UserLocation>지역 : {location}</UserLocation>
-                    </UserDetailInform>  
-                    <EditButton onClick={MenuToggle}/>            
+                        <UserDetailInform>
+                            <UserDate>가입일자 : {registDate}</UserDate>
+                            <UserLocation>지역 : {location}</UserLocation>
+                        </UserDetailInform>
+                        <EditButton onClick={MenuToggle} />
                     </UserLowerContainer>
                 </AllInformContainer>
-            </UserContainer> 
-            <RenderContainer>
-                {renderInformationContainer()}
-                </RenderContainer>           
+            </UserContainer>
+            <RenderContainer>{renderInformationContainer()}</RenderContainer>
         </Container>
     );
 }
@@ -71,12 +103,12 @@ const Container = styled.div`
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    width:100%;
+    width: 100%;
     @media (max-width: 800px) {
         padding: 15px;
     }
     @media (max-width: 400px) {
-        padding: 8px 15px; 
+        padding: 8px 15px;
     }
 `;
 
@@ -158,7 +190,7 @@ const UserLocation = styled.div`
 const UserImage = styled.div`
     width: 100px;
     height: 100px;
-    background-image: url(${Avata});
+    background-image: url(${(props) => props.src||Avata});
     background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
@@ -193,12 +225,12 @@ const UserDetailInform = styled.div`
 // 유저 모든 정보 담는 컨테이너
 const AllInformContainer = styled.div`
     display: flex;
-    width:100%;
+    width: 100%;
     flex-direction: column;
     align-items: flex-start; /* 왼쪽 정렬 */
     margin-right: 10px;
-    &:last-child{
-        justify-content:flex-end;
+    &:last-child {
+        justify-content: flex-end;
     }
 `;
 //이름, 이메일, 매너온도 묶은 컨테이너
@@ -209,32 +241,33 @@ const UserUpperContainer = styled.div`
 `;
 //가입일자, 지역, 에딧버튼 컴포넌트
 const UserLowerContainer = styled.div`
-display: flex;
+    display: flex;
     width: 100%;
     justify-content: space-between;
-    `;
+`;
 
 //정보 수정 렌더링되는 컨테이너
 const RenderContainer = styled.div`
-width:100%;
-    background-color:white;
+    width: 100%;
+    background-color: white;
 `;
 const EditButton = styled.button`
-    width:30px;
-    height:30px;
-    background-size:contain;
+    width: 30px;
+    height: 30px;
+    background-size: contain;
     background-image: url(${edit_button});
-    background-color:white;
-    background-repeat:no-repeat;
-    &:hover, :active{
-        background-color:grey;
+    background-color: white;
+    background-repeat: no-repeat;
+    &:hover,
+    :active {
+        background-color: grey;
     }
-    @media (max-width:800px) {
-        width:25px;
-        height:25px;   
+    @media (max-width: 800px) {
+        width: 25px;
+        height: 25px;
     }
-    @media (max-width:400px) {
-        width:20px;
-        height:20px;   
+    @media (max-width: 400px) {
+        width: 20px;
+        height: 20px;
     }
 `;

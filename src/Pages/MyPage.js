@@ -9,12 +9,15 @@ import Inquiry from '../Components/Inquiry';
 import MenuIcon from '../Images/menu_icon1.jpg';
 import SellerHome from './Home_seller';
 import { AuthContext } from '../AuthContext';
+import axios from 'axios';
 
 export default function MyPageBuyer() {
     const [isMobile, setIsMobile] = useState(false);
-    const [userLogin, setUserLogin] = useState(true);
+
     const { userAuth, setUserAuth } = useContext(AuthContext);
     const [menuVisible, setMenuVisible] = useState(false);
+
+    const accessToken = Cookies.get('accessToken');
 
     useEffect(() => {
         const userType = Cookies.get('userType');
@@ -181,7 +184,7 @@ const RightContainer = styled.div`
     min-width: 85%;
     padding: 4% 3% 0 3%;
     box-sizing: border-box;
-    background-color: #faf6e3;
+    background-color: #f0e9dd;
 
     @media (max-width: 800px) {
         width: 100%;
@@ -268,6 +271,7 @@ const MenuButton = styled.img`
     width: 24px;
     height: 24px;
     margin-right: 10px;
+    background-color: none;
 `;
 
 const MenuTitle = styled.div`

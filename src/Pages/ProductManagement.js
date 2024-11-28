@@ -1,127 +1,297 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Search, ChevronDown, MoreVertical } from 'lucide-react';
 import breadImg1 from '../Images/breadImg1.jfif';
 import breadImg2 from '../Images/breadImg2.jpg';
 import { useNavigate } from 'react-router-dom';
+import Cookies from 'js-cookie';
+import axios from 'axios';
+
 export default function ProductManagement() {
     const navigate = useNavigate();
     const handleSubmit = () => {
         navigate('/ProductRegistration');
     };
+    const [isMobile, setIsMobile] = useState(false);
 
-    const [products] = useState([
-        {
-            img: breadImg1,
-            id: 106,
-            name: '밤식빵1',
-            category: '식빵',
-            price: 2000,
-            status: '판매중',
-            count: 5,
-            views: 58,
-            createdAt: '2022-03-31',
-            saleAt: '2022-03-31',
-            badges: ['NEW', 'SALE'],
-        },
-        {
-            img: breadImg2,
-            id: 31,
-            name: '밤식빵2',
-            category: '식빵',
-            price: 1500,
-            status: '판매중',
-            count: 3,
-            views: 0,
-            createdAt: '2020-01-14',
-            saleAt: '2022-03-17',
-        },
-    ]);
+    const accessToken = Cookies.get('accessToken');
+    //판매 대기 제품 저장 배열
+    const [waitProducts, setWaitProducts] = useState([]);
+    //판매 완료 제품 저장 배열
+    const [sellProducts, setSellProducts] = useState([]);
+    //구매 예약 제품 저장 배열
+    const [ongoingProducts, setOngoinProducts] = useState([]);
+    //판매중인 제품 개수
+    const waitProductLength = waitProducts.length;
+    //판매예약 제품 개수
+    const ongoingProductsLength = ongoingProducts.length;
+    //판매완료 제품 개수
+    const sellProductLenght = sellProducts.length;
 
-    return (
-        <Container>
-            <Header>
-                <HeaderContent>
-                    <Title>상품관리</Title>
-                    <AddButton onClick={handleSubmit}>상품 추가</AddButton>
-                </HeaderContent>
-            </Header>
+    // 모바일 뷰, 태블릿 뷰 식별
+    const resizeHandler = () => {
+        setIsMobile(window.innerWidth <= 1024);
+    };
 
-            <MainContent>
-                <StatsContainer>
-                    <StatBox>
-                        <StatLabel>전체</StatLabel>
-                        <StatValue>2</StatValue>
-                    </StatBox>
-                    <StatBox>
-                        <StatLabel>판매중</StatLabel>
-                        <StatValue>2</StatValue>
-                    </StatBox>
-                    <StatBox>
-                        <StatLabel>품절</StatLabel>
-                        <StatValue>0</StatValue>
-                    </StatBox>
-                    <StatBox>
-                        <StatLabel>숨김</StatLabel>
-                        <StatValue>0</StatValue>
-                    </StatBox>
-                </StatsContainer>
+    // 뷰포트 확인 후 조절
+    useEffect(() => {
+        resizeHandler(); // 초기 로드 시 크기 확인
+        window.addEventListener('resize', resizeHandler);
+        return () => {
+            window.removeEventListener('resize', resizeHandler);
+        };
+    }, []);
 
-                <ProductGrid>
-                    <ProductHeader>
-                        <div>
-                            <input type="checkbox" />
-                        </div>
-                        <div>No</div>
-                        <div>상품명</div>
-                        <div>판매가</div>
-                        <div>카테고리</div>
-                        <div>상태</div>
-                        <div>재고</div>
-                        <div>등록일</div>
-                        <div>수정일</div>
-                    </ProductHeader>
+    const fetchwaitItem = async () => {
+        try {
+            const response = await axios.get(`https://breadend.shop/seller/show/wait`, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${accessToken}`,
+                },
+            });
+            console.log('판매중 불러오기 성공', response.data);
+            setWaitProducts(response.data);
+        } catch (error) {
+            console.error('API 요청 에러:', error);
+            // Optionally, set an error state to show to the user
+        }
+    };
+    const fetchsellItem = async () => {
+        try {
+            const response = await axios.get(`https://breadend.shop/seller/show/sell`, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${accessToken}`,
+                },
+            });
+            console.log('판매완료 불러오기 성공', response.data);
+            setSellProducts(response.data);
+        } catch (error) {
+            console.error('API 요청 에러:', error);
+            // Optionally, set an error state to show to the user
+        }
+    };
+    const fetchOngoingItem = async () => {
+        try {
+            const response = await axios.get(`https://breadend.shop/seller/show/sell`, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${accessToken}`,
+                },
+            });
+            console.log('판매예약 불러오기 성공', response.data);
+            setOngoinProducts(response.data);
+        } catch (error) {
+            console.error('API 요청 에러:', error);
+            // Optionally, set an error state to show to the user
+        }
+    };
+    useEffect(() => {
+        if (accessToken) {
+            fetchwaitItem();
+            fetchsellItem();
+            fetchOngoingItem();
+        }
+    }, [accessToken]); // accessToken이 변경될 때마다 사용자 데이터를 가져옴
 
-                    {products.map((product) => (
-                        <ProductRow key={product.id}>
-                            <ProductCell mobileHidden>
+    const PCView = () => {
+        return (
+            <Container>
+                <Header>
+                    <HeaderContent>
+                        <Title>상품관리</Title>
+                        <AddButton onClick={handleSubmit}>상품 추가</AddButton>
+                    </HeaderContent>
+                </Header>
+
+                <MainContent>
+                    <StatsContainer>
+                        <StatBox>
+                            <StatLabel>전체</StatLabel>
+                            <StatValue>{waitProductLength + sellProductLenght + ongoingProductsLength}</StatValue>
+                        </StatBox>
+                        <StatBox>
+                            <StatLabel>판매중</StatLabel>
+                            <StatValue>{waitProductLength}</StatValue>
+                        </StatBox>
+                        <StatBox>
+                            <StatLabel>판매예약</StatLabel>
+                            <StatValue>{ongoingProductsLength}</StatValue>
+                        </StatBox>
+                        <StatBox>
+                            <StatLabel>판매완료</StatLabel>
+                            <StatValue>{sellProductLenght}</StatValue>
+                        </StatBox>
+                    </StatsContainer>
+
+                    <ProductGrid>
+                        <ProductHeader>
+                            <div>
                                 <input type="checkbox" />
-                            </ProductCell>
-                            <ProductCell label="No">{product.id}</ProductCell>
-                            <ProductCell label="상품명">
-                                <ProductInfo>
-                                    <ProductImage src={product.img} />
-                                    <ProductDetails>
-                                        <div>
-                                            {product.badges?.map((badge) => (
-                                                <Badge key={badge} type={badge}>
-                                                    {badge}
-                                                </Badge>
-                                            ))}
-                                        </div>
-                                        <div>{product.name}</div>
-                                    </ProductDetails>
-                                    <MobileActions>
-                                        <MoreVertical size={20} color="#6b7280" />
-                                    </MobileActions>
-                                </ProductInfo>
-                            </ProductCell>
-                            <ProductCell label="판매가">{product.price.toLocaleString()}원</ProductCell>
-                            <ProductCell label="카테고리">{product.category}</ProductCell>
-                            <ProductCell label="상태">{product.status}</ProductCell>
-                            <ProductCell label="재고">{product.count}</ProductCell>
-                            <ProductCell label="등록일">{product.createdAt}</ProductCell>
-                            <ProductCell label="수정일">{product.saleAt}</ProductCell>
-                        </ProductRow>
-                    ))}
-                </ProductGrid>
-            </MainContent>
-        </Container>
-    );
+                            </div>
+                            <div>No</div>
+                            <div>상품명</div>
+                            <div>판매가</div>
+                            <div>카테고리</div>
+                            <div>상태</div>
+                            <div>재고</div>
+                            <div>등록일</div>
+                            <div>수정일</div>
+                        </ProductHeader>
+
+                        {waitProducts.map((product) => (
+                            <ProductRow key={product.productid}>
+                                <ProductCell mobileHidden>
+                                    <input type="checkbox" />
+                                </ProductCell>
+                                <ProductCell label="No">{product.productid}</ProductCell>
+                                <ProductCell label="상품명">
+                                    <ProductInfo>
+                                        <ProductImage src={product.imgpaths[0]} />
+                                        <ProductDetails>
+                                            <div>{product.itemname}</div>
+                                        </ProductDetails>
+                                        <MobileActions>
+                                            <MoreVertical size={20} color="#6b7280" />
+                                        </MobileActions>
+                                    </ProductInfo>
+                                </ProductCell>
+                                <ProductCell label="판매가">{product.price.toLocaleString()}원</ProductCell>
+                                <ProductCell label="카테고리">{product.itemtype}</ProductCell>
+                                <ProductCell label="상태">판매중</ProductCell>
+                                <ProductCell label="재고">{product.count}</ProductCell>
+                                <ProductCell label="등록일">{product.makedate}</ProductCell>
+                                <ProductCell label="수정일">{product.expireddate}</ProductCell>
+                            </ProductRow>
+                        ))}
+                    </ProductGrid>
+                    <ProductGrid>
+                        {ongoingProducts.map((product) => (
+                            <ProductRow key={product.productid}>
+                                <ProductCell mobileHidden>
+                                    <input type="checkbox" />
+                                </ProductCell>
+                                <ProductCell label="No">{product.productid}</ProductCell>
+                                <ProductCell label="상품명">
+                                    <ProductInfo>
+                                        <ProductImage src={product.imgpaths[0]} />
+                                        <ProductDetails>
+                                            <div>{product.name}</div>
+                                        </ProductDetails>
+                                        <MobileActions>
+                                            <MoreVertical size={20} color="#6b7280" />
+                                        </MobileActions>
+                                    </ProductInfo>
+                                </ProductCell>
+                                <ProductCell label="판매가">{product.price.toLocaleString()}원</ProductCell>
+                                <ProductCell label="카테고리">{product.itemtype}</ProductCell>
+                                <ProductCell label="상태">판매예약</ProductCell>
+                                <ProductCell label="재고">{product.count}</ProductCell>
+                                <ProductCell label="등록일">{product.makedate}</ProductCell>
+                                <ProductCell label="수정일">{product.expireddate}</ProductCell>
+                            </ProductRow>
+                        ))}
+                    </ProductGrid>
+                    <ProductGrid>
+                        {sellProducts.map((product) => (
+                            <ProductRow key={product.productid}>
+                                <ProductCell mobileHidden>
+                                    <input type="checkbox" />
+                                </ProductCell>
+                                <ProductCell label="No">{product.productid}</ProductCell>
+                                <ProductCell label="상품명">
+                                    <ProductInfo>
+                                        <ProductImage src={product.imgpaths[0]} />
+                                        <ProductDetails>
+                                            <div>{product.name}</div>
+                                        </ProductDetails>
+                                        <MobileActions>
+                                            <MoreVertical size={20} color="#6b7280" />
+                                        </MobileActions>
+                                    </ProductInfo>
+                                </ProductCell>
+                                <ProductCell label="판매가">{product.price.toLocaleString()}원</ProductCell>
+                                <ProductCell label="카테고리">{product.itemtype}</ProductCell>
+                                <ProductCell label="상태">판매완료</ProductCell>
+                                <ProductCell label="재고">{product.count}</ProductCell>
+                                <ProductCell label="등록일">{product.makedate}</ProductCell>
+                                <ProductCell label="수정일">{product.expireddate}</ProductCell>
+                            </ProductRow>
+                        ))}
+                    </ProductGrid>
+                    <ButtonContainer><EditButton>수정</EditButton><DeleteButton>삭제</DeleteButton></ButtonContainer>
+
+                </MainContent>
+
+            </Container>
+        );
+    };
+
+    const MobileView = () => {
+        return (
+            <Container>
+                <Header>
+                    <HeaderContent>
+                        <Title>상품관리</Title>
+                        <AddButton onClick={handleSubmit}>상품 추가</AddButton>
+                    </HeaderContent>
+                </Header>
+
+                <MainContent>
+                    <StatsContainer>
+                        <StatBox>
+                            <StatLabel>전체</StatLabel>
+                            <StatValue>{waitProductLength + sellProductLenght + ongoingProductsLength}</StatValue>
+                        </StatBox>
+                        <StatBox>
+                            <StatLabel>판매중</StatLabel>
+                            <StatValue>{waitProductLength}</StatValue>
+                        </StatBox>
+                        <StatBox>
+                            <StatLabel>판매예약</StatLabel>
+                            <StatValue>{ongoingProductsLength}</StatValue>
+                        </StatBox>
+                        <StatBox>
+                            <StatLabel>판매완료</StatLabel>
+                            <StatValue>{sellProductLenght}</StatValue>
+                        </StatBox>
+                    </StatsContainer>
+
+                    <ProductGrid>
+                        <MobileHeader>
+                            <div style={{ marginRight: '6px' }}>
+                                <input type="checkbox" />
+                            </div>
+                            <SelectAllDiv>전체선택</SelectAllDiv>
+                        </MobileHeader>
+
+                        {waitProducts.map((product) => (
+                            <MobileProduct key={product.productid}>
+                                <input type="checkbox" />
+                                <MobileDiv>{product.productid}</MobileDiv>
+                                <MobileImg src={product.imgpaths[0]} />
+                                <MobileInfoContainer>
+                                    <MobileDiv>{product.itemname}</MobileDiv>
+                                    <MobileDiv>{product.price}</MobileDiv>
+                                </MobileInfoContainer>
+                                <MobileDiv>판매중</MobileDiv>
+                                <MobileDiv>{product.count}</MobileDiv>
+                            </MobileProduct>
+                        ))}
+                    </ProductGrid>
+                    <ButtonContainer><EditButton>수정</EditButton><DeleteButton>삭제</DeleteButton></ButtonContainer>
+                </MainContent>
+            </Container>
+        );
+    };
+    return <div style={{ width: '100%' }}>{isMobile ? <MobileView /> : <PCView />}</div>;
 }
 const Container = styled.div`
     min-height: 100vh;
-    background-color: #f5f5f5;
+    background-color: #f0e9dd;
+    height:100%;
+    padding-bottom:50px;
 `;
 
 const Header = styled.header`
@@ -139,13 +309,16 @@ const HeaderContent = styled.div`
 
     @media (max-width: 768px) {
         flex-direction: column;
-        gap: 1rem;
+        gap: 0.5rem;
     }
 `;
 
 const Title = styled.h1`
     font-size: 1.25rem;
     font-weight: bold;
+    @media (max-width:450px) {
+        font-size : 1.2rem;
+    }
 `;
 
 const AddButton = styled.button`
@@ -170,6 +343,7 @@ const MainContent = styled.main`
     max-width: 1200px;
     margin: 0 auto;
     padding: 1rem;
+    height:100%;
 `;
 
 const StatsContainer = styled.div`
@@ -192,6 +366,9 @@ const StatBox = styled.div`
     padding: 1rem;
     border-radius: 0.25rem;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    @media (max-width:450px) {
+        padding:0.7rem 1rem;
+    }
 `;
 
 const StatLabel = styled.div`
@@ -207,31 +384,31 @@ const StatValue = styled.div`
 const ProductGrid = styled.div`
     background: white;
     border-radius: 0.25rem;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);   
 `;
 
 const ProductHeader = styled.div`
     display: grid;
-    grid-template-columns: 40px 60px 2fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
-    padding: 1rem;
-    background: #f9fafb;
-    font-weight: 500;
+    grid-template-columns: 40px 60px 1.5fr 1fr 1fr 1fr 0.85fr 1fr 1fr;
+    padding: 1rem 0.7rem;
+    background: #d3b790;
+    font-weight: bold;
     color: #374151;
     border-bottom: 1px solid #e5e7eb;
-    gap: 1rem;
+    gap: 0.8rem;
 
     @media (max-width: 1024px) {
         display: none;
-    }
+    }    
 `;
 
 const ProductRow = styled.div`
     display: grid;
-    grid-template-columns: 40px 60px 2fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
-    padding: 1rem;
+    grid-template-columns: 40px 60px 1.5fr 1fr 1fr 1fr 0.85fr 1fr 1fr;
+    gap: 0.7rem;
+    padding: 1rem 0.7rem;
     align-items: center;
     border-bottom: 1px solid #e5e7eb;
-    gap: 1rem;
 
     &:hover {
         background: #f9fafb;
@@ -255,41 +432,12 @@ const ProductCell = styled.div`
       align-items: center;
       
       &:before {
-        content: '${(props) => props.label}';
+        // content: '${(props) => props.label}';
         font-weight: 500;
         color: #374151;
       }
     `}
     }
-`;
-
-const Badge = styled.span`
-    padding: 0.25rem 0.5rem;
-    border-radius: 0.25rem;
-    font-size: 0.75rem;
-    font-weight: 500;
-    margin-right: 0.25rem;
-
-    ${(props) =>
-        props.type === 'NEW' &&
-        `
-    background: #dbeafe;
-    color: #1e40af;
-  `}
-
-    ${(props) =>
-        props.type === 'SALE' &&
-        `
-    background: #fee2e2;
-    color: #991b1b;
-  `}
-  
-  ${(props) =>
-        props.type === 'HOT' &&
-        `
-    background: #fef3c7;
-    color: #92400e;
-  `}
 `;
 
 const ProductImage = styled.div`
@@ -306,7 +454,7 @@ const ProductImage = styled.div`
 const ProductInfo = styled.div`
     display: flex;
     gap: 1rem;
-    align-items: flex-start;
+    align-items: center;
 
     @media (max-width: 1024px) {
         flex-direction: column;
@@ -328,3 +476,88 @@ const MobileActions = styled.div`
         right: 1rem;
     }
 `;
+
+const MobileHeader = styled.div`
+    display: flex;
+    background: #d3b790;
+    font-weight: bold;
+    color: #433b30;
+    border-bottom: 1px solid #e5e7eb;
+    align-items: center;
+    padding: 0.5rem 0.7rem;
+`;
+const MobileProduct = styled.div`
+    display: grid;
+    padding: 1rem 0.7rem;
+    grid-template-columns: 20px 40px 1fr 1.5fr 1.1fr 0.8fr;
+    
+    align-items: center;
+    border-bottom: 1px solid #e5e7eb;
+    justify-content: space-between;
+    &:hover {
+        background: #f9fafb;
+    }
+    @media (max-width: 1024px) {
+        grid-template-columns: 20px 50px 1fr 1fr 1fr 1fr;
+    }
+    @media (max-width: 520px) {
+        font-size: 16px;
+        grid-template-columns: 20px 33px 0.8fr 1.6fr 1.1fr 0.8fr;
+    }
+
+    @media (max-width: 400px) {
+        font-size: 14px;        
+        grid-template-columns: 20px 33px 0.8fr 1.6fr 1.1fr 0.8fr;
+    }
+`;
+const MobileImg = styled.div`
+    width: 50px;
+    height: 50px;
+    background: #f3f4f6;
+    border-radius: 4px;
+    flex-shrink: 0;
+    background-image: url(${(props) => props.src});
+    background-position: center center;
+    background-size: cover;
+    @media (max-width: 400px) {
+        width: 40px;
+        height: 40px;
+    }
+`;
+
+const MobileDiv = styled.div`
+    padding: 1px 8px;
+`;
+
+const MobileInfoContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+`;
+const SelectAllDiv = styled.div`
+    font-size: 16px;
+`;
+
+const ButtonContainer = styled.div`
+    display:flex;   
+    align-items:right;
+    margin:20px 0px;
+
+`;
+const EditButton = styled.div`
+    background-color:#1cc88a;
+    color:white;
+    border-radius:5px;
+    padding:5px 10px;
+    &:hover{
+        background-color:#19b47c;
+    }
+`
+const DeleteButton = styled.div`
+    background-color:#dc2e1c;
+    color:white;
+    border-radius:5px;
+    padding:5px 10px;
+    &:hover{
+        background-color:#c62919; 
+    }
+`
