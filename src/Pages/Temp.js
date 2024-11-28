@@ -22,9 +22,9 @@ export default function Temp() {
     //판매완료 제품 개수
     const sellProductLenght = sellProducts.length;
 
-    const fetchwaitItem = async () => {
+    const fetchwaitItem = useCallback(async () => {
         try {
-            const response = await axios.get(`https://breadend.shop/seller/show/wait`, {
+            const response = await axios.get(``, {
                 headers: {
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${accessToken}`,
@@ -34,12 +34,12 @@ export default function Temp() {
             setWaitProducts(response.data);
         } catch (error) {
             console.error('API 요청 에러:', error);
-            // Optionally, set an error state to show to the user
         }
-    };
-    const fetchsellItem = async () => {
+    }, [accessToken]);
+
+    const fetchsellItem = useCallback(async () => {
         try {
-            const response = await axios.get(`https://breadend.shop/seller/show/sell`, {
+            const response = await axios.get(``, {
                 headers: {
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${accessToken}`,
@@ -49,15 +49,15 @@ export default function Temp() {
             setSellProducts(response.data);
         } catch (error) {
             console.error('API 요청 에러:', error);
-            // Optionally, set an error state to show to the user
         }
-    };
+    }, [accessToken]);
+
     useEffect(() => {
         if (accessToken) {
             fetchwaitItem();
             fetchsellItem();
         }
-    }, [accessToken]);
+    }, [accessToken, fetchwaitItem, fetchsellItem]);
 
     return (
         <Container>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import './NormalSignup.css';
+import './SellerSignup.css';
 
 export default function NormalSignup() {
     const navigate = useNavigate();
@@ -113,7 +113,7 @@ export default function NormalSignup() {
     };
 
     return (
-        <div className="signup-container">
+        <div className="signup-containerbox">
             <h2>일반 사용자 가입 페이지</h2>
             <form onSubmit={handleSubmit}>
                 <div className="form-group">

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import './NormalSignup.css';
+import './SellerSignup.css';
 
 export default function SellerSignup() {
     const navigate = useNavigate();
@@ -18,9 +18,11 @@ export default function SellerSignup() {
         likedCategory: '',
         shopName: '',
         shopNumber: '',
+        opentime: '',
     });
 
-    const [imageFile, setImageFile] = useState(null);
+    const [userProfile, setUserProfile] = useState(null);
+    const [shopThumbnail, setShopThumbnail] = useState(null);
     const [idCheckMessage, setIdCheckMessage] = useState('');
     const [isIdAvailable, setIsIdAvailable] = useState(false);
     const [isIdEntered, setIsIdEntered] = useState(false);
@@ -37,9 +39,9 @@ export default function SellerSignup() {
         });
     };
 
-    const handleImageChange = (e) => {
+    const handleImageChange = (e, setImage) => {
         const file = e.target.files[0];
-        setImageFile(file);
+        setImage(file);
     };
 
     const handleIdCheck = () => {
@@ -69,22 +71,26 @@ export default function SellerSignup() {
                     phoneNumber: formData.contact,
                     nickname: formData.nickname,
                     liked_category: formData.likedCategory,
-                    registDate: new Date().toISOString(),
+                    shopName: formData.shopName,
+                    shopNumber: formData.shopNumber,
                     userType: 'seller',
                     location: formData.region,
                     detaillocation: formData.detaillocation,
-                    shopName: formData.shopName,
-                    shopNumber: formData.shopNumber,
+                    opentime: formData.opentime,
                 };
+
                 requestData.append('user', JSON.stringify(userObject));
-                if (imageFile) {
-                    requestData.append('image', imageFile);
+                if (userProfile) {
+                    requestData.append('userProfile', userProfile);
+                }
+                if (shopThumbnail) {
+                    requestData.append('shopThumbnail', shopThumbnail);
                 }
 
                 const response = await axios.post('http://43.203.241.42/user/regist', requestData, {
                     headers: {
                         'Content-Type': 'multipart/form-data',
-                    },  
+                    },
                 });
 
                 if (response.status === 200) {
@@ -137,10 +143,7 @@ export default function SellerSignup() {
                     </button>
                 </div>
                 {idCheckMessage && (
-                    <div className="id-check-message">
-                        {idCheckMessage}
-                        {isIdAvailable && <button type="button" className="use-id-button">사용</button>}
-                    </div>
+                    <div className="id-check-message">{idCheckMessage}</div>
                 )}
                 <div className="form-group">
                     <label htmlFor="name">이름</label>
@@ -234,7 +237,7 @@ export default function SellerSignup() {
                         name="shopName"
                         value={formData.shopName}
                         onChange={handleChange}
-                        placeholder="판매지점 이름 입력..."
+                        placeholder="가게 상호명"
                         required
                     />
                 </div>
@@ -246,7 +249,7 @@ export default function SellerSignup() {
                         name="shopNumber"
                         value={formData.shopNumber}
                         onChange={handleChange}
-                        placeholder="판매지점 번호 입력..."
+                        placeholder="(+82) 010xxxxxxxx"
                         required
                     />
                 </div>
@@ -263,12 +266,32 @@ export default function SellerSignup() {
                     />
                 </div>
                 <div className="form-group">
-                    <label htmlFor="image">프로필 이미지</label>
+                    <label htmlFor="opentime">영업시간</label>
+                    <input
+                        type="text"
+                        id="opentime"
+                        name="opentime"
+                        value={formData.opentime}
+                        onChange={handleChange}
+                        placeholder="예: 09:00 - 21:00"
+                        required
+                    />
+                </div>
+                <div className="form-group">
+                    <label htmlFor="userProfile">프로필 이미지</label>
                     <input
                         type="file"
-                        id="image"
-                        name="image"
-                        onChange={handleImageChange}
+                        id="userProfile"
+                        onChange={(e) => handleImageChange(e, setUserProfile)}
+                        accept="image/*"
+                    />
+                </div>
+                <div className="form-group">
+                    <label htmlFor="shopThumbnail">상점 썸네일</label>
+                    <input
+                        type="file"
+                        id="shopThumbnail"
+                        onChange={(e) => handleImageChange(e, setShopThumbnail)}
                         accept="image/*"
                     />
                 </div>
