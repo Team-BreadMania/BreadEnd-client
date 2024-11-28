@@ -93,8 +93,8 @@ export default function ProductManagement() {
             fetchsellItem();
             fetchOngoingItem();
         }
-    }, [accessToken, fetchwaitItem, fetchsellItem, fetchOngoingItem]);
-    
+    }, [accessToken, fetchwaitItem, fetchsellItem, fetchOngoingItem]); 
+
     const PCView = () => {
         return (
             <Container>
