@@ -19,8 +19,12 @@ export default function ProductManagement() {
     const [waitProducts, setWaitProducts] = useState([]);
     //판매 완료 제품 저장 배열
     const [sellProducts, setSellProducts] = useState([]);
+    //구매 예약 제품 저장 배열
+    const [ongoingProducts, setOngoinProducts] = useState([]);
     //판매중인 제품 개수
     const waitProductLength = waitProducts.length;
+    //판매예약 제품 개수
+    const ongoingProductsLength = ongoingProducts.length;
     //판매완료 제품 개수
     const sellProductLenght = sellProducts.length;
 
@@ -68,10 +72,26 @@ export default function ProductManagement() {
             // Optionally, set an error state to show to the user
         }
     };
+    const fetchOngoingItem = async () => {
+        try {
+            const response = await axios.get(`https://breadend.shop/seller/show/sell`, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${accessToken}`,
+                },
+            });
+            console.log('판매예약 불러오기 성공', response.data);
+            setOngoinProducts(response.data);
+        } catch (error) {
+            console.error('API 요청 에러:', error);
+            // Optionally, set an error state to show to the user
+        }
+    };
     useEffect(() => {
         if (accessToken) {
             fetchwaitItem();
             fetchsellItem();
+            fetchOngoingItem();
         }
     }, [accessToken]); // accessToken이 변경될 때마다 사용자 데이터를 가져옴
 
@@ -89,11 +109,15 @@ export default function ProductManagement() {
                     <StatsContainer>
                         <StatBox>
                             <StatLabel>전체</StatLabel>
-                            <StatValue>{waitProductLength + sellProductLenght}</StatValue>
+                            <StatValue>{waitProductLength + sellProductLenght + ongoingProductsLength}</StatValue>
                         </StatBox>
                         <StatBox>
                             <StatLabel>판매중</StatLabel>
                             <StatValue>{waitProductLength}</StatValue>
+                        </StatBox>
+                        <StatBox>
+                            <StatLabel>판매예약</StatLabel>
+                            <StatValue>{ongoingProductsLength}</StatValue>
                         </StatBox>
                         <StatBox>
                             <StatLabel>판매완료</StatLabel>
@@ -143,6 +167,33 @@ export default function ProductManagement() {
                         ))}
                     </ProductGrid>
                     <ProductGrid>
+                        {ongoingProducts.map((product) => (
+                            <ProductRow key={product.productid}>
+                                <ProductCell mobileHidden>
+                                    <input type="checkbox" />
+                                </ProductCell>
+                                <ProductCell label="No">{product.productid}</ProductCell>
+                                <ProductCell label="상품명">
+                                    <ProductInfo>
+                                        <ProductImage src={product.imgpaths[0]} />
+                                        <ProductDetails>
+                                            <div>{product.name}</div>
+                                        </ProductDetails>
+                                        <MobileActions>
+                                            <MoreVertical size={20} color="#6b7280" />
+                                        </MobileActions>
+                                    </ProductInfo>
+                                </ProductCell>
+                                <ProductCell label="판매가">{product.price.toLocaleString()}원</ProductCell>
+                                <ProductCell label="카테고리">{product.itemtype}</ProductCell>
+                                <ProductCell label="상태">판매예약</ProductCell>
+                                <ProductCell label="재고">{product.count}</ProductCell>
+                                <ProductCell label="등록일">{product.makedate}</ProductCell>
+                                <ProductCell label="수정일">{product.expireddate}</ProductCell>
+                            </ProductRow>
+                        ))}
+                    </ProductGrid>
+                    <ProductGrid>
                         {sellProducts.map((product) => (
                             <ProductRow key={product.productid}>
                                 <ProductCell mobileHidden>
@@ -169,7 +220,10 @@ export default function ProductManagement() {
                             </ProductRow>
                         ))}
                     </ProductGrid>
+                    <ButtonContainer><EditButton>수정</EditButton><DeleteButton>삭제</DeleteButton></ButtonContainer>
+
                 </MainContent>
+
             </Container>
         );
     };
@@ -188,11 +242,15 @@ export default function ProductManagement() {
                     <StatsContainer>
                         <StatBox>
                             <StatLabel>전체</StatLabel>
-                            <StatValue>{waitProductLength + sellProductLenght}</StatValue>
+                            <StatValue>{waitProductLength + sellProductLenght + ongoingProductsLength}</StatValue>
                         </StatBox>
                         <StatBox>
                             <StatLabel>판매중</StatLabel>
                             <StatValue>{waitProductLength}</StatValue>
+                        </StatBox>
+                        <StatBox>
+                            <StatLabel>판매예약</StatLabel>
+                            <StatValue>{ongoingProductsLength}</StatValue>
                         </StatBox>
                         <StatBox>
                             <StatLabel>판매완료</StatLabel>
@@ -222,6 +280,7 @@ export default function ProductManagement() {
                             </MobileProduct>
                         ))}
                     </ProductGrid>
+                    <ButtonContainer><EditButton>수정</EditButton><DeleteButton>삭제</DeleteButton></ButtonContainer>
                 </MainContent>
             </Container>
         );
@@ -231,6 +290,8 @@ export default function ProductManagement() {
 const Container = styled.div`
     min-height: 100vh;
     background-color: #f0e9dd;
+    height:100%;
+    padding-bottom:50px;
 `;
 
 const Header = styled.header`
@@ -248,13 +309,16 @@ const HeaderContent = styled.div`
 
     @media (max-width: 768px) {
         flex-direction: column;
-        gap: 1rem;
+        gap: 0.5rem;
     }
 `;
 
 const Title = styled.h1`
     font-size: 1.25rem;
     font-weight: bold;
+    @media (max-width:450px) {
+        font-size : 1.2rem;
+    }
 `;
 
 const AddButton = styled.button`
@@ -279,11 +343,12 @@ const MainContent = styled.main`
     max-width: 1200px;
     margin: 0 auto;
     padding: 1rem;
+    height:100%;
 `;
 
 const StatsContainer = styled.div`
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     gap: 1rem;
     margin-bottom: 1rem;
 
@@ -301,6 +366,9 @@ const StatBox = styled.div`
     padding: 1rem;
     border-radius: 0.25rem;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    @media (max-width:450px) {
+        padding:0.7rem 1rem;
+    }
 `;
 
 const StatLabel = styled.div`
@@ -316,7 +384,7 @@ const StatValue = styled.div`
 const ProductGrid = styled.div`
     background: white;
     border-radius: 0.25rem;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);   
 `;
 
 const ProductHeader = styled.div`
@@ -331,7 +399,7 @@ const ProductHeader = styled.div`
 
     @media (max-width: 1024px) {
         display: none;
-    }
+    }    
 `;
 
 const ProductRow = styled.div`
@@ -422,7 +490,7 @@ const MobileProduct = styled.div`
     display: grid;
     padding: 1rem 0.7rem;
     grid-template-columns: 20px 40px 1fr 1.5fr 1.1fr 0.8fr;
-
+    
     align-items: center;
     border-bottom: 1px solid #e5e7eb;
     justify-content: space-between;
@@ -438,7 +506,7 @@ const MobileProduct = styled.div`
     }
 
     @media (max-width: 400px) {
-        font-size: 14px;
+        font-size: 14px;        
         grid-template-columns: 20px 33px 0.8fr 1.6fr 1.1fr 0.8fr;
     }
 `;
@@ -468,3 +536,28 @@ const MobileInfoContainer = styled.div`
 const SelectAllDiv = styled.div`
     font-size: 16px;
 `;
+
+const ButtonContainer = styled.div`
+    display:flex;   
+    align-items:right;
+    margin:20px 0px;
+
+`;
+const EditButton = styled.div`
+    background-color:#1cc88a;
+    color:white;
+    border-radius:5px;
+    padding:5px 10px;
+    &:hover{
+        background-color:#19b47c;
+    }
+`
+const DeleteButton = styled.div`
+    background-color:#dc2e1c;
+    color:white;
+    border-radius:5px;
+    padding:5px 10px;
+    &:hover{
+        background-color:#c62919; 
+    }
+`
