@@ -94,7 +94,7 @@ export default function ProductManagement() {
             fetchOngoingItem();
         }
     }, [accessToken, fetchwaitItem, fetchsellItem, fetchOngoingItem]);
-
+    
     const PCView = () => {
         return (
             <Container>
