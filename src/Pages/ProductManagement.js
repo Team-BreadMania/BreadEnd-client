@@ -42,9 +42,9 @@ export default function ProductManagement() {
         };
     }, []);
 
-    const fetchwaitItem = async () => {
+    const fetchwaitItem = useCallback(async () => {
         try {
-            const response = await axios.get(`https://breadend.shop/seller/show/wait`, {
+            const response = await axios.get(``, {
                 headers: {
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${accessToken}`,
@@ -54,12 +54,12 @@ export default function ProductManagement() {
             setWaitProducts(response.data);
         } catch (error) {
             console.error('API 요청 에러:', error);
-            // Optionally, set an error state to show to the user
         }
-    };
-    const fetchsellItem = async () => {
+    }, [accessToken]);
+
+    const fetchsellItem = useCallback(async () => {
         try {
-            const response = await axios.get(`https://breadend.shop/seller/show/sell`, {
+            const response = await axios.get(``, {
                 headers: {
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${accessToken}`,
@@ -69,12 +69,12 @@ export default function ProductManagement() {
             setSellProducts(response.data);
         } catch (error) {
             console.error('API 요청 에러:', error);
-            // Optionally, set an error state to show to the user
         }
-    };
-    const fetchOngoingItem = async () => {
+    }, [accessToken]);
+
+    const fetchOngoingItem = useCallback(async () => {
         try {
-            const response = await axios.get(`https://breadend.shop/seller/show/sell`, {
+            const response = await axios.get(``, {
                 headers: {
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${accessToken}`,
@@ -84,16 +84,16 @@ export default function ProductManagement() {
             setOngoinProducts(response.data);
         } catch (error) {
             console.error('API 요청 에러:', error);
-            // Optionally, set an error state to show to the user
         }
-    };
+    }, [accessToken]);
+
     useEffect(() => {
         if (accessToken) {
             fetchwaitItem();
             fetchsellItem();
             fetchOngoingItem();
         }
-    }, [accessToken, fetchwaitItem, fetchsellItem, fetchOngoingItem]); // accessToken이 변경될 때마다 사용자 데이터를 가져옴
+    }, [accessToken, fetchwaitItem, fetchsellItem, fetchOngoingItem]);
 
     const PCView = () => {
         return (
