@@ -93,7 +93,7 @@ export default function ProductManagement() {
             fetchsellItem();
             fetchOngoingItem();
         }
-    }, [accessToken]); // accessToken이 변경될 때마다 사용자 데이터를 가져옴
+    }, [accessToken, fetchwaitItem, fetchsellItem, fetchOngoingItem]); // accessToken이 변경될 때마다 사용자 데이터를 가져옴
 
     const PCView = () => {
         return (

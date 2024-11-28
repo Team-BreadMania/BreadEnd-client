@@ -57,7 +57,7 @@ export default function Temp() {
             fetchwaitItem();
             fetchsellItem();
         }
-    }, [accessToken]);
+    }, [accessToken, fetchwaitItem, fetchsellItem]);
 
     return (
         <Container>
