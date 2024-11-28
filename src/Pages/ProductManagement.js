@@ -281,7 +281,7 @@ export default function ProductManagement() {
                 <Header>
                     <HeaderContent>
                         <Title>상품관리</Title>
-                        <AddButton onClick={handleSubmit}>상품 추가</AddButton>
+                        <AddButton onClick={handleSubmit}>상품추가</AddButton>
                     </HeaderContent>
                 </Header>
 
