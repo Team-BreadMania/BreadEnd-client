@@ -47,9 +47,10 @@ export default function MyCart() {
                                 <ProductImage img = {item.imgpaths[0]}/>
                             </ImageBox>
                             <ProductInfoBox>
-                                <ShopName>그리다 빵집</ShopName>
+                                <ProductName>{item.itemname}</ProductName>
+                                <ShopName>{item.shopname}</ShopName>
                                 <ProductQuantity>수량 : {item.count}개</ProductQuantity>
-                                <ProductPrice>{item.price.toLocaleString()}원</ProductPrice>
+                                <ProductPrice>개당 {item.price.toLocaleString()}원</ProductPrice>
                             </ProductInfoBox>
                             <DeleteBox>
                                 <DeleteIcon />
@@ -206,30 +207,29 @@ const ShopName = styled.div` // 매장 이름
     font-size: 15px;
     font-weight: bold;
     color: #787878;
-    margin-top: 5%;
+    margin-bottom: 5%;
 
     @media (max-width: 600px) {
         font-size: 12.5px;
-        margin-top: 7.5%;
+        margin-bottom: 7.5%;
     }
 
     @media (max-width: 500px) {
-        margin-top: 10%;
-    }
+        margin-bottom: 10%;
+    } 
 `;  
 
 const ProductName = styled.div` // 상품 이름
     font-size: 20px;
     font-weight: bold;
-    color: black;
-    margin-bottom: 5%;
+    margin-top: 5%;
 
     @media (max-width: 600px) {
         font-size: 15px;
     }
 
     @media (max-width: 500px) {
-        margin-bottom: 7.5%;
+        margin-top: 7.5%;
     }
 `;
 
