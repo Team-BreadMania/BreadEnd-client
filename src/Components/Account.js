@@ -19,6 +19,9 @@ export default function Account() {
     const [view, setViwe] = useState(false);
 
     const accessToken = Cookies.get('accessToken');
+    const dateString = registDate;
+    const date = new Date(dateString);
+    const formattedDate = date.toISOString().split('T')[0];
 
     useEffect(() => {
         if (accessToken) {
@@ -86,7 +89,7 @@ export default function Account() {
                     </UserUpperContainer>
                     <UserLowerContainer>
                         <UserDetailInform>
-                            <UserDate>가입일자 : {registDate}</UserDate>
+                            <UserDate>가입일자 : {formattedDate}</UserDate>
                             <UserLocation>지역 : {location}</UserLocation>
                         </UserDetailInform>
                         <EditButton onClick={MenuToggle} />
@@ -190,7 +193,7 @@ const UserLocation = styled.div`
 const UserImage = styled.div`
     width: 100px;
     height: 100px;
-    background-image: url(${(props) => props.src||Avata});
+    background-image: url(${(props) => props.src || Avata});
     background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
