@@ -17,6 +17,21 @@ export default function Account() {
     const [number, setNumber] = useState(null);
     const [temp, setTemp] = useState(80);
     const [view, setViwe] = useState(false);
+    const [isMobile, setIsMobile] = useState(false);
+
+    // 모바일 뷰, 태블릿 뷰 식별
+    const resizeHandler = () => {
+        setIsMobile(window.innerWidth <= 1024);
+    };
+
+    // 뷰포트 확인 후 조절
+    useEffect(() => {
+        resizeHandler(); // 초기 로드 시 크기 확인
+        window.addEventListener('resize', resizeHandler);
+        return () => {
+            window.removeEventListener('resize', resizeHandler);
+        };
+    }, []);
 
     const accessToken = Cookies.get('accessToken');
     const dateString = registDate;
@@ -107,6 +122,7 @@ const Container = styled.div`
     align-items: center;
     justify-content: center;
     width: 100%;
+    box-sizing: border-box;
     @media (max-width: 800px) {
         padding: 15px;
     }
@@ -241,6 +257,7 @@ const UserUpperContainer = styled.div`
     display: flex;
     width: 100%;
     justify-content: space-between;
+    align-items: center;
 `;
 //가입일자, 지역, 에딧버튼 컴포넌트
 const UserLowerContainer = styled.div`
@@ -273,4 +290,8 @@ const EditButton = styled.button`
         width: 20px;
         height: 20px;
     }
+`;
+
+const MannerTemperatureContainer = styled.div`
+    padding-left: 18px;
 `;

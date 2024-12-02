@@ -12,8 +12,6 @@ import { AuthContext } from '../AuthContext';
 import axios from 'axios';
 
 export default function MyPageBuyer() {
-    const [isMobile, setIsMobile] = useState(false);
-
     const { userAuth, setUserAuth } = useContext(AuthContext);
     const [menuVisible, setMenuVisible] = useState(false);
 

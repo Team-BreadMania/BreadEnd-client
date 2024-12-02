@@ -13,7 +13,7 @@ const ThermometerContainer = styled.div`
         width: 150px; /* 가로 길이 */
         height: 20px; /* 세로 길이 */
     }
-    @media (max-width: 400px) {
+    @media (max-width: 450px) {
         width: 90px; /* 가로 길이 */
         height: 12px; /* 세로 길이 */
     }
@@ -60,7 +60,7 @@ const MannerTemperature = ({ percentage = 0 }) => {
     return (
         <ThermometerContainer>
             <Thermometer percentage={percentage} />
-            <Label>{percentage.toFixed(0)}%</Label>
+            <Label>{percentage.toFixed(0)} ℃</Label>
             <TemperatureLabel>매너온도</TemperatureLabel>
         </ThermometerContainer>
     );
