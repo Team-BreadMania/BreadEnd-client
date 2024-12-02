@@ -1,54 +1,65 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
+import Popular from "../Components/Popular";
 
 export default function Search() {
     const [searchTerm, setSearchTerm] = useState('');
     const [recentSearches, setRecentSearches] = useState([]);
-    const [activeTab, setActiveTab] = useState('추천검색어');
+    const [activeTab, setActiveTab] = useState('인기검색어');
     const navigate = useNavigate();
 
-    // 최근 검색어 로컬스토리지에서 불러오기
     useEffect(() => {
         const storedSearches = JSON.parse(localStorage.getItem('recentSearches')) || [];
-        console.log("불러온 검색어: ", storedSearches); // 저장된 데이터를 확인
         setRecentSearches(storedSearches);
     }, []);
-    
-    // 검색어 입력 핸들러
+
     const handleSearchChange = (e) => {
         setSearchTerm(e.target.value);
     };
 
-    // 검색 버튼 클릭 핸들러
     const handleSearchSubmit = () => {
         if (searchTerm) {
-            // 검색어 저장
-            const updatedSearches = [searchTerm, ...recentSearches.filter(item => item !== searchTerm)].slice(0, 10); // 중복 제거하고 최대 10개 유지
+            const updatedSearches = [searchTerm, ...recentSearches.filter(item => item !== searchTerm)].slice(0, 10);
             setRecentSearches(updatedSearches);
             localStorage.setItem('recentSearches', JSON.stringify(updatedSearches));
 
-            // 검색 결과 페이지로 이동
+            // DB에 검색어 저장 (POST 방식)
+            fetch('/api/saveSearchTerm', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ searchTerm })
+            }).catch((error) => console.error('Error saving search term:', error));
+
             navigate(`/SearchResults?query=${encodeURIComponent(searchTerm)}`);
         } else {
             navigate('/SearchResults');
         }
     };
 
-    // 최근 검색어 클릭 시 검색 실행
     const handleRecentSearchClick = (search) => {
         setSearchTerm(search);
+
+        // DB에 검색어 저장 (POST 방식)
+        fetch('/api/saveSearchTerm', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ searchTerm: search })
+        }).catch((error) => console.error('Error saving search term:', error));
+
         navigate(`/SearchResults?query=${encodeURIComponent(search)}`);
     };
 
-    // 최근 검색어 삭제 핸들러
     const handleDeleteSearch = (search) => {
         const updatedSearches = recentSearches.filter(item => item !== search);
         setRecentSearches(updatedSearches);
         localStorage.setItem('recentSearches', JSON.stringify(updatedSearches));
     };
 
-    // 탭 클릭 핸들러
     const handleTabClick = (tab) => {
         setActiveTab(tab);
     };
@@ -66,12 +77,10 @@ export default function Search() {
                 <SearchButton onClick={handleSearchSubmit}>검색🗸</SearchButton>
             </SearchBar>
             <TabContainer>
-                <Tab active={activeTab === '추천검색어'} onClick={() => handleTabClick('추천검색어')}>추천검색어</Tab>
+                <Tab active={activeTab === '인기검색어'} onClick={() => handleTabClick('인기검색어')}>인기검색어</Tab>
                 <Tab active={activeTab === '최근검색어'} onClick={() => handleTabClick('최근검색어')}>최근검색어</Tab>
             </TabContainer>
-            {activeTab === '추천검색어' && (
-                <NoRecentSearches>추천 검색어가 없습니다.</NoRecentSearches>
-            )}
+            {activeTab === '인기검색어' && <Popular />} {/* 인기검색어 컴포넌트 */}
             {activeTab === '최근검색어' && (
                 <RecentSearchesContainer>
                     {recentSearches.length > 0 ? (
@@ -79,7 +88,7 @@ export default function Search() {
                             <SearchTag key={index} onClick={() => handleRecentSearchClick(item)}>
                                 {item}
                                 <DeleteButton onClick={(e) => {
-                                    e.stopPropagation(); // 검색어 삭제 시 검색으로 이동 방지
+                                    e.stopPropagation();
                                     handleDeleteSearch(item);
                                 }}>X</DeleteButton>
                             </SearchTag>
@@ -92,6 +101,8 @@ export default function Search() {
         </SearchContainer>
     );
 }
+
+
     // Styled-components CSS 설정
     const SearchContainer = styled.div`
         display: flex;

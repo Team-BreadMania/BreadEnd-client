@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 
 export default function Map() {
   const [places, setPlaces] = useState([]);
-  const [mapCenter, setMapCenter] = useState({ lat: 35.8388067878402, lng: 128.75332721754552 });
+  const [mapCenter, setMapCenter] = useState({ lat: 33.450701, lng: 126.570667 });
   const mapRef = useRef(null);
 
   useEffect(() => {

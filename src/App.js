@@ -17,7 +17,6 @@ import Map from './Pages/Map'; // Map 페이지 추가
 import SearchResults from './Pages/SearchResults';
 import ProductManagement from './Pages/ProductManagement';
 import { AuthProvider } from './AuthContext';
-import Temp from './Pages/Temp';
 
 function App() {
     const location = useLocation(); // 현재 경로를 확인하기 위한 useLocation
@@ -48,7 +47,7 @@ function App() {
                     <Route path="/ProductManagement" element={<ProductManagement />} />
                     {/* Search 경로 추가 */}
                     <Route path="/Map" element={<Map />} /> {/* Map 경로 추가 */}
-                    <Route path="/Temp" element={<Temp />} />
+
                 </Routes>
 
                 {/* 특정 경로에서는 NaviBar를 렌더링하지 않음 */}
