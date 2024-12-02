@@ -19,6 +19,11 @@ export default function NaviBar() {
     useEffect(() => {
         const userType = Cookies.get('userType');
         setUserAuth(userType);
+        if (userType) {
+            setUserLogin(true);
+        } else {
+            setUserLogin(false);
+        }
         console.log(userAuth);
     }, [userAuth, setUserAuth]);
 
