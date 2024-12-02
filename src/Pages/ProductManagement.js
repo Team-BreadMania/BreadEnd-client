@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Search, ChevronDown, MoreVertical } from 'lucide-react';
@@ -21,6 +22,8 @@ export default function ProductManagement() {
     const [sellProducts, setSellProducts] = useState([]);
     //구매 예약 제품 저장 배열
     const [ongoingProducts, setOngoinProducts] = useState([]);
+    // 선택된 상품 ID들을 저장할 상태 추가
+    const [selectedProducts, setSelectedProducts] = useState([]);
     //판매중인 제품 개수
     const waitProductLength = waitProducts.length;
     //판매예약 제품 개수
@@ -42,9 +45,26 @@ export default function ProductManagement() {
         };
     }, []);
 
-    const fetchwaitItem = useCallback(async () => {
+    // 전체 선택/해제 핸들러
+    const handleSelectAll = (event) => {
+        const isChecked = event.target.checked;
+        if (isChecked) {
+            // 현재 보여지는 모든 제품의 ID 선택
+            const allProductIds = [...waitProducts.map((p) => p.productid), ...ongoingProducts.map((p) => p.productid), ...sellProducts.map((p) => p.productid)];
+            setSelectedProducts(allProductIds);
+        } else {
+            // 모든 선택 해제
+            setSelectedProducts([]);
+        }
+    };
+    // 개별 상품 선택/해제 핸들러
+    const handleProductSelect = (productId) => {
+        setSelectedProducts((prev) => (prev.includes(productId) ? prev.filter((id) => id !== productId) : [...prev, productId]));
+    };
+
+    const fetchwaitItem = async () => {
         try {
-            const response = await axios.get(``, {
+            const response = await axios.get(`https://breadend.shop/seller/show/wait`, {
                 headers: {
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${accessToken}`,
@@ -54,12 +74,12 @@ export default function ProductManagement() {
             setWaitProducts(response.data);
         } catch (error) {
             console.error('API 요청 에러:', error);
+            // Optionally, set an error state to show to the user
         }
-    }, [accessToken]);
-
-    const fetchsellItem = useCallback(async () => {
+    };
+    const fetchsellItem = async () => {
         try {
-            const response = await axios.get(``, {
+            const response = await axios.get(`https://breadend.shop/seller/show/sell`, {
                 headers: {
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${accessToken}`,
@@ -69,12 +89,12 @@ export default function ProductManagement() {
             setSellProducts(response.data);
         } catch (error) {
             console.error('API 요청 에러:', error);
+            // Optionally, set an error state to show to the user
         }
-    }, [accessToken]);
-
-    const fetchOngoingItem = useCallback(async () => {
+    };
+    const fetchOngoingItem = async () => {
         try {
-            const response = await axios.get(``, {
+            const response = await axios.get(`https://breadend.shop/seller/show/sell`, {
                 headers: {
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${accessToken}`,
@@ -84,8 +104,37 @@ export default function ProductManagement() {
             setOngoinProducts(response.data);
         } catch (error) {
             console.error('API 요청 에러:', error);
+            // Optionally, set an error state to show to the user
         }
-    }, [accessToken]);
+    };
+
+    // 상품 삭제 핸들러
+    const handleDeleteProducts = async () => {
+        try {
+            // 선택된 각 상품에 대해 삭제 요청
+            const deletePromises = selectedProducts.map((productId) =>
+                axios.delete(`https://breadend.shop/seller/delete?productid=${productId}`, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${accessToken}`,
+                    },
+                })
+            );
+
+            await Promise.all(deletePromises);
+
+            // 삭제 후 상품 목록 새로고침
+            await Promise.all([fetchwaitItem(), fetchsellItem(), fetchOngoingItem()]);
+
+            // 선택 상태 초기화
+            setSelectedProducts([]);
+
+            alert('선택한 상품들이 삭제되었습니다.');
+        } catch (error) {
+            console.error('상품 삭제 중 오류:', error);
+            alert('상품 삭제에 실패했습니다. 다시 시도해주세요.');
+        }
+    };
 
     useEffect(() => {
         if (accessToken) {
@@ -93,7 +142,7 @@ export default function ProductManagement() {
             fetchsellItem();
             fetchOngoingItem();
         }
-    }, [accessToken, fetchwaitItem, fetchsellItem, fetchOngoingItem]); 
+    }, [accessToken]); // accessToken이 변경될 때마다 사용자 데이터를 가져옴
 
     const PCView = () => {
         return (
@@ -127,9 +176,7 @@ export default function ProductManagement() {
 
                     <ProductGrid>
                         <ProductHeader>
-                            <div>
-                                <input type="checkbox" />
-                            </div>
+                            <input type="checkbox" checked={selectedProducts.length === waitProductLength + ongoingProductsLength + sellProductLenght} onChange={handleSelectAll} />
                             <div>No</div>
                             <div>상품명</div>
                             <div>판매가</div>
@@ -142,9 +189,13 @@ export default function ProductManagement() {
 
                         {waitProducts.map((product) => (
                             <ProductRow key={product.productid}>
-                                <ProductCell mobileHidden>
-                                    <input type="checkbox" />
-                                </ProductCell>
+                                <input
+                                    type="checkbox"
+                                    value={product.productid}
+                                    checked={selectedProducts.includes(product.productid)}
+                                    onChange={() => handleProductSelect(product.productid)}
+                                    styled={{ margin: '0px' }}
+                                />
                                 <ProductCell label="No">{product.productid}</ProductCell>
                                 <ProductCell label="상품명">
                                     <ProductInfo>
@@ -169,9 +220,7 @@ export default function ProductManagement() {
                     <ProductGrid>
                         {ongoingProducts.map((product) => (
                             <ProductRow key={product.productid}>
-                                <ProductCell mobileHidden>
-                                    <input type="checkbox" />
-                                </ProductCell>
+                                <input type="checkbox" value={product.productid} checked={selectedProducts.includes(product.productid)} onChange={() => handleProductSelect(product.productid)} />
                                 <ProductCell label="No">{product.productid}</ProductCell>
                                 <ProductCell label="상품명">
                                     <ProductInfo>
@@ -196,9 +245,7 @@ export default function ProductManagement() {
                     <ProductGrid>
                         {sellProducts.map((product) => (
                             <ProductRow key={product.productid}>
-                                <ProductCell mobileHidden>
-                                    <input type="checkbox" />
-                                </ProductCell>
+                                <input type="checkbox" value={product.productid} checked={selectedProducts.includes(product.productid)} onChange={() => handleProductSelect(product.productid)} />
                                 <ProductCell label="No">{product.productid}</ProductCell>
                                 <ProductCell label="상품명">
                                     <ProductInfo>
@@ -220,10 +267,11 @@ export default function ProductManagement() {
                             </ProductRow>
                         ))}
                     </ProductGrid>
-                    <ButtonContainer><EditButton>수정</EditButton><DeleteButton>삭제</DeleteButton></ButtonContainer>
-
+                    <ButtonContainer>
+                        <EditButton>수정</EditButton>
+                        <DeleteButton onClick={handleDeleteProducts}>삭제</DeleteButton>
+                    </ButtonContainer>
                 </MainContent>
-
             </Container>
         );
     };
@@ -280,7 +328,10 @@ export default function ProductManagement() {
                             </MobileProduct>
                         ))}
                     </ProductGrid>
-                    <ButtonContainer><EditButton>수정</EditButton><DeleteButton>삭제</DeleteButton></ButtonContainer>
+                    <ButtonContainer>
+                        <EditButton>수정</EditButton>
+                        <DeleteButton>삭제</DeleteButton>
+                    </ButtonContainer>
                 </MainContent>
             </Container>
         );
@@ -290,8 +341,8 @@ export default function ProductManagement() {
 const Container = styled.div`
     min-height: 100vh;
     background-color: #f0e9dd;
-    height:100%;
-    padding-bottom:50px;
+    height: 100%;
+    padding-bottom: 150px;
 `;
 
 const Header = styled.header`
@@ -316,8 +367,8 @@ const HeaderContent = styled.div`
 const Title = styled.h1`
     font-size: 1.25rem;
     font-weight: bold;
-    @media (max-width:450px) {
-        font-size : 1.2rem;
+    @media (max-width: 450px) {
+        font-size: 1.2rem;
     }
 `;
 
@@ -343,7 +394,7 @@ const MainContent = styled.main`
     max-width: 1200px;
     margin: 0 auto;
     padding: 1rem;
-    height:100%;
+    height: 100%;
 `;
 
 const StatsContainer = styled.div`
@@ -366,8 +417,8 @@ const StatBox = styled.div`
     padding: 1rem;
     border-radius: 0.25rem;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    @media (max-width:450px) {
-        padding:0.7rem 1rem;
+    @media (max-width: 450px) {
+        padding: 0.7rem 1rem;
     }
 `;
 
@@ -384,28 +435,28 @@ const StatValue = styled.div`
 const ProductGrid = styled.div`
     background: white;
     border-radius: 0.25rem;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);   
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 `;
 
 const ProductHeader = styled.div`
     display: grid;
     grid-template-columns: 40px 60px 1.5fr 1fr 1fr 1fr 0.85fr 1fr 1fr;
+    gap: 0.8rem;
     padding: 1rem 0.7rem;
     background: #d3b790;
     font-weight: bold;
     color: #374151;
     border-bottom: 1px solid #e5e7eb;
-    gap: 0.8rem;
 
     @media (max-width: 1024px) {
         display: none;
-    }    
+    }
 `;
 
 const ProductRow = styled.div`
     display: grid;
     grid-template-columns: 40px 60px 1.5fr 1fr 1fr 1fr 0.85fr 1fr 1fr;
-    gap: 0.7rem;
+    gap: 0.8rem;
     padding: 1rem 0.7rem;
     align-items: center;
     border-bottom: 1px solid #e5e7eb;
@@ -490,7 +541,7 @@ const MobileProduct = styled.div`
     display: grid;
     padding: 1rem 0.7rem;
     grid-template-columns: 20px 40px 1fr 1.5fr 1.1fr 0.8fr;
-    
+
     align-items: center;
     border-bottom: 1px solid #e5e7eb;
     justify-content: space-between;
@@ -506,7 +557,7 @@ const MobileProduct = styled.div`
     }
 
     @media (max-width: 400px) {
-        font-size: 14px;        
+        font-size: 14px;
         grid-template-columns: 20px 33px 0.8fr 1.6fr 1.1fr 0.8fr;
     }
 `;
@@ -538,26 +589,27 @@ const SelectAllDiv = styled.div`
 `;
 
 const ButtonContainer = styled.div`
-    display:flex;   
-    align-items:right;
-    margin:20px 0px;
-
+    display: flex;
+    align-items: right;
+    margin: 20px 0px;
+    float: right;
 `;
 const EditButton = styled.div`
-    background-color:#1cc88a;
-    color:white;
-    border-radius:5px;
-    padding:5px 10px;
-    &:hover{
-        background-color:#19b47c;
+    background-color: #1cc88a;
+    color: white;
+    border-radius: 5px;
+    padding: 8px 16px;
+    &:hover {
+        background-color: #19b47c;
     }
-`
+    margin-right: 8px;
+`;
 const DeleteButton = styled.div`
-    background-color:#dc2e1c;
-    color:white;
-    border-radius:5px;
-    padding:5px 10px;
-    &:hover{
-        background-color:#c62919; 
+    background-color: #dc2e1c;
+    color: white;
+    border-radius: 5px;
+    padding: 8px 16px;
+    &:hover {
+        background-color: #c62919;
     }
-`
+`;

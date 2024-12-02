@@ -39,12 +39,11 @@ function Login() {
                     Cookies.set('accessToken', response.data.accessToken, { expires: 14 });
                     Cookies.set('refreshToken', response.data.accessToken, { expires: 14 });
                     Cookies.set('userType', response.data.userType);
-                    // userAuth에 따라 리디렉션
                     const userType = response.data.userType;
                     setUserAuth(userType);
-                    if (userAuth === 'buyer') {
+                    if (userType === 'buyer') {
                         navigate('/Home');
-                    } else if (userAuth === 'seller') {
+                    } else if (userType === 'seller') {
                         navigate('/MyPage');
                     }
                 } else {
@@ -60,19 +59,32 @@ function Login() {
             alert('로그인 실패: 아이디 또는 비밀번호를 입력하세요.');
         }
     };
+
     return (
         <LoginPage>
             <IconContainer>
-                <Icon src="https://cdn-icons-png.flaticon.com/512/121/121046.png" alt="아이콘" />
+                <Icon src="https://cdn-icons-png.flaticon.com/512/5919/5919928.png" alt="아이콘" />
             </IconContainer>
             <LoginFormContainer>
                 <Title>빵끝마켓🍞</Title>
                 <LoginForm onSubmit={handleSubmit}>
                     <InputContainer>
-                        <InputField type="text" value={username} onChange={(e) => setUsername(e.target.value)} placeholder="아이디" required />
+                        <InputField
+                            type="text"
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
+                            placeholder="아이디"
+                            required
+                        />
                     </InputContainer>
                     <InputContainer>
-                        <InputField type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="비밀번호" required />
+                        <InputField
+                            type="password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            placeholder="비밀번호"
+                            required
+                        />
                     </InputContainer>
                     <LoginButton type="submit">로그인</LoginButton>
                 </LoginForm>
@@ -80,7 +92,10 @@ function Login() {
         </LoginPage>
     );
 }
+
 export default Login;
+
+// 스타일 정의
 const LoginPage = styled.div`
     display: flex;
     justify-content: center;
@@ -93,37 +108,69 @@ const LoginPage = styled.div`
     }
 `;
 const IconContainer = styled.div`
+    width: 100px; /* 기본 크기 */
+    height: 100px; /* 기본 크기 */
+    display: flex; /* 아이콘 정렬 */
+    align-items: center;
+    justify-content: center;
+    position: relative; /* 위치 조정을 위해 relative 추가 */
+
+    /* 좌우 방향 조정을 위한 props 추가 */
+    margin-left: ${({ marginLeft }) => marginLeft || '0px'};
+    margin-right: ${({ marginRight }) => marginRight || '25px'};
+
     @media screen and (max-width: 1440px) {
-        display: none;
+        display: none; /* 1440px 이하에서 숨김 */
+    }
+
+    @media screen and (min-width: 1441px) {
+        width: 150px; /* 1441px 이상에서 크기 키움 */
+        height: 150px;
     }
 `;
+
+
 const Icon = styled.img`
     width: 200px;
     height: 200px;
 `;
+
 const LoginFormContainer = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    margin-top: 50px; /* 원하는 위치로 이동 */
     max-width: 400px;
-    padding: 40px;
+    padding: 30px; /* 기본 패딩 */
     border: 1px solid #e0e0e0;
     border-radius: 8px;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
     text-align: center;
+
     @media screen and (max-width: 1440px) {
         width: 90%;
-        padding: 20px;
+        padding: 20px; /* 중간 화면 크기 패딩 */
+    }
+
+    @media screen and (max-width: 768px) {
+        padding: 0; /* 모바일 뷰에서 패딩 제거 */
+        width: 100%; /* 너비를 화면에 맞춤 */
+        margin-top: 85px; /* 모바일에서 적절한 위치 */
+        border: none; /* 선택적으로 테두리 제거 */
+        box-shadow: none; /* 선택적으로 그림자 제거 */
     }
 `;
+
 const Title = styled.h1`
+    color: #d4a373;
     font-size: 40px;
     font-family: 'Black Han Sans', sans-serif;
 `;
+
 const LoginForm = styled.form`
     width: 100%;
 `;
+
 const InputContainer = styled.div`
     width: 100%;
     margin-bottom: 10px;
@@ -131,6 +178,7 @@ const InputContainer = styled.div`
         margin-bottom: 6px;
     }
 `;
+
 const InputField = styled.input`
     padding: 15px;
     font-size: 18px;
@@ -149,11 +197,12 @@ const InputField = styled.input`
         height: 45px;
     }
 `;
+
 const LoginButton = styled.button`
     padding: 15px;
     width: 100%;
     height: 50px;
-    background-color: black;
+    background-color: #d4a373;
     color: white;
     font-size: 18px;
     border: none;
