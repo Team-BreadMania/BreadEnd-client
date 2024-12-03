@@ -66,6 +66,10 @@ export default function Home() {
         navigate(`/ProductDetailPage?id=17`); 
     };
 
+    const handleShopClick = () => {
+        navigate(`/ShopProduct?id=8`); 
+    }; 
+
     return (
         <Container>
             <Banner>
@@ -91,7 +95,7 @@ export default function Home() {
             <ProductContainer>
                 <ProductSlider {...product_settings}>
                     {Array.from({ length: 10 }).map((_, index) => (
-                        <ProductBox key = {index} onClick = {handleProductClick}>
+                        <ProductBox key = {index} onClick = {handleShopClick}>
                             <Shop/>
                         </ProductBox>
                     ))}
@@ -322,7 +326,7 @@ const ProductSlider = styled(Slider)` // 상품 슬라이드 컨테이너
     }
 
     .slick-prev:before, .slick-next:before {
-        color: #2590F1;
+        color: #DFCAB0;
         font-size: 30px;
 
         @media (max-width: 800px) {

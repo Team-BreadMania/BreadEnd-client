@@ -1,51 +1,104 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import styled from 'styled-components';
 import Map from "../Components/ShopLocation";
 
 export default function ShopProduct() {
 
-    const ShopAddress = "경기 성남시 분당구 판교공원로2길 42";
+    const location = useLocation(); 
+    const navigate = useNavigate();
+    const query = new URLSearchParams(location.search); 
+    const id = query.get("id"); 
+
+    const [shopInfo, setShopInfo] = useState(null); // 매장 정보
+    const [products, setProducts] = useState([]); // 상품 정보
+    const [currentPage, setCurrentPage] = useState(0); // 현재 페이지
+    const productsPerPage = 4; // 한 페이지에 보여줄 상품 수
+
+    useEffect(() => {
+        const fetchShopInfo = async () => {
+            try {
+                const response = await axios.get(`https://breadend.shop/shopInfo/return?shopid=${id}`);
+                setShopInfo(response.data.shopInfo);
+                setProducts(response.data.products);
+            } catch (error) {
+                console.error("매장정보 조회중 에러발생 : ", error);
+            }
+        };
+
+        fetchShopInfo();
+    }, [id]);
+
+    const displayedProducts = products.slice(currentPage * productsPerPage, (currentPage + 1) * productsPerPage);
+    const totalPages = Math.ceil(products.length / productsPerPage);
+
+    const handleNext = () => { // 다음버튼 메서드
+        if (currentPage < totalPages - 1) {
+            setCurrentPage(currentPage + 1);
+        }
+    };
+
+    const handlePrevious = () => { // 이전버튼 메서드
+        if (currentPage > 0) {
+            setCurrentPage(currentPage - 1);
+        }
+    };
+
+    const handleProductClick = (productId) => { // 상품 상세페이지 이동 메서드
+        navigate(`/ProductDetailPage?id=${productId}`);
+    };
 
     return (
         <Container>
             <InnerContainer>
-                <ImageBox/>
+                <ImageBox img = {shopInfo?.shopIMG}/>
                 <Title>매장 정보</Title>
                 <ShopContainer>
                     <ProfileBox>
                         <SubTitle>판매자</SubTitle>
                         <Profile>
-                            <ProfileImage/>
+                            <ProfileImage img = {shopInfo?.userIMG}/>
                         </Profile>
-                        <ProfileInfo>유저 닉네임</ProfileInfo>
+                        <ProfileInfo>{shopInfo?.nickname}</ProfileInfo>
                     </ProfileBox>
                     <ShopInfoBox>
-                        <ShopInfo style = {{fontSize: "20px", margin: "15px 10px"}}><Bold>&lt;여기 빵집 아닙니다&gt;</Bold></ShopInfo>
+                        <ShopInfo style = {{fontSize: "20px", margin: "15px 10px"}}><Bold>&lt;{shopInfo?.shop_name}&gt;</Bold></ShopInfo>
                         <ShopInfo><Bold>영업 시간 : </Bold>08:00 ~ 20:00</ShopInfo>
-                        <ShopInfo><Bold>매장 전화번호 : </Bold>02-1234-5678</ShopInfo>
-                        <ShopInfo><Bold>매장 위치 : </Bold>경기 성남시 분당구 판교동</ShopInfo>
-                        <ShopInfo><Bold>매장 상세주소 : </Bold>경기 성남시 분당구 판교공원길 512-12</ShopInfo>
+                        <ShopInfo><Bold>매장 전화번호 : </Bold>{shopInfo?.shop_number}</ShopInfo>
+                        <ShopInfo><Bold>매장 위치 : </Bold>{shopInfo?.location}</ShopInfo>
+                        <ShopInfo><Bold>매장 상세주소 : </Bold>{shopInfo?.detaillocation}</ShopInfo>
                     </ShopInfoBox>
                 </ShopContainer>
                 <Title>지금 판매중인 상품</Title>
                 <ShopProductBox>
-                    <ProductContainer>
-                        <ImageContainer>
-                            <ProductImage/>
-                        </ImageContainer>
-                        <ProductInfoBox>
-                            <ProductName>대충 빵 이름</ProductName>
-                            <ProductInfo><Bold>개당 가격</Bold> : 2,000원</ProductInfo>
-                            <ProductInfo><Bold>남은 수량</Bold> : 5개</ProductInfo>
-                            <ProductInfo><Bold>제조 시간</Bold> : 오늘 오전 9시</ProductInfo>
-                            <ProductInfo><Bold>판매 시간</Bold> : 오늘 오후 10시까지</ProductInfo>
-                        </ProductInfoBox>
-                    </ProductContainer>
+                    {displayedProducts.map(product => (
+                        <ProductContainer key = {product.productid} onClick = {() => handleProductClick(product.productid)}>
+                            <ImageContainer>
+                                <ProductImage img = {product.imgpaths[0]} />
+                            </ImageContainer>
+                            <ProductInfoBox>
+                                <ProductName>{product.itemname}</ProductName>
+                                <ProductInfo><Bold>개당 가격</Bold> : {product.price}원</ProductInfo>
+                                <ProductInfo><Bold>남은 수량</Bold> : {product.count}개</ProductInfo>
+                                <ProductInfo><Bold>제조 시간</Bold> : {product.makedate}</ProductInfo>
+                                <ProductInfo><Bold>판매 시간</Bold> : {product.expireddate}</ProductInfo>
+                            </ProductInfoBox>
+                        </ProductContainer>
+                    ))}
+                    <ButtonBox>
+                        <Button onClick = {handlePrevious} disabled = {currentPage === 0}>
+                            ◀
+                        </Button>
+                        <ProductPageNumber>{currentPage + 1}</ProductPageNumber>
+                        <Button onClick = {handleNext} disabled = {currentPage >= totalPages - 1}>
+                            ▶
+                        </Button>
+                    </ButtonBox>
                 </ShopProductBox>
                 <Title>매장 위치</Title>
                 <ShopLocationBox>
-                    <Map address = {ShopAddress}/>
+                    <Map address = {shopInfo?.detaillocation}/>
                 </ShopLocationBox>
             </InnerContainer>
         </Container>
@@ -94,7 +147,8 @@ const InnerContainer = styled.div` // 내부 컨테이너
 const ImageBox = styled.div` // 매장 이미지 박스
     width: 100%;
     height: 300px;
-    background-color: brown;
+    background-image: url(${props => props.img});
+    background-size: cover;
 `;
 
 const Title = styled.div` // 제목
@@ -149,7 +203,8 @@ const ProfileImage = styled.div` // 프로필 이미지
     width: 100px;
     height: 100px;
     border-radius: 50%;
-    background-color: black;
+    background-image: url(${props => props.img});
+    background-size: cover;
 `;
 
 const ProfileInfo = styled.div` // 판매자 닉네임
@@ -224,7 +279,8 @@ const ProductImage = styled.div` // 상품 이미지
     width: 100px;
     height: 100px;
     border-radius: 50%;
-    background-color: black;
+    background-image: url(${props => props.img});
+    background-size: cover;
 `;
 
 const ProductInfoBox = styled.div` // 상품 정보 컨테이너
@@ -251,4 +307,39 @@ const ShopLocationBox = styled.div` // 매장 위치 박스
     border: 1px solid #D1A064;
     box-sizing: border-box;
     margin-bottom: 100px;
+`;
+
+const ButtonBox = styled.div` // 버튼 박스
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 50px;
+    margin-top: auto;
+`;
+
+const Button = styled.div` // ◀, ▶ 버튼
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 40px;
+    height: 70%;
+    border: ${(props) => (props.disabled ? 'none' : '1px solid black')};
+    border-radius: 5px;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: ${(props) => (props.disabled ? 'default' : 'pointer')};
+    color: ${(props) => (props.disabled ? 'transparent' : 'black')};
+    &:hover {
+        background-color: ${(props) => (props.disabled ? 'transparent' : '#C1C1C1')};
+    }
+`;
+
+const ProductPageNumber = styled.div` // 상품페이지 숫자
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 80px;
+    height: 70%;
+    font-size: 20px;
 `;

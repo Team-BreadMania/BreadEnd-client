@@ -10,6 +10,7 @@ export default function MyCart() {
 
     const [cartItems, setCartItems] = useState([]); // 장바구니 항목 상태
     const [totalPrice, setTotalPrice] = useState(0); // 전체 금액 상태
+    const [selectedItems, setSelectedItems] = useState({}); // 선택된 상품 상태
 
     useEffect(() => {
         const fetchCartItems = async () => {
@@ -25,6 +26,12 @@ export default function MyCart() {
                 
                 const total = response.data.reduce((acc, item) => acc + item.price * item.count, 0);
                 setTotalPrice(total);
+
+                const initialSelectedItems = response.data.reduce((acc, item) => {
+                    acc[item.productid] = true; 
+                    return acc;
+                }, {});
+                setSelectedItems(initialSelectedItems);
             } catch (error) {
                 console.error("장바구니 항목을 가져오는데 실패했습니다.", error);
             }
@@ -32,6 +39,102 @@ export default function MyCart() {
 
         fetchCartItems();
     }, []);
+
+    const calculateSelectedTotal = () => { // 선택된 상품 가격 계산 메서드
+        return cartItems.reduce((total, item) => {
+            if (selectedItems[item.productid]) {
+                return total + item.price * item.count;
+            }
+            return total;
+        }, 0);
+    };
+
+    const handleDelete = async (productid) => { // 선택 상품 개별 삭제 메서드
+        const accessToken = Cookies.get("accessToken");
+        
+        try {
+            console.log("Deleting product with ID:", productid);
+            await axios.delete(`https://breadend.shop/cart/delete`, {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                    'Content-Type': 'application/json;charset=UTF-8',
+                },
+                data: { productid },
+            });
+
+            setCartItems(prevItems => {
+                const updatedItems = prevItems.filter(item => item.productid !== productid);
+                const updatedTotal = updatedItems.reduce((acc, item) => acc + item.price * item.count, 0);
+                setTotalPrice(updatedTotal); 
+                return updatedItems;
+            });
+        } catch (error) {
+            console.error("상품 삭제에 실패했습니다.", error);
+        }
+    };
+
+    const handleOrderAll = async () => { // 전체 상품 주문 메서드
+        const accessToken = Cookies.get("accessToken");
+        
+        const orderItems = cartItems.map(item => ({
+            productid: item.productid,
+            count: item.count,
+        }));
+    
+        try {
+            await axios.post('https://breadend.shop/cart/addorder', orderItems, {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                    'Content-Type': 'application/json;charset=UTF-8',
+                },
+            });
+            alert("전체 상품 주문이 완료되었습니다.");
+            
+            // 주문 성공 후 장바구니 비우기
+            setCartItems([]);
+            setTotalPrice(0); // 전체 금액 초기화
+        } catch (error) {
+            console.error("전체 상품 주문에 실패했습니다.", error);
+        }
+    };
+    
+    const handleOrderSelected = async () => { // 선택된 상품 주문 메서드
+        const accessToken = Cookies.get("accessToken");
+        
+        const orderItems = cartItems
+            .filter(item => selectedItems[item.productid])
+            .map(item => ({
+                productid: item.productid,
+                count: item.count,
+            }));
+    
+        if (orderItems.length === 0) {
+            alert("선택된 상품이 없습니다.");
+            return;
+        }
+    
+        try {
+            await axios.post('https://breadend.shop/cart/addorder', orderItems, {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                    'Content-Type': 'application/json;charset=UTF-8',
+                },
+            });
+            alert("선택된 상품 주문이 완료되었습니다.");
+    
+            // 주문 성공 후 선택한 상품 제거
+            setCartItems(prevItems => {
+                const updatedItems = prevItems.filter(item => !selectedItems[item.productid]);
+                const updatedTotal = updatedItems.reduce((acc, item) => acc + item.price * item.count, 0);
+                setTotalPrice(updatedTotal); // 전체 금액 업데이트
+                return updatedItems;
+            });
+            
+            // 새로 고침 없이 상태를 업데이트
+        } catch (error) {
+            console.error("선택된 상품 주문에 실패했습니다.", error);
+        }
+    };         
 
     return (
         <Container>
@@ -41,7 +144,15 @@ export default function MyCart() {
                     {cartItems.map((item) => (
                         <ProductContainer key = {item.productid}>
                             <CheckBoxContainer>
-                                <CheckBox />
+                                <CheckBox 
+                                    checked = {selectedItems[item.productid] || false} 
+                                    onChange = {() => {
+                                        setSelectedItems(prev => ({
+                                            ...prev,
+                                            [item.productid]: !prev[item.productid]
+                                        }));
+                                    }} 
+                                />
                             </CheckBoxContainer>
                             <ImageBox>
                                 <ProductImage img = {item.imgpaths[0]}/>
@@ -53,7 +164,7 @@ export default function MyCart() {
                                 <ProductPrice>개당 {item.price.toLocaleString()}원</ProductPrice>
                             </ProductInfoBox>
                             <DeleteBox>
-                                <DeleteIcon />
+                                <DeleteIcon onClick = {() => handleDelete(item.productid)}/>
                             </DeleteBox>
                         </ProductContainer>
                     ))}
@@ -62,10 +173,12 @@ export default function MyCart() {
                     <TrashIcon/>
                     <Text>선택상품 일괄삭제</Text>
                 </TrashBox>
-                <TotalPrice>선택된 상품 금액 = {totalPrice.toLocaleString()}원 / 전체 상품 금액 = 6,000원</TotalPrice>
+                <TotalPrice>
+                    선택된 상품 금액 = {calculateSelectedTotal().toLocaleString()}원 / 전체 상품 금액 = {totalPrice.toLocaleString()}원
+                </TotalPrice>
                 <BuyBox>
-                    <SelectedBuyButton>선택한 상품만 구매예약</SelectedBuyButton>
-                    <TotalBuyButton>전체 상품 구매예약</TotalBuyButton>
+                    <SelectedBuyButton onClick = {handleOrderSelected}>선택한 상품만 구매예약</SelectedBuyButton>
+                    <TotalBuyButton onClick = {handleOrderAll}>전체 상품 구매예약</TotalBuyButton>
                 </BuyBox>
             </MyCartContainer>
         </Container>
