@@ -336,7 +336,7 @@ export default function ProductManagement() {
 
                         {waitProducts.map((product) => (
                             <MobileProduct key={product.productid}>
-                                <input type="checkbox" />
+                                <input type="checkbox" value={product.productid} checked={selectedProducts.includes(product.productid)} onChange={() => handleProductSelect(product.productid)} />
                                 <MobileDiv>{product.productid}</MobileDiv>
                                 <MobileImg src={product.imgpaths[0]} />
                                 <MobileInfoContainer>
@@ -344,6 +344,32 @@ export default function ProductManagement() {
                                     <MobileDiv>{product.price}</MobileDiv>
                                 </MobileInfoContainer>
                                 <MobileDiv>판매중</MobileDiv>
+                                <MobileDiv>{product.count}</MobileDiv>
+                            </MobileProduct>
+                        ))}
+                        {ongoingProducts.map((product) => (
+                            <MobileProduct key={product.productid}>
+                                <input type="checkbox" value={product.productid} checked={selectedProducts.includes(product.productid)} onChange={() => handleProductSelect(product.productid)} />
+                                <MobileDiv>{product.productid}</MobileDiv>
+                                <MobileImg src={product.imgpaths[0]} />
+                                <MobileInfoContainer>
+                                    <MobileDiv>{product.itemname}</MobileDiv>
+                                    <MobileDiv>{product.price}</MobileDiv>
+                                </MobileInfoContainer>
+                                <MobileDiv>판매예약</MobileDiv>
+                                <MobileDiv>{product.count}</MobileDiv>
+                            </MobileProduct>
+                        ))}
+                        {sellProducts.map((product) => (
+                            <MobileProduct key={product.productid}>
+                                <input type="checkbox" value={product.productid} checked={selectedProducts.includes(product.productid)} onChange={() => handleProductSelect(product.productid)} />
+                                <MobileDiv>{product.productid}</MobileDiv>
+                                <MobileImg src={product.imgpaths[0]} />
+                                <MobileInfoContainer>
+                                    <MobileDiv>{product.itemname}</MobileDiv>
+                                    <MobileDiv>{product.price}</MobileDiv>
+                                </MobileInfoContainer>
+                                <MobileDiv>판매완료</MobileDiv>
                                 <MobileDiv>{product.count}</MobileDiv>
                             </MobileProduct>
                         ))}
