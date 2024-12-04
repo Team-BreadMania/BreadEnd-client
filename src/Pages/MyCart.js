@@ -54,14 +54,13 @@ export default function MyCart() {
         
         try {
             console.log("Deleting product with ID:", productid);
-            await axios.delete(`https://breadend.shop/cart/delete`, {
+            await axios.delete(`https://breadend.shop/cart/delete?productid=${productid}`, {
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
                     'Content-Type': 'application/json;charset=UTF-8',
                 },
-                data: { productid },
             });
-
+    
             setCartItems(prevItems => {
                 const updatedItems = prevItems.filter(item => item.productid !== productid);
                 const updatedTotal = updatedItems.reduce((acc, item) => acc + item.price * item.count, 0);
@@ -71,7 +70,7 @@ export default function MyCart() {
         } catch (error) {
             console.error("상품 삭제에 실패했습니다.", error);
         }
-    };
+    };    
 
     const handleOrderAll = async () => { // 전체 상품 주문 메서드
         const accessToken = Cookies.get("accessToken");

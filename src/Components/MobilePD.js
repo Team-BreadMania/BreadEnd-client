@@ -64,23 +64,22 @@ export default function MobilePD() {
         if (productDetails) {
             try {
                 const shopId = productDetails.shopid; 
-                console.log("현재 shopid:", shopId);
+                console.log("현재 shopid :", shopId);
     
                 if (dibs) {
-                    const response = await axios.delete('https://breadend.shop/detailpage/delete/Bookmark', 
+                    const response = await axios.delete(`https://breadend.shop/detailpage/delete/Bookmark?shopid=${shopId}`, 
                         {
                             headers: {
                                 Authorization: `Bearer ${accessToken}`, 
-                            },
-                            data: shopId 
+                            }
                         }
                     );
                     if (response.status === 200) {
                         alert("찜을 해제하였습니다.");
                     }
                 } else {
-                    const response = await axios.post('https://breadend.shop/detailpage/add/Bookmark', 
-                        shopId, 
+                    const response = await axios.post(`https://breadend.shop/detailpage/add/Bookmark?shopid=${shopId}`, 
+                        {}, 
                         {
                             headers: {
                                 Authorization: `Bearer ${accessToken}`, 
@@ -98,7 +97,7 @@ export default function MobilePD() {
                 console.error("API 요청 에러 :", error);
             }
         }
-    };    
+    };      
 
     const increaseQuantity = () => { // 구매수량 증가 메서드
         if (quantity < productDetails.count) { 
