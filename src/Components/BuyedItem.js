@@ -42,11 +42,17 @@ export default function Item() {
             console.error('API 요청에러', error);
         }
     };
+
     useEffect(() => {
         if (accessToken) {
             fetchBuyedItem();
         }
     }, [accessToken]);
+
+    const ReviewWirte = (productId) => {
+        // Open the popup
+        window.open(`/ReviewWrite?productId=${productId}`, '리뷰작성', 'width=600,height=400,scrollbars=yes');
+    };
 
     const PCView = () => {
         return (
@@ -58,7 +64,7 @@ export default function Item() {
                             <div>상품 이미지</div>
                             <div>상품 정보</div>
                             <div>상품 가격</div>
-                            <div></div>
+                            <div>리뷰쓰기</div>
                         </ProductTitleContainer>
                         <ProductInfoContainer>
                             <ReservImage src={butterroll}></ReservImage>
@@ -67,7 +73,7 @@ export default function Item() {
                                 <Info>{product.info}</Info>
                             </NameCostContainer>
                             <Cost>{product.price}</Cost>
-                            <Review>리뷰 작성하러 가기</Review>
+                            <Review onClick={() => ReviewWirte(product.orderid)}>리뷰 작성하러 가기</Review>
                         </ProductInfoContainer>
                     </ProductContainer>
                 ))}
@@ -92,7 +98,7 @@ export default function Item() {
                                 <Info>{product.info}</Info>
                             </NameCostContainer>
                             <Cost>{product.price}</Cost>
-                            <ReviewButton />
+                            <ReviewButton onClick={() => ReviewWirte(product.orderid)} />
                         </ProductInfoContainer>
                     </ProductContainer>
                 ))}
@@ -127,34 +133,49 @@ const ProductContainer = styled.div`
     display: flex;
     flex-direction: column;
     width: 100%;
-    padding: 10px 5px;
+    padding: 15px 0px;
+    margin: 0 auto;
 `;
 const ProductTitleContainer = styled.div`
     display: grid;
     grid-template-columns: 150px 1.5fr 1fr;
-    margin-bottom: 1.5%;
+    border: 1px solid #e0e0e0;
+    border-bottom: none;
+    & > div {
+        border-right: 1px solid #e0e0e0;
+        padding: 10px;
+        text-align: center;
+
+        &:last-child {
+            border-right: none;
+        }
+    }
+
     @media (min-width: 1024px) {
         grid-template-columns: 150px 1.5fr 1fr 1fr;
     }
     @media (max-width: 600px) {
-        grid-template-columns: 120px 1.5fr 1fr 1fr;
+        grid-template-columns: 120px 1.5fr 1fr;
     }
     @media (max-width: 480px) {
-        grid-template-columns: 100px 1.5fr 1fr 1fr;
+        grid-template-columns: 100px 1.5fr 1fr;
     }
 `;
+
 const ProductInfoContainer = styled.div`
     display: grid;
     grid-template-columns: 150px 1.5fr 1fr;
     position: relative;
+    border: 1px solid #e0e0e0;
+    /* padding: 10px 0; */
     @media (min-width: 1024px) {
         grid-template-columns: 150px 1.5fr 1fr 1fr;
     }
     @media (max-width: 600px) {
-        grid-template-columns: 120px 1.5fr 1fr 1fr;
+        grid-template-columns: 120px 1.5fr 1fr;
     }
     @media (max-width: 480px) {
-        grid-template-columns: 100px 1.5fr 1fr 1fr;
+        grid-template-columns: 100px 1.5fr 1fr;
     }
 `;
 const ReservImage = styled.div`
@@ -166,6 +187,7 @@ const ReservImage = styled.div`
     background-size: cover;
     background-position: center;
     text-align: center;
+    margin: 0 auto;
     @media (max-width: 768px) {
         width: 30vw;
         height: 30vw;
@@ -182,9 +204,11 @@ const NameCostContainer = styled.div`
     flex-direction: column;
     align-items: left;
     padding: 1% 0;
+    margin: auto auto;
 `;
 const Name = styled.div`
     margin-bottom: 5px;
+    margin: 3px auto;
 `;
 const Info = styled.div`
     margin-bottom: 5px;
@@ -192,6 +216,7 @@ const Info = styled.div`
 `;
 const Cost = styled.div`
     padding: 1% 0;
+    margin: auto auto;
 `;
 const Review = styled.button`
     cursor: pointer;
@@ -204,6 +229,7 @@ const Review = styled.button`
     &:hover {
         background-color: #bea587;
     }
+    margin: auto auto;
 `;
 const ReviewButton = styled.div`
     position: absolute;
@@ -214,5 +240,4 @@ const ReviewButton = styled.div`
     height: 20px;
     background-size: contain;
     cursor: pointer; // Optional: adds pointer cursor on hover
-    margin-right: 10px;
 `;
