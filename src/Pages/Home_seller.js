@@ -267,7 +267,7 @@ const StoreProfile = styled.div`
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background-image: url(${(props) => props.src|| defaultBakery});
+    background-image: url(${(props) => props.src});
     background-size: cover;
     margin-right:10px;
 `;
@@ -300,7 +300,7 @@ const StoreDetailPage = styled.div`
 const StoreImageContainer = styled.div`
     width: 300px;
     height: 225px;
-    background-image: url(${(props) => props.src});
+    background-image: url(${(props) => props.src|| defaultBakery});
     background-size: cover;
     background-position: center center;
     @media (min-width: 550px) {
