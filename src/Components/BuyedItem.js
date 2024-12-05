@@ -13,7 +13,9 @@ export default function Item() {
     const [priceUnit, setPriceUnit] = useState(null);
     const totalPrice = quantity ? Number(quantity) * priceUnit : 0;
     const [buyedItems, setBuyedItems] = useState([]);
+    const [reviews, setReviews] = useState({}); // 리뷰 상태 추가
     const [isMobile, setIsMobile] = useState(false);
+
     // 모바일 뷰, 태블릿 뷰 식별
     const resizeHandler = () => {
         setIsMobile(window.innerWidth < 1024);
@@ -28,7 +30,7 @@ export default function Item() {
     }, []);
 
     const accessToken = Cookies.get('accessToken');
-
+    //구매한 제품 정보 가져오기
     const fetchBuyedItem = async () => {
         try {
             const response = await axios.get(`https://breadend.shop/Mypage/histories`, {
@@ -44,15 +46,40 @@ export default function Item() {
         }
     };
 
+    const fetchReviewData = async () => {
+        try {
+            const response = await axios.get('https://breadend.shop/Mypage/review/show', {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${accessToken}`,
+                },
+            });
+            // 리뷰를 상품별로 매핑
+            const reviewMap = {};
+            response.data.forEach((review) => {
+                reviewMap[review.productname] = review;
+            });
+            setReviews(reviewMap);
+            console.log('리뷰 불러오기 성공', response.data);
+        } catch (error) {
+            console.error('리뷰 불러오기 실패', error);
+        }
+    };
+
     useEffect(() => {
         if (accessToken) {
             fetchBuyedItem();
+            fetchReviewData();
         }
     }, [accessToken]);
 
-    const ReviewWirte = (productId) => {
+    const ReviewWrite = (orderid, itemname) => {
         // Open the popup
-        window.open(`/ReviewWrite?productId=${productId}`, '리뷰작성', 'width=600,height=400,scrollbars=yes');
+        window.open(`/ReviewWrite?orderid=${orderid}&itemname=${itemname}`, '리뷰작성', 'width=600,height=400,scrollbars=yes');
+    };
+    const ReviewEdit = (orderid, itemname) => {
+        // 리뷰 수정 페이지 열기
+        window.open(`/ReviewEdit?orderid=${orderid}&itemname=${itemname}`, '리뷰수정', 'width=600,height=400,scrollbars=yes');
     };
 
     const PCView = () => {
@@ -68,13 +95,17 @@ export default function Item() {
                             <div>리뷰쓰기</div>
                         </ProductTitleContainer>
                         <ProductInfoContainer>
-                            <ReservImage src={butterroll}></ReservImage>
+                            <ReservImage src={product.imgpaths[0]}></ReservImage>
                             <NameCostContainer>
                                 <Name>{product.itemname}</Name>
                                 <Info>{product.info}</Info>
                             </NameCostContainer>
                             <Cost>{product.price}</Cost>
-                            <Review onClick={() => ReviewWirte(product.orderid)}>리뷰 작성하러 가기</Review>
+                            {reviews[product.itemname] ? (
+                                <Review onClick={() => ReviewEdit(product.orderid, product.itemname)}>리뷰 수정하기</Review>
+                            ) : (
+                                <Review onClick={() => ReviewWrite(product.orderid, product.itemname)}>리뷰 작성하러 가기</Review>
+                            )}{' '}
                         </ProductInfoContainer>
                     </ProductContainer>
                 ))}
@@ -99,7 +130,11 @@ export default function Item() {
                                 <Info>{product.info}</Info>
                             </NameCostContainer>
                             <Cost>{product.price}</Cost>
-                            <ReviewButton onClick={() => ReviewWirte(product.orderid)} />
+                            {reviews[product.itemname] ? (
+                                <ReviewButton onClick={() => ReviewWrite(product.orderid, product.itemname)} />
+                            ) : (
+                                <ReviewButton onClick={() => ReviewWrite(product.orderid, product.itemname)} />
+                            )}{' '}
                         </ProductInfoContainer>
                     </ProductContainer>
                 ))}
@@ -185,10 +220,11 @@ const ReservImage = styled.div`
     max-width: 100px;
     max-height: 100px;
     background-image: url(${(props) => props.src});
+
     background-size: cover;
     background-position: center;
     text-align: center;
-    margin: 0 auto;
+    margin: 8px auto;
     @media (max-width: 768px) {
         width: 30vw;
         height: 30vw;

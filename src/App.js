@@ -18,19 +18,27 @@ import SearchResults from './Pages/SearchResults';
 import ProductManagement from './Pages/ProductManagement';
 import EditProductPopup from './Components/EditProductPopup';
 import ReviewPopup from './Components/ReviewPopup';
+import ReviewEdit from './Components/ReviewEdit';
 import { AuthProvider } from './AuthContext';
 import { CartProvider } from './CartContext';
+import Review from './Components/Review';
 
 function App() {
     const location = useLocation(); // 현재 경로를 확인하기 위한 useLocation
 
     // Header와 NaviBar를 각 페이지별로 숨김 처리
     const hideHeader =
-        location.pathname === '/normal' || location.pathname === '/seller' || location.pathname === '/Search' || location.pathname === '/EditProductPopup' || location.pathname === '/ReviewWrite';
-    const hideNaviBar = location.pathname === '/normal' || location.pathname === '/seller' || location.pathname === '/EditProductPopup' || location.pathname === '/ReviewWrite';
+        location.pathname === '/normal' ||
+        location.pathname === '/seller' ||
+        location.pathname === '/Search' ||
+        location.pathname === '/EditProductPopup' ||
+        location.pathname === '/ReviewWrite' ||
+        location.pathname === '/ReviewEdit';
+    const hideNaviBar =
+        location.pathname === '/normal' || location.pathname === '/seller' || location.pathname === '/EditProductPopup' || location.pathname === '/ReviewWrite' || location.pathname === '/ReviewEdit';
 
     return (
-        <CartProvider> 
+        <CartProvider>
             <AuthProvider>
                 <div style={{ width: '100%', height: '100vh' }}>
                     {/* 특정 경로에서는 Header를 렌더링하지 않음 */}
@@ -54,6 +62,7 @@ function App() {
                         <Route path="/Map" element={<Map />} /> {/* Map 경로 추가 */}
                         <Route path="/EditProductPopup" element={<EditProductPopup />} />
                         <Route path="/ReviewWrite" element={<ReviewPopup />} />
+                        <Route path="/ReviewEdit" element={<ReviewEdit />} />
                     </Routes>
 
                     {/* 특정 경로에서는 NaviBar를 렌더링하지 않음 */}
