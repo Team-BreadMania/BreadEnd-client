@@ -3,7 +3,7 @@ import Cookies from 'js-cookie';
 import styled from 'styled-components';
 import Account from '../Components/Account';
 import Reservation from '../Components/Reservation';
-import Item from '../Components/Item';
+import Item from '../Components/BuyedItem';
 import Review from '../Components/Review';
 import Inquiry from '../Components/Inquiry';
 import MenuIcon from '../Images/menu_icon1.jpg';
@@ -121,6 +121,7 @@ const Container = styled.div`
     max-width: 100%;
     height: 100%;
     position: relative;
+    box-sizing: border-box;
 `;
 
 const MobileNav = styled.div`

@@ -1,194 +1,228 @@
 import React, { useEffect, useRef, useState } from "react";
+import axios from "axios";
+import Cookies from "js-cookie";
+import { useNavigate } from "react-router-dom";
 
 export default function Map() {
-  const [places, setPlaces] = useState([]);
-  const [mapCenter, setMapCenter] = useState({ lat: 35.8388067878402, lng: 128.75332721754552 });
+  const [shops, setShops] = useState([]); // 매장 데이터 상태
+  const [mapCenter, setMapCenter] = useState(null); // 지도 초기 중심 좌표
   const mapRef = useRef(null);
+  const navigate = useNavigate();
 
+  // 1. 매장 데이터 가져오기
   useEffect(() => {
-    const initializeMap = () => {
-      if (window.kakao && window.kakao.maps) {
-        const container = document.getElementById("map");
-        const options = {
-          center: new window.kakao.maps.LatLng(mapCenter.lat, mapCenter.lng), // 초기 중심 좌표
-          level: 3, // 초기 줌 레벨
-        };
-        mapRef.current = new window.kakao.maps.Map(container, options);
+    const fetchShops = async () => {
+      const accessToken = Cookies.get("accessToken");
 
-        // 지도 클릭 이벤트 등록
-        window.kakao.maps.event.addListener(mapRef.current, "click", (mouseEvent) => {
-          const latlng = mouseEvent.latLng;
-          setMapCenter({ lat: latlng.getLat(), lng: latlng.getLng() });
-          searchPlaces(latlng.getLat(), latlng.getLng());
+      try {
+        const response = await axios.get("https://breadend.shop/home/close-shop", {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
         });
+        const shopsData = response.data;
+        setShops(shopsData);
 
-        searchPlaces(mapCenter.lat, mapCenter.lng, mapRef.current);
-      } else {
-        console.error("Kakao map library is not loaded.");
+        // 중심 좌표 설정
+        if (shopsData.length > 0) {
+          const firstShop = shopsData[0];
+          const { location } = firstShop; // 예: "경기도 성남시 분당구 판교동"
+          const dong = location.split(" ").pop(); // "판교동" 추출
+          setInitialMapCenter(dong);
+        }
+      } catch (error) {
+        console.error("매장 데이터를 가져오는데 실패했습니다.", error);
       }
     };
 
-    // 빵집 검색 함수
-    const searchPlaces = (lat, lng, mapInstance = mapRef.current) => {
-      const ps = new window.kakao.maps.services.Places();
-      const location = new window.kakao.maps.LatLng(lat, lng);
-
-      ps.keywordSearch(
-        "빵집",
-        (data, status) => {
-          if (status === window.kakao.maps.services.Status.OK) {
-            setPlaces(data); // 검색된 장소 데이터를 상태에 저장
-            displayMarkers(data, mapInstance);
-          } else if (status === window.kakao.maps.services.Status.ZERO_RESULT) {
-            alert("근처에 검색된 빵집이 없습니다.");
-          } else {
-            console.error("검색 중 오류가 발생했습니다.");
-          }
-        },
-        { location, radius: 2000 } // 중심 좌표와 반경 2km 설정
-      );
-    };
-
-    // 지도에 마커 표시 함수
-    const displayMarkers = (places, mapInstance) => {
-      const bounds = new window.kakao.maps.LatLngBounds();
-      const infowindow = new window.kakao.maps.InfoWindow({ zIndex: 1 });
-
-      places.forEach((place) => {
-        const markerPosition = new window.kakao.maps.LatLng(place.y, place.x);
-
-        // 마커 생성
-        const marker = new window.kakao.maps.Marker({
-          map: mapInstance,
-          position: markerPosition,
-        });
-
-        // 마커 클릭 이벤트 등록
-        window.kakao.maps.event.addListener(marker, "click", () => {
-          infowindow.setContent(`
-            <div style="padding:5px;font-size:12px;">
-              ${place.place_name} <br>
-              <a href="${place.place_url}" target="_blank">상세보기</a>
-            </div>
-          `);
-          infowindow.open(mapInstance, marker);
-        });
-
-        bounds.extend(markerPosition);
+    const setInitialMapCenter = (dong) => {
+      const geocoder = new window.kakao.maps.services.Geocoder();
+      geocoder.addressSearch(dong, (result, status) => {
+        if (status === window.kakao.maps.services.Status.OK) {
+          const coords = new window.kakao.maps.LatLng(result[0].y, result[0].x);
+          setMapCenter(coords); // 중심 좌표 설정
+        } else {
+          console.error("초기 중심 좌표 설정 실패:", status);
+          setMapCenter(new window.kakao.maps.LatLng(37.5665, 126.9780)); // 서울시청 기본 좌표
+        }
       });
-
-      mapInstance.setBounds(bounds);
     };
 
-    // 카카오맵 스크립트 로드 체크
-    const checkScriptLoaded = setInterval(() => {
-      if (window.kakao && window.kakao.maps) {
-        clearInterval(checkScriptLoaded);
-        initializeMap();
-      }
-    }, 100);
+    fetchShops();
+  }, []);
 
-    return () => {
-      clearInterval(checkScriptLoaded);
-    };
-  }, [mapCenter]);
+  // 2. 지도 초기화 및 마커 표시
+  useEffect(() => {
+    if (mapCenter && shops.length > 0 && window.kakao && window.kakao.maps) {
+      console.log("지도 초기화 및 마커 표시 시작");
+      const container = document.getElementById("map");
+      const options = {
+        center: mapCenter, // 초기 중심 좌표
+        level: 3, // 초기 줌 레벨
+      };
+
+      // 지도 초기화
+      const mapInstance = new window.kakao.maps.Map(container, options);
+      mapRef.current = mapInstance;
+
+      // 마커 표시
+      displayMarkers(shops, mapInstance);
+    }
+  }, [mapCenter, shops]);
+
+  // 3. 마커 표시 로직
+  const displayMarkers = (shopsData, mapInstance) => {
+    const geocoder = new window.kakao.maps.services.Geocoder();
+    const bounds = new window.kakao.maps.LatLngBounds();
+    const infowindow = new window.kakao.maps.InfoWindow({ zIndex: 1 });
+
+    shopsData.forEach((shop) => {
+      geocoder.addressSearch(shop.detaillocation, (result, status) => {
+        if (status === window.kakao.maps.services.Status.OK) {
+          const coords = new window.kakao.maps.LatLng(result[0].y, result[0].x);
+
+          // 마커 생성
+          const marker = new window.kakao.maps.Marker({
+            map: mapInstance,
+            position: coords,
+          });
+
+          // 마커 클릭 이벤트 등록
+          window.kakao.maps.event.addListener(marker, "click", () => {
+            infowindow.setContent(`
+              <div style="padding:5px;font-size:12px;">
+                <img src="${shop.shopIMG}" alt="${shop.shop_name}" style="width:100px;height:60px;object-fit:cover;border-radius:5px;"/><br>
+                <strong>${shop.shop_name}</strong><br>
+                ${shop.detaillocation}<br>
+                <a href="/ShopProduct?id=${shop.shopid}" target="_self">상세보기</a>
+              </div>
+            `);
+            infowindow.open(mapInstance, marker);
+          });
+
+          bounds.extend(coords); // 영역 확장
+        } else {
+          console.error("마커 표시 실패:", shop.detaillocation);
+        }
+      });
+    });
+
+    // 지도의 경계 설정
+    setTimeout(() => {
+      mapInstance.setBounds(bounds); // 모든 마커가 보이도록 지도 설정
+    }, 100); // 마커 생성 후 약간의 지연을 추가
+  };
+
+  const handleShopClick = (shopId) => {
+    navigate(`/ShopProduct?id=${shopId}`);
+  };
 
   return (
-    <div className="container">
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+<div className="container">
+  <style>{`
+    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
 
-        .container {
-          display: flex;
-          flex-direction: row;
-          flex-wrap: wrap;
-          font-family: 'Roboto', sans-serif; /* 기본 폰트 설정 */
-        }
+    .container {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      font-family: 'Roboto', sans-serif; /* 기본 폰트 설정 */
+    }
 
-        #map {
-          width: 70%;
-          height: 600px;
-          border-radius: 10px;
-          margin-right: 20px;
-          box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-        }
+    #map {
+      width: 70%;
+      height: 600px;
+      border-radius: 10px;
+      margin-right: 20px;
+      box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    }
 
-        .place-list {
-          width: 28%;
-          max-height: 600px;
-          overflow-y: auto;
-          padding: 0;
-          margin: 0;
-          list-style: none;
-          border: 1px solid #ddd;
-          border-radius: 10px;
-          background: #fffaf0;
-          box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-          font-family: 'Roboto', sans-serif; /* 폰트 설정 */
-        }
+    .shop-list {
+      width: 28%;
+      max-height: 600px;
+      overflow-y: auto;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      background: #fffaf0;
+      box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    }
 
-        .place-item {
-          padding: 15px;
-          border-bottom: 1px solid #ddd;
-          display: flex;
-          flex-direction: column;
-          justify-content: space-between;
-          transition: transform 0.3s, background-color 0.3s;
-          cursor: pointer;
-        }
+    .shop-item {
+      display: flex;
+      align-items: center; /* 이미지와 텍스트를 세로 정렬 */
+      padding: 10px 15px;
+      border-bottom: 1px solid #ddd;
+      cursor: pointer;
+      transition: background-color 0.3s ease; /* 배경색 변경 애니메이션 */
+    }
 
-        .place-item:hover {
-          transform: scale(1.02);
-          background-color: #fef1b3;
-        }
+    .shop-item:hover {
+      background-color: #fef1b3;
+    }
 
-        .place-item:last-child {
-          border-bottom: none;
-        }
+    .shop-img {
+      width: 80px;
+      height: 80px;
+      border-radius: 5px;
+      object-fit: cover;
+      margin-right: 15px; /* 이미지와 텍스트 간 간격 */
+      flex-shrink: 0; /* 이미지 크기 고정 */
+    }
 
-        .place-name {
-          font-size: 18px;
-          font-weight: bold;
-          margin-bottom: 8px;
-          font-family: 'Roboto', sans-serif; /* 폰트 설정 */
-          color: #ff6347;
-        }
+    .shop-details {
+      display: flex;
+      flex-direction: column; /* 텍스트 세로 정렬 */
+      justify-content: center; /* 텍스트가 가운데 정렬되도록 설정 */
+    }
 
-        .place-address {
-          font-size: 14px;
-          color: gray;
-          font-family: 'Roboto', sans-serif; /* 폰트 설정 */
-        }
+    .shop-name {
+      font-size: 16px;
+      font-weight: bold;
+      color: #ff6347;
+      margin-bottom: 5px; /* 이름과 주소 간격 */
+    }
 
-        @media (max-width: 768px) {
-          .container {
-            flex-direction: column;
-          }
+    .shop-address {
+      font-size: 14px;
+      color: gray;
+    }
 
-          #map {
-            width: 100%;
-            height: 400px;
-            margin-right: 0;
-          }
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
 
-          .place-list {
-            width: 100%;
-            max-height: 300px;
-            margin-top: 10px;
-          }
-        }
-      `}</style>
+      #map {
+        width: 100%;
+        height: 400px;
+        margin-right: 0;
+      }
 
-      <div id="map"></div>
+      .shop-list {
+        width: 100%;
+        max-height: 300px;
+        margin-top: 10px;
+      }
+    }
+  `}</style>
 
-      <ul className="place-list">
-        {places.map((place) => (
-          <li key={place.id} className="place-item" onClick={() => window.open(place.place_url, "_blank")}> {/* 클릭 기능 추가 */}
-            <div className="place-name">{place.place_name}</div>
-            <div className="place-address">{place.road_address_name || place.address_name}</div>
-          </li>
-        ))}
-      </ul>
-    </div>
+  <div id="map"></div>
+
+  <ul className="shop-list">
+    {shops.map((shop) => (
+      <li key={shop.shopid} className="shop-item" onClick={() => handleShopClick(shop.shopid)}>
+        <img src={shop.shopIMG} alt={shop.shop_name} className="shop-img" />
+        <div className="shop-details">
+          <div className="shop-name">{shop.shop_name}</div>
+          <div className="shop-address">{shop.detaillocation}</div>
+        </div>
+      </li>
+    ))}
+  </ul>
+</div>
+
   );
 }

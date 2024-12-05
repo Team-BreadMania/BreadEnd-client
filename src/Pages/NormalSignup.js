@@ -81,7 +81,7 @@ export default function NormalSignup() {
                     requestData.append('image', imageFile); // 이미지 파일 추가
                 }
 
-                const response = await axios.post('http://43.203.241.42/user/regist', requestData, {
+                const response = await axios.post('https://43.203.241.42/user/regist', requestData, {
                     headers: {
                         'Content-Type': 'multipart/form-data', // 필요 시 설정, 자동 설정되도록 생략해도 됨
                     },

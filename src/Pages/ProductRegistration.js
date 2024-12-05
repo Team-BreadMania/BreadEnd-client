@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import styled from 'styled-components';
 import Swal from 'sweetalert2';
@@ -6,6 +7,7 @@ import Cookies from 'js-cookie';
 
 export default function ProductRegistration() {
 
+    const navigate = useNavigate();
     const [productName, setProductName] = useState(""); // 상품명
     const [category, setCategory] = useState(""); // 상품 카테고리
     const [price, setPrice] = useState(0); // 상품 가격
@@ -15,6 +17,19 @@ export default function ProductRegistration() {
     const [productDescription, setProductDescription] = useState(""); // 상품설명
     const [imageFiles, setImageFiles] = useState([]); // 상품 이미지(파일 객체)
     const [imagePreviews, setImagePreviews] = useState([]); // 이미지 미리보기(Base64 문자열)
+
+    useEffect(() => {
+        const accessToken = Cookies.get("accessToken");
+        if (!accessToken) {
+            Swal.fire({
+                title: "로그인이 필요한 기능입니다.",
+                icon: "warning",
+                confirmButtonText: "확인",
+            }).then(() => {
+                navigate("/Login"); 
+            });
+        }
+    }, [navigate]);
 
     const handleInputChange = (setter) => (e) => { // 입력제한 메서드
         const value = e.target.value;
@@ -63,14 +78,38 @@ export default function ProductRegistration() {
     const handleSubmit = async (e) => { // 상품 등록 메서드
         e.preventDefault(); 
 
+        const missingFields = [];
+        if (!productName) missingFields.push("상품명");
+        if (!category) missingFields.push("상품 카테고리");
+        if (price <= 0) missingFields.push("개당 가격");
+        if (quantity <= 0) missingFields.push("판매 수량");
+        if (!manufactureTime) missingFields.push("제조일자");
+        if (!saleTime) missingFields.push("판매시간");
+        if (!productDescription) missingFields.push("상품설명");
+        if (imageFiles.length === 0) missingFields.push("상품 이미지"); 
+
+        if (missingFields.length > 0) {
+            Swal.fire({
+                title: "입력 오류",
+                text: `${missingFields.join(", ")}(이/가) 누락되었습니다.`,
+                icon: "warning",
+                confirmButtonText: "확인",
+            });
+            return;
+        }
+
         const formData = new FormData();
-        formData.append('product[itemName]', productName); 
-        formData.append('product[price]', price); 
-        formData.append('product[info]', productDescription); 
-        formData.append('product[itemType]', category); 
-        formData.append('product[count]', quantity); 
-        formData.append('product[makedate]', manufactureTime); 
-        formData.append('product[expireddate]', saleTime); 
+        const productObject = {
+            itemName: productName,
+            price: price,
+            info: productDescription,
+            itemType: category,
+            count: quantity,
+            makedate: manufactureTime,
+            expireddate: saleTime,
+        };
+        
+        formData.append('product', JSON.stringify(productObject));
 
         imageFiles.forEach((image) => {
             formData.append("images", image);
@@ -95,8 +134,22 @@ export default function ProductRegistration() {
                 },
             });
             console.log('상품 등록 성공 :', response.data);
+            Swal.fire({
+                title: "등록 완료",
+                text: "상품이 성공적으로 등록되었습니다.",
+                icon: "success",
+                confirmButtonText: "확인",
+            }).then(() => {
+                navigate("/ProductManagement"); 
+            });
         } catch (error) {
             console.error('상품 등록 실패 :', error);
+            Swal.fire({
+                title: "등록 실패",
+                text: "상품 등록에 실패했습니다. 다시 시도해 주세요.",
+                icon: "error",
+                confirmButtonText: "확인",
+            });
         }
     };
 
@@ -149,7 +202,7 @@ export default function ProductRegistration() {
                 didOpen: () => {
                     const productItems = document.querySelectorAll('.product-item');
                     productItems.forEach((item, index) => {
-                        item.addEventListener('click', () => {
+                        item.addEventListener('click', async () => {
                             const selectedProduct = productOptions[index].productData;
                             setProductName(selectedProduct.itemname);
                             setCategory(selectedProduct.itemtype);
@@ -159,6 +212,17 @@ export default function ProductRegistration() {
                             setSaleTime(selectedProduct.expireddate);
                             setProductDescription(selectedProduct.info);
                             setImagePreviews(selectedProduct.imgpaths.map(path => path));
+
+                            const selectedImages = await Promise.all(selectedProduct.imgpaths.map(async (path) => {
+                                const response = await fetch(path); 
+                                const blob = await response.blob(); 
+                                const fileName = path.split('/').pop(); 
+                                return new File([blob], fileName, { type: blob.type }); 
+                            }));
+    
+                            setImageFiles(selectedImages); 
+                            setImagePreviews(selectedProduct.imgpaths); 
+
                             Swal.close(); 
                         });
                     });

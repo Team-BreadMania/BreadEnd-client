@@ -4,14 +4,12 @@ import bread_img from '../Images/bread_img.png';
 import choc_img from '../Images/chocosora.jpg';
 
 export default function Item() {
-    const [quantity, setQuantity] = useState(1);
-    const priceUnit = 2000;
+    const [quantity, setQuantity] = useState(null);
+    const [priceUnit, setPriceUnit] = useState(null);
     const totalPrice = quantity ? Number(quantity) * priceUnit : 0;
-    return (
-        <Container>
-            구매한 제품 페이지
-        </Container>
-    );
+    const [buyedItem, setBuyedItem] = useState([]);
+
+    return <Container>구매한 제품 페이지</Container>;
 }
 
 const Container = styled.div`

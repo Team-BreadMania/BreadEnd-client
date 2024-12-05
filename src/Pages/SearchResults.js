@@ -14,6 +14,7 @@ export default function SearchResults() {
     const [slidesToShow, setSlidesToShow] = useState(3);
 
     useEffect(() => {
+        
         const handleResize = () => {
             const width = window.innerWidth;
             if (width <= 600) {

@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -23,18 +24,80 @@ export default function MobilePD() {
                 const response = await axios.get(`https://breadend.shop/detailpage/details?productid=${id}`);
                 console.log("API 응답 데이터 :", response.data);
                 setProductDetails(response.data); 
+                fetchBookmarks(response.data.shopid);
             } catch (error) {
                 alert("상품 상세 정보를 가져오는 데 실패했습니다. 다시 시도해 주세요."); 
                 console.error("API 요청 에러 :", error);
             }
         };
 
+        const fetchBookmarks = async (currentShopId) => {
+            const accessToken = Cookies.get("accessToken");
+            if (!accessToken) return; 
+    
+            try {
+                const response = await axios.get('https://breadend.shop/Mypage/bookmarks', {
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`,
+                    },
+                });
+                const bookmarks = response.data;
+    
+                const isBookmarked = bookmarks.some(bookmark => bookmark.shopid === currentShopId);
+                setDibs(isBookmarked); 
+            } catch (error) {
+                console.error("찜 상태를 가져오는데 실패했습니다.", error);
+            }
+        };
         fetchProductDetails();
     }, [id]); 
 
-    const toggleDibs = () => { // 찜상태 토클 메서드
-        setDibs(prev => !prev); 
-    };
+    const toggleDibs = async () => { // 찜상태 토글 메서드
+        const accessToken = Cookies.get("accessToken");
+        
+        if (!accessToken) {
+            alert("로그인을 한 뒤 이용할 수 있는 기능입니다.");
+            navigate("/Login");
+            return;
+        }
+    
+        if (productDetails) {
+            try {
+                const shopId = productDetails.shopid; 
+                console.log("현재 shopid :", shopId);
+    
+                if (dibs) {
+                    const response = await axios.delete(`https://breadend.shop/detailpage/delete/Bookmark?shopid=${shopId}`, 
+                        {
+                            headers: {
+                                Authorization: `Bearer ${accessToken}`, 
+                            }
+                        }
+                    );
+                    if (response.status === 200) {
+                        alert("찜을 해제하였습니다.");
+                    }
+                } else {
+                    const response = await axios.post(`https://breadend.shop/detailpage/add/Bookmark?shopid=${shopId}`, 
+                        {}, 
+                        {
+                            headers: {
+                                Authorization: `Bearer ${accessToken}`, 
+                            },
+                        }
+                    );
+                    if (response.status === 200) {
+                        alert("찜하기 성공.");
+                    }
+                }
+    
+                setDibs(prev => !prev); 
+            } catch (error) {
+                alert("요청에 실패했습니다. 다시 시도해 주세요.");
+                console.error("API 요청 에러 :", error);
+            }
+        }
+    };      
 
     const increaseQuantity = () => { // 구매수량 증가 메서드
         if (quantity < productDetails.count) { 
@@ -49,7 +112,13 @@ export default function MobilePD() {
     };
 
     const addToCart = async () => { // 장바구니 상품추가 메서드
-        const accessToken = Cookies.get("accessToken"); 
+        const accessToken = Cookies.get("accessToken");
+        
+        if (!accessToken) {
+            alert("로그인을 한 뒤 이용할 수 있는 기능입니다.");
+            navigate("/Login");
+            return;
+        }
         
         try {
             const response = await axios.post('https://breadend.shop/detailpage/add/cart',
@@ -75,6 +144,12 @@ export default function MobilePD() {
 
     const addToOrder = async () => { // 상품 바로구매 메서드
         const accessToken = Cookies.get("accessToken");  
+
+        if (!accessToken) {
+            alert("로그인을 한 뒤 이용할 수 있는 기능입니다.");
+            navigate("/Login");
+            return;
+        }
         
         try {
             const response = await axios.post('https://breadend.shop/detailpage/add/order',
@@ -91,12 +166,16 @@ export default function MobilePD() {
 
             if (response.status === 200) {
                 alert("구매 예약이 완료되었습니다.");
-                navigate("/Home");
+                navigate("/MyPage");
             }
         } catch (error) {
             alert("구매 예약에 실패하였습니다. 다시 시도해 주세요.");
             console.error("API 요청 에러:", error);
         }
+    };
+
+    const handleShopClick = () => { // 매장 상세 페이지로 이동하는 메서드
+        navigate(`/ShopProduct?id=${productDetails.shopid}`);
     };
 
     if (!productDetails) {
@@ -127,7 +206,7 @@ export default function MobilePD() {
                     <Dibs dib = {dibs}/>
                     <ButtonText>{dibs ? "매장 찜해제" : "매장 찜하기"}</ButtonText>
                 </ShopButton>
-                <ShopButton>
+                <ShopButton onClick = {handleShopClick}>
                     <SearchIcon/>
                     <ButtonText>현재 매장의 전체상품 검색</ButtonText>
                 </ShopButton>

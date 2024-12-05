@@ -7,12 +7,6 @@ import dibs_before from '../Images/dibs_before.png';
 import dibs_after from '../Images/dibs_after.png';
 
 export default function Shop() {
-    const [dibs, setDibs] = useState(false); // 찜하기 상태
-
-    const toggleDibs = () => {
-        // 찜상태 토클 메서드
-        setDibs((prev) => !prev);
-    };
 
     return (
         <Container>
@@ -22,7 +16,6 @@ export default function Shop() {
                     <ShopName>삼송빵집</ShopName>
                     <ShopLocation>수성구 범어1동</ShopLocation>
                 </ShopInfo>
-                <Dibs onClick={toggleDibs} dib={dibs} />
             </BottomBox>
         </Container>
     );
@@ -58,7 +51,7 @@ const ShopInfo = styled.div`
     // 매장정보 박스
     display: flex;
     flex-direction: column;
-    width: 80%;
+    width: 100%;
     height: 100%;
 `;
 
@@ -107,23 +100,5 @@ const ShopLocation = styled.div`
 
     @media (max-width: 600px) {
         font-size: 10.5px;
-    }
-`;
-
-const Dibs = styled.div`
-    // 매장 찜하기 아이콘
-    display: flex;
-    margin-top: auto;
-    margin-left: auto;
-    width: 30px;
-    height: 30px;
-    background-image: url(${(props) => (props.dib ? dibs_after : dibs_before)});
-    background-size: cover;
-    cursor: pointer;
-    transition: background-image 0.2s ease;
-
-    @media (max-width: 500px) {
-        width: 20px;
-        height: 20px;
     }
 `;

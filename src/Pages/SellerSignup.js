@@ -87,7 +87,7 @@ export default function SellerSignup() {
                     requestData.append('shopThumbnail', shopThumbnail);
                 }
 
-                const response = await axios.post('http://43.203.241.42/user/regist', requestData, {
+                const response = await axios.post('https://43.203.241.42/user/regist', requestData, {
                     headers: {
                         'Content-Type': 'multipart/form-data',
                     },
@@ -250,18 +250,6 @@ export default function SellerSignup() {
                         value={formData.shopNumber}
                         onChange={handleChange}
                         placeholder="(+82) 010xxxxxxxx"
-                        required
-                    />
-                </div>
-                <div className="form-group">
-                    <label htmlFor="likedCategory">좋아하는 카테고리</label>
-                    <input
-                        type="text"
-                        id="likedCategory"
-                        name="likedCategory"
-                        value={formData.likedCategory}
-                        onChange={handleChange}
-                        placeholder="좋아하는 카테고리 입력"
                         required
                     />
                 </div>
