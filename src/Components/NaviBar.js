@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../AuthContext';
+import { CartContext } from '../CartContext';
 import Cookies from 'js-cookie';
 import styled from 'styled-components';
 import search_icon from '../Images/search_icon.svg';
@@ -12,9 +13,10 @@ import edit_icon1 from '../Images/edit_icon1.png';
 
 export default function NaviBar() {
     const location = useLocation();
-    const navigate = useNavigate(); // useNavigate로 변경
+    const navigate = useNavigate(); 
     const [userLogin, setUserLogin] = useState(true);
     const { userAuth, setUserAuth } = useContext(AuthContext);
+    const { cartItems } = useContext(CartContext);
 
     useEffect(() => {
         const userType = Cookies.get('userType');
@@ -41,7 +43,6 @@ export default function NaviBar() {
         { to: '/ProductManagement', icon: cart_icon, text: '상품 관리' },
     ];
 
-    // const menuItems = userLogin ? buyerMenuItems : userAuth === 'buyer' ? buyerMenuItems : sellerMenuItems;
     let menuItems;
 
     if (!userLogin || userAuth === 'buyer') {
@@ -49,15 +50,15 @@ export default function NaviBar() {
     } else if (userLogin && userAuth === 'seller') {
         menuItems = sellerMenuItems;
     } else {
-        menuItems = buyerMenuItems; // 기본값 설정
+        menuItems = buyerMenuItems; 
     }
 
     const handleMenuClick = (item) => {
         if (item.protected && !userLogin) {
             alert('로그인이 필요한 컨텐츠입니다.');
-            navigate('/Login'); // 메인 페이지로 돌아가기
+            navigate('/Login'); 
         } else {
-            navigate(item.to); // 정상적인 이동
+            navigate(item.to); 
         }
         console.log(userAuth);
     };
@@ -68,6 +69,9 @@ export default function NaviBar() {
                 <NaviMenu key={item.to} active={location.pathname === item.to} onClick={() => handleMenuClick(item)}>
                     <NaviIcon src={item.icon} />
                     <NaviText>{item.text}</NaviText>
+                    {item.to === '/MyCart' && cartItems.length > 0 && ( 
+                        <Badge>{cartItems.length}</Badge>
+                    )}
                 </NaviMenu>
             ))}
         </Container>
@@ -76,7 +80,7 @@ export default function NaviBar() {
 
 // 아래부터 styled-components CSS 설정
 
-const Container = styled.div`
+const Container = styled.div` // 최상단 컨테이너
     display: flex;
     width: 90%;
     height: 7.5vh;
@@ -100,7 +104,7 @@ const Container = styled.div`
     }
 `;
 
-const NaviMenu = styled.div`
+const NaviMenu = styled.div` // 네비 메뉴바
     height: 100%;
     display: flex;
     flex-direction: column;
@@ -113,9 +117,10 @@ const NaviMenu = styled.div`
     font-weight: ${({ active }) => (active ? 'bold' : 'normal')};
     font-size: ${({ active }) => (active ? '12px' : '10px')};
     cursor: pointer; // 클릭 가능한 요소로 변경
+    position: relative;
 `;
 
-const NaviIcon = styled.img`
+const NaviIcon = styled.img` // 네비 아이콘
     width: 25px;
     height: 25px;
 
@@ -130,6 +135,22 @@ const NaviIcon = styled.img`
     }
 `;
 
-const NaviText = styled.div`
-    // 하단네비바 텍스트 스타일
+const NaviText = styled.div` // 하단네비바 텍스트 스타일
+`;
+
+const Badge = styled.div` // 장바구니 알림
+    position: absolute;
+    z-index: 10;
+    top: 0;
+    right: 0;
+    transform: translate(50%, -50%);
+    background-color: red;
+    color: white;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 15px;
 `;

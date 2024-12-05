@@ -1,5 +1,6 @@
 /* eslint-disable */
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
+import { CartContext } from '../CartContext';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import styled from 'styled-components';
@@ -15,6 +16,8 @@ import search_icon from "../Images/search_icon.png";
 import Cookies from 'js-cookie';
 
 export default function ProductDetailPage() {
+
+    const { addToCart } = useContext(CartContext);
 
     const settings = {
         dots: true,
@@ -146,7 +149,7 @@ export default function ProductDetailPage() {
         setActiveMenu(menu); 
     };
 
-    const addToCart = async () => { // 장바구니 상품추가 메서드
+    const addToCartHandler = async () => { // 장바구니 상품추가 메서드
         const accessToken = Cookies.get("accessToken"); 
 
         if (!accessToken) {
@@ -170,6 +173,7 @@ export default function ProductDetailPage() {
 
             if (response.status === 200) {
                 alert("장바구니에 상품이 추가되었습니다.");
+                addToCart({ productid: id, count: quantity, price: productDetails.price, itemname: productDetails.product_name, imgpaths: productDetails.product_imgpath});
             }
         } catch (error) {
             alert("장바구니 상품추가에 실패하였습니다. 다시 시도해 주세요.");
@@ -299,7 +303,7 @@ export default function ProductDetailPage() {
                         <TotalAmount>{(productDetails.price * quantity).toLocaleString()}원</TotalAmount>
                     </PriceBox>
                     <ButtonContainer>
-                        <Button style = {{backgroundColor: "#F0E9DD", borderRadius: "0 0 0 12px"}} onClick = {addToCart}>장바구니 담기</Button>
+                        <Button style = {{backgroundColor: "#F0E9DD", borderRadius: "0 0 0 12px"}} onClick = {addToCartHandler}>장바구니 담기</Button>
                         <Button style = {{backgroundColor: "#D3B795", borderRadius: "0 0 12px 0"}} onClick = {addToOrder}>바로 구매예약</Button>
                     </ButtonContainer>
                 </ProductInfoBox>

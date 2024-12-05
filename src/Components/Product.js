@@ -1,18 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import axios from 'axios';
 import styled from 'styled-components';
-import bread_img from "../Images/bread_img.png";
 
-export default function Product() {
+export default function Product({ item }) {
 
     return (
         <Container>
-            <ImageBox/>
-            <ProductName>JMT 생크림 소금빵</ProductName>
-            <ShopName>그리다 빵집</ShopName>
+            <ImageBox img = {item.imgpaths[0]}/>
+            <ProductName>{item.itemname}</ProductName>
+            <ShopName>{item.shopname}</ShopName>
             <BottomBox>
-                <Price>2,000원</Price>
+                <Price>{item.price}원</Price>
             </BottomBox>
         </Container>
     );
@@ -30,7 +27,7 @@ const Container = styled.div` // 최상단 컨테이너
 const ImageBox = styled.div` // 상품 이미지 박스
     width: 100%;
     height: 65%;
-    background-image: url(${bread_img});
+    background-image: url(${props => props.img});
     background-size: cover;
     border-radius: 10px;
 `;

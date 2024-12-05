@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import styled from 'styled-components';
+import Cookies from 'js-cookie';
 import Slider from 'react-slick';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -19,6 +20,10 @@ export default function Home() {
 
     const navigate = useNavigate();
     const [slidesToShow, setSlidesToShow] = useState(6); // 한번에 보이는 슬라이드의 수
+    const [shops, setShops] = useState([]); // 내 주변 매장
+    const [popularProducts, setPopularProducts] = useState([]); // 내 주변 인기상품
+    const [recentProducts, setRecentProducts] = useState([]); // 내 주변 최신 상품
+    const [recommendedProducts, setRecommendedProducts] = useState([]); // 내 주변 추천상품
 
     useEffect(() => {
         const handleResize = () => {
@@ -42,6 +47,31 @@ export default function Home() {
         };
     }, []);
 
+    useEffect(() => {
+        fetchData();
+    }, []);
+
+    const fetchData = async () => { 
+        const accessToken = Cookies.get("accessToken"); 
+        const headers = { Authorization: `Bearer ${accessToken}` };
+
+        try {
+            const shopResponse = await axios.get('https://breadend.shop/home/close-shop', { headers });
+            setShops(shopResponse.data);
+
+            const popularResponse = await axios.get('https://breadend.shop/home/popular', { headers });
+            setPopularProducts(popularResponse.data);
+
+            const recentResponse = await axios.get('https://breadend.shop/home/recent', { headers });
+            setRecentProducts(recentResponse.data);
+
+            const recommendResponse = await axios.get('https://breadend.shop/home/recommend', { headers });
+            setRecommendedProducts(recommendResponse.data);
+        } catch (error) {
+            console.error("Error fetching data", error);
+        }
+    };
+
     const banner_settings = {
         dots: true,
         infinite: true,
@@ -58,17 +88,17 @@ export default function Home() {
         infinite: false,
         speed: 500,
         slidesToShow: slidesToShow,
-        slidesToScroll: 1,
+        slidesToScroll: 2,
         arrows: true,
     };
 
-    const handleProductClick = () => {
-        navigate(`/ProductDetailPage?id=17`); 
+    const handleProductClick = (productId) => { // 상품 상세페이지 이동 메서드
+        navigate(`/ProductDetailPage?id=${productId}`);
     };
-
-    const handleShopClick = () => {
-        navigate(`/ShopProduct?id=8`); 
-    }; 
+    
+    const handleShopClick = (shopId) => { // 매장 상세페이지 이동 메서드
+        navigate(`/ShopProduct?id=${shopId}`);
+    };    
 
     return (
         <Container>
@@ -81,12 +111,12 @@ export default function Home() {
                     ))}
                 </BannerSlider>
             </Banner>
-            <Title>❤️@@님이 좋아하실만한 상품</Title>
+            <Title>❤️사용자님이 좋아하실만한 상품</Title>
             <ProductContainer>
                 <ProductSlider {...product_settings}>
-                    {Array.from({ length: 10 }).map((_, index) => (
-                        <ProductBox key = {index} onClick = {handleProductClick}>
-                            <Product/>
+                    {recommendedProducts.slice(0, 10).map((product) => (
+                        <ProductBox key = {product.productid} onClick = {() => handleProductClick(product.productid)}>
+                            <Product item = {product} />
                         </ProductBox>
                     ))}
                 </ProductSlider>
@@ -94,9 +124,9 @@ export default function Home() {
             <Title>🍞내 주변 매장</Title>
             <ProductContainer>
                 <ProductSlider {...product_settings}>
-                    {Array.from({ length: 10 }).map((_, index) => (
-                        <ProductBox key = {index} onClick = {handleShopClick}>
-                            <Shop/>
+                    {shops.slice(0, 10).map((shop) => (
+                        <ProductBox key = {shop.shopid} onClick = {() => handleShopClick(shop.shopid)}>
+                            <Shop shop = {shop} />
                         </ProductBox>
                     ))}
                 </ProductSlider>
@@ -104,9 +134,9 @@ export default function Home() {
             <Title>🔥내 주변 인기상품</Title>
             <ProductContainer>
                 <ProductSlider {...product_settings}>
-                    {Array.from({ length: 10 }).map((_, index) => (
-                        <ProductBox key = {index} onClick = {handleProductClick}>
-                            <Product/>
+                    {popularProducts.slice(0, 10).map((product) => (
+                        <ProductBox key = {product.productid} onClick = {() => handleProductClick(product.productid)}>
+                            <Product item = {product} />
                         </ProductBox>
                     ))}
                 </ProductSlider>
@@ -114,9 +144,9 @@ export default function Home() {
             <Title>🆕내 주변 최신등록 상품</Title>
             <ProductContainer>
                 <ProductSlider {...product_settings}>
-                    {Array.from({ length: 10 }).map((_, index) => (
-                        <ProductBox key = {index} onClick = {handleProductClick}>
-                            <Product/>
+                    {recentProducts.slice(0, 10).map((product) => (
+                        <ProductBox key = {product.productid} onClick = {() => handleProductClick(product.productid)}>
+                            <Product item = {product} />
                         </ProductBox>
                     ))}
                 </ProductSlider>
@@ -260,11 +290,14 @@ const ProductSlider = styled(Slider)` // 상품 슬라이드 컨테이너
     height: 100%;
 
     .slick-list {
+        width: 100%;
         height: 100%; 
     }
 
     .slick-track {
+        width: 100%;
         height: 100%;
+        display: flex;
     }
 
     .slick-slide {
@@ -341,6 +374,7 @@ const ProductSlider = styled(Slider)` // 상품 슬라이드 컨테이너
 `;
 
 const ProductBox = styled.div` // 상품 박스
+    width: 100%;
     height: 100%;
     box-sizing: border-box;
     cursor: pointer;

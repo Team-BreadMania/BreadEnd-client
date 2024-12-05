@@ -1,14 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
 import Cookies from 'js-cookie';
 import "../Fonts/font.css";
 import X_icon from "../Images/X_icon.png";
 import trachcan_icon from "../Images/trashcan_icon.png";
+import { CartContext } from '../CartContext'; 
 
 export default function MyCart() {
 
-    const [cartItems, setCartItems] = useState([]); // 장바구니 항목 상태
+    const { cartItems, setCartItems } = useContext(CartContext); // 장바구니 항목 상태
     const [totalPrice, setTotalPrice] = useState(0); // 전체 금액 상태
     const [selectedItems, setSelectedItems] = useState({}); // 선택된 상품 상태
 
@@ -23,7 +24,8 @@ export default function MyCart() {
                     },
                 });
                 setCartItems(response.data);
-                
+                localStorage.setItem('cartItems', JSON.stringify(response.data)); 
+
                 const total = response.data.reduce((acc, item) => acc + item.price * item.count, 0);
                 setTotalPrice(total);
 
@@ -34,11 +36,12 @@ export default function MyCart() {
                 setSelectedItems(initialSelectedItems);
             } catch (error) {
                 console.error("장바구니 항목을 가져오는데 실패했습니다.", error);
+                setCartItems([]);
             }
         };
 
         fetchCartItems();
-    }, []);
+    }, [setCartItems]);
 
     const calculateSelectedTotal = () => { // 선택된 상품 가격 계산 메서드
         return cartItems.reduce((total, item) => {
@@ -64,7 +67,8 @@ export default function MyCart() {
             setCartItems(prevItems => {
                 const updatedItems = prevItems.filter(item => item.productid !== productid);
                 const updatedTotal = updatedItems.reduce((acc, item) => acc + item.price * item.count, 0);
-                setTotalPrice(updatedTotal); 
+                setTotalPrice(updatedTotal);
+                localStorage.setItem('cartItems', JSON.stringify(updatedItems));
                 return updatedItems;
             });
         } catch (error) {
@@ -89,9 +93,9 @@ export default function MyCart() {
             });
             alert("전체 상품 주문이 완료되었습니다.");
             
-            // 주문 성공 후 장바구니 비우기
             setCartItems([]);
-            setTotalPrice(0); // 전체 금액 초기화
+            setTotalPrice(0); 
+            localStorage.removeItem('cartItems');
         } catch (error) {
             console.error("전체 상품 주문에 실패했습니다.", error);
         }
@@ -121,15 +125,14 @@ export default function MyCart() {
             });
             alert("선택된 상품 주문이 완료되었습니다.");
     
-            // 주문 성공 후 선택한 상품 제거
             setCartItems(prevItems => {
                 const updatedItems = prevItems.filter(item => !selectedItems[item.productid]);
                 const updatedTotal = updatedItems.reduce((acc, item) => acc + item.price * item.count, 0);
-                setTotalPrice(updatedTotal); // 전체 금액 업데이트
+                setTotalPrice(updatedTotal); 
+                localStorage.setItem('cartItems', JSON.stringify(updatedItems));
                 return updatedItems;
             });
-            
-            // 새로 고침 없이 상태를 업데이트
+            localStorage.setItem('cartItems', JSON.stringify(cartItems));
         } catch (error) {
             console.error("선택된 상품 주문에 실패했습니다.", error);
         }
