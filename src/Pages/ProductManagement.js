@@ -200,7 +200,7 @@ export default function ProductManagement() {
                             <div>판매가</div>
                             <div>카테고리</div>
                             <div>상태</div>
-                            <div>재고</div>
+                            <div>수량</div>
                             <div>등록일</div>
                             <div>수정일</div>
                         </ProductHeader>
@@ -229,7 +229,7 @@ export default function ProductManagement() {
                                 <ProductCell label="판매가">{product.price.toLocaleString()}원</ProductCell>
                                 <ProductCell label="카테고리">{product.itemtype}</ProductCell>
                                 <ProductCell label="상태">판매중</ProductCell>
-                                <ProductCell label="재고">{product.count}</ProductCell>
+                                <ProductCell label="수량">{product.count}</ProductCell>
                                 <ProductCell label="제조일자">{product.makedate}</ProductCell>
                                 <ProductCell label="판매시간">{product.expireddate}</ProductCell>
                             </ProductRow>
@@ -243,7 +243,7 @@ export default function ProductManagement() {
                                 <ProductCell label="No">{product.productid}</ProductCell>
                                 <ProductCell label="상품명">
                                     <ProductInfo>
-                                        <ProductImage src={reserve} />
+                                        <ProductImage src={product.imgpaths[0]} />
                                         <ProductDetails>
                                             <div>{product.itemname}</div>
                                         </ProductDetails>
@@ -255,7 +255,7 @@ export default function ProductManagement() {
                                 <ProductCell label="판매가">{product.price.toLocaleString()}원</ProductCell>
                                 <ProductCell label="카테고리">{product.itemtype}</ProductCell>
                                 <ProductCell label="상태">판매예약</ProductCell>
-                                <ProductCell label="재고">{product.count}</ProductCell>
+                                <ProductCell label="수량">{product.count}</ProductCell>
                                 <ProductCell label="제조일자">{product.makedate}</ProductCell>
                                 <ProductCell label="판매시간">{product.expireddate}</ProductCell>
                             </ProductRow>
@@ -269,7 +269,7 @@ export default function ProductManagement() {
                                 <ProductCell label="No">{product.productid}</ProductCell>
                                 <ProductCell label="상품명">
                                     <ProductInfo>
-                                        <ProductImage src={soldout} />
+                                        <ProductImage src={product.imgpaths[0]} />
                                         <ProductDetails>
                                             <div>{product.itemname}</div>
                                         </ProductDetails>
@@ -281,7 +281,7 @@ export default function ProductManagement() {
                                 <ProductCell label="판매가">{product.price.toLocaleString()}원</ProductCell>
                                 <ProductCell label="카테고리">{product.itemtype}</ProductCell>
                                 <ProductCell label="상태">판매완료</ProductCell>
-                                <ProductCell label="재고">{product.count}</ProductCell>
+                                <ProductCell label="수량">{product.count}</ProductCell>
                                 <ProductCell label="제조일자">{product.makedate}</ProductCell>
                                 <ProductCell label="판매시간">{product.expireddate}</ProductCell>
                             </ProductRow>
@@ -333,7 +333,7 @@ export default function ProductManagement() {
                             </div>
                             <SelectAllDiv>전체선택</SelectAllDiv>
                         </MobileHeader>
-
+                        {/*판매중*/}
                         {waitProducts.map((product) => (
                             <MobileProduct key={product.productid}>
                                 <input type="checkbox" value={product.productid} checked={selectedProducts.includes(product.productid)} onChange={() => handleProductSelect(product.productid)} />
@@ -347,6 +347,7 @@ export default function ProductManagement() {
                                 <MobileDiv>{product.count}</MobileDiv>
                             </MobileProduct>
                         ))}
+                        {/*판매예약*/}
                         {ongoingProducts.map((product) => (
                             <MobileProduct key={product.productid}>
                                 <input type="checkbox" value={product.productid} checked={selectedProducts.includes(product.productid)} onChange={() => handleProductSelect(product.productid)} />
@@ -360,6 +361,7 @@ export default function ProductManagement() {
                                 <MobileDiv>{product.count}</MobileDiv>
                             </MobileProduct>
                         ))}
+                        {/*판매완료*/}
                         {sellProducts.map((product) => (
                             <MobileProduct key={product.productid}>
                                 <input type="checkbox" value={product.productid} checked={selectedProducts.includes(product.productid)} onChange={() => handleProductSelect(product.productid)} />
@@ -486,7 +488,7 @@ const ProductGrid = styled.div`
 
 const ProductHeader = styled.div`
     display: grid;
-    grid-template-columns: 40px 60px 1.5fr 1fr 1fr 1fr 0.85fr 1fr 1fr;
+    grid-template-columns: 40px 60px 1.6fr 1fr 1fr 1fr 0.85fr 1fr 1.2fr;
     gap: 0.8rem;
     padding: 1rem 0.7rem;
     background: #d3b790;
@@ -501,7 +503,7 @@ const ProductHeader = styled.div`
 
 const ProductRow = styled.div`
     display: grid;
-    grid-template-columns: 40px 60px 1.5fr 1fr 1fr 1fr 0.85fr 1fr 1fr;
+    grid-template-columns: 40px 60px 1.6fr 1fr 1fr 1fr 0.85fr 1fr 1.2fr;
     gap: 0.8rem;
     padding: 1rem 0.7rem;
     align-items: center;
@@ -654,7 +656,7 @@ const DeleteButton = styled.div`
     background-color: #dc2e1c;
     color: white;
     border-radius: 5px;
-    padding: 8px 16px;
+    padding: 8px 16px;    
     &:hover {
         background-color: #c62919;
     }

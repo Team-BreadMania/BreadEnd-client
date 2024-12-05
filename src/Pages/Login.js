@@ -36,8 +36,8 @@ function Login() {
 
                 if (response.status === 200) {
                     console.log('로그인 성공:', response.data);
-                    Cookies.set('accessToken', response.data.accessToken, { expires: 14 });
-                    Cookies.set('refreshToken', response.data.accessToken, { expires: 14 });
+                    Cookies.set('accessToken', response.data.accessToken,);
+                    Cookies.set('refreshToken', response.data.accessToken,);
                     Cookies.set('userType', response.data.userType);
                     const userType = response.data.userType;
                     setUserAuth(userType);
