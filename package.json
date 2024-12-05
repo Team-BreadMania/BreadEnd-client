@@ -23,10 +23,12 @@
         "react-slick": "^0.30.2",
         "react-star-ratings": "^2.3.0",
         "redux": "^5.0.1",
+        "responsive": "^2.0.0",
         "slick": "^1.12.2",
         "slick-carousel": "^1.8.1",
         "styled-components": "^6.1.13",
         "sw_pro": "file:",
+        "sweetalert2": "^11.14.5",
         "web-vitals": "^4.2.3"
     },
     "scripts": {

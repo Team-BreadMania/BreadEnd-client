@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Search, ChevronDown, MoreVertical } from 'lucide-react';
@@ -6,6 +7,9 @@ import breadImg2 from '../Images/breadImg2.jpg';
 import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import axios from 'axios';
+import EditProductPopup from '../Components/EditProductPopup';
+import reserve from '../Images/reserve.png';
+import soldout from '../Images/soldout.png';
 
 export default function ProductManagement() {
     const navigate = useNavigate();
@@ -60,7 +64,7 @@ export default function ProductManagement() {
     const handleProductSelect = (productId) => {
         setSelectedProducts((prev) => (prev.includes(productId) ? prev.filter((id) => id !== productId) : [...prev, productId]));
     };
-
+    //판매 대기중인 제품 정보 제공
     const fetchwaitItem = async () => {
         try {
             const response = await axios.get(`https://breadend.shop/seller/show/wait`, {
@@ -76,6 +80,7 @@ export default function ProductManagement() {
             // Optionally, set an error state to show to the user
         }
     };
+    //판매 완료된 제품 정보 제공
     const fetchsellItem = async () => {
         try {
             const response = await axios.get(`https://breadend.shop/seller/show/sell`, {
@@ -91,9 +96,10 @@ export default function ProductManagement() {
             // Optionally, set an error state to show to the user
         }
     };
+    //구매 예약중인 제품 정보 제공
     const fetchOngoingItem = async () => {
         try {
-            const response = await axios.get(`https://breadend.shop/seller/show/sell`, {
+            const response = await axios.get(`https://breadend.shop/seller/show/ongoing`, {
                 headers: {
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${accessToken}`,
@@ -105,6 +111,19 @@ export default function ProductManagement() {
             console.error('API 요청 에러:', error);
             // Optionally, set an error state to show to the user
         }
+    };
+    //상품 정보 수정 기능
+    const handleUpdateProducts = async () => {
+        if (selectedProducts.length === 0) {
+            alert('수정할 상품을 선택해 주세요.');
+            return;
+        }
+        const selectedProductsData = waitProducts.concat(ongoingProducts, sellProducts).filter((product) => selectedProducts.includes(product.productid));
+
+        const productDataString = encodeURIComponent(JSON.stringify(selectedProductsData));
+
+        // Open the popup
+        window.open(`/EditProductPopup?products=${productDataString}`, '상품 정보 수정', 'width=600,height=400,scrollbars=yes');
     };
 
     // 상품 삭제 핸들러
@@ -185,7 +204,7 @@ export default function ProductManagement() {
                             <div>등록일</div>
                             <div>수정일</div>
                         </ProductHeader>
-
+                        {/*판매중*/}
                         {waitProducts.map((product) => (
                             <ProductRow key={product.productid}>
                                 <input
@@ -211,11 +230,12 @@ export default function ProductManagement() {
                                 <ProductCell label="카테고리">{product.itemtype}</ProductCell>
                                 <ProductCell label="상태">판매중</ProductCell>
                                 <ProductCell label="재고">{product.count}</ProductCell>
-                                <ProductCell label="등록일">{product.makedate}</ProductCell>
-                                <ProductCell label="수정일">{product.expireddate}</ProductCell>
+                                <ProductCell label="제조일자">{product.makedate}</ProductCell>
+                                <ProductCell label="판매시간">{product.expireddate}</ProductCell>
                             </ProductRow>
                         ))}
                     </ProductGrid>
+                    {/*판매예약*/}
                     <ProductGrid>
                         {ongoingProducts.map((product) => (
                             <ProductRow key={product.productid}>
@@ -223,9 +243,9 @@ export default function ProductManagement() {
                                 <ProductCell label="No">{product.productid}</ProductCell>
                                 <ProductCell label="상품명">
                                     <ProductInfo>
-                                        <ProductImage src={product.imgpaths[0]} />
+                                        <ProductImage src={reserve} />
                                         <ProductDetails>
-                                            <div>{product.name}</div>
+                                            <div>{product.itemname}</div>
                                         </ProductDetails>
                                         <MobileActions>
                                             <MoreVertical size={20} color="#6b7280" />
@@ -236,11 +256,12 @@ export default function ProductManagement() {
                                 <ProductCell label="카테고리">{product.itemtype}</ProductCell>
                                 <ProductCell label="상태">판매예약</ProductCell>
                                 <ProductCell label="재고">{product.count}</ProductCell>
-                                <ProductCell label="등록일">{product.makedate}</ProductCell>
-                                <ProductCell label="수정일">{product.expireddate}</ProductCell>
+                                <ProductCell label="제조일자">{product.makedate}</ProductCell>
+                                <ProductCell label="판매시간">{product.expireddate}</ProductCell>
                             </ProductRow>
                         ))}
                     </ProductGrid>
+                    {/*판매완료*/}
                     <ProductGrid>
                         {sellProducts.map((product) => (
                             <ProductRow key={product.productid}>
@@ -248,9 +269,9 @@ export default function ProductManagement() {
                                 <ProductCell label="No">{product.productid}</ProductCell>
                                 <ProductCell label="상품명">
                                     <ProductInfo>
-                                        <ProductImage src={product.imgpaths[0]} />
+                                        <ProductImage src={soldout} />
                                         <ProductDetails>
-                                            <div>{product.name}</div>
+                                            <div>{product.itemname}</div>
                                         </ProductDetails>
                                         <MobileActions>
                                             <MoreVertical size={20} color="#6b7280" />
@@ -261,13 +282,13 @@ export default function ProductManagement() {
                                 <ProductCell label="카테고리">{product.itemtype}</ProductCell>
                                 <ProductCell label="상태">판매완료</ProductCell>
                                 <ProductCell label="재고">{product.count}</ProductCell>
-                                <ProductCell label="등록일">{product.makedate}</ProductCell>
-                                <ProductCell label="수정일">{product.expireddate}</ProductCell>
+                                <ProductCell label="제조일자">{product.makedate}</ProductCell>
+                                <ProductCell label="판매시간">{product.expireddate}</ProductCell>
                             </ProductRow>
                         ))}
                     </ProductGrid>
                     <ButtonContainer>
-                        <EditButton>수정</EditButton>
+                        <EditButton onClick={handleUpdateProducts}>수정</EditButton>
                         <DeleteButton onClick={handleDeleteProducts}>삭제</DeleteButton>
                     </ButtonContainer>
                 </MainContent>
@@ -281,7 +302,7 @@ export default function ProductManagement() {
                 <Header>
                     <HeaderContent>
                         <Title>상품관리</Title>
-                        <AddButton onClick={handleSubmit}>상품 추가</AddButton>
+                        <AddButton onClick={handleSubmit}>상품추가</AddButton>
                     </HeaderContent>
                 </Header>
 
@@ -328,8 +349,8 @@ export default function ProductManagement() {
                         ))}
                     </ProductGrid>
                     <ButtonContainer>
-                        <EditButton>수정</EditButton>
-                        <DeleteButton>삭제</DeleteButton>
+                        <EditButton onClick={handleUpdateProducts}>수정</EditButton>
+                        <DeleteButton onClick={handleDeleteProducts}>삭제</DeleteButton>
                     </ButtonContainer>
                 </MainContent>
             </Container>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
+import Swal from 'sweetalert2';
 import Cookies from 'js-cookie';
 
 export default function ProductRegistration() {
@@ -99,12 +100,83 @@ export default function ProductRegistration() {
         }
     };
 
+    const fetchRecentProducts = async () => { // 최근상품 불러오기 메서드
+        const accessToken = Cookies.get("accessToken");
+        try {
+            const response = await axios.get('https://breadend.shop/shopInfo/recent', {
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`
+                },
+            });
+    
+            const products = response.data;
+            const productOptions = products.map(product => ({
+                title: product.itemname,
+                imageUrl: product.imgpaths[0], 
+                price: product.price,
+                productData: product 
+            }));
+    
+            const { isConfirmed } = await Swal.fire({
+                title: "최근 등록된 상품정보",
+                html: `
+                    <style>
+                        .product-item {
+                            display: flex;
+                            align-items: center;
+                            margin-bottom: 10px;
+                            cursor: pointer;
+                            transition: background-color 0.3s;
+                        }
+                        .product-item:hover {
+                            background-color: #f0f0f0; 
+                        }
+                    </style>
+                    <div style="display: flex; flex-direction: column; align-items: left;">
+                        ${productOptions.map(product => `
+                            <div class="product-item">
+                                <img src="${product.imageUrl}" alt="${product.title}" style="width: 100px; height: 100px; margin-right: 20px;" />
+                                <div>
+                                    <strong>${product.title}</strong><br /><br />
+                                    가격 : ${product.price}원
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `,
+                showCloseButton: true,
+                showConfirmButton: false,
+                didOpen: () => {
+                    const productItems = document.querySelectorAll('.product-item');
+                    productItems.forEach((item, index) => {
+                        item.addEventListener('click', () => {
+                            const selectedProduct = productOptions[index].productData;
+                            setProductName(selectedProduct.itemname);
+                            setCategory(selectedProduct.itemtype);
+                            setPrice(selectedProduct.price);
+                            setQuantity(selectedProduct.count);
+                            setManufactureTime(selectedProduct.makedate);
+                            setSaleTime(selectedProduct.expireddate);
+                            setProductDescription(selectedProduct.info);
+                            setImagePreviews(selectedProduct.imgpaths.map(path => path));
+                            Swal.close(); 
+                        });
+                    });
+                },
+            });
+    
+        } catch (error) {
+            console.error("상품 정보 불러오기 실패 :", error);
+            alert("상품정보를 불러오는데 실패하였습니다.");
+        }
+    };    
+
     return (
         <Container>
             <RegistrationBox>
                 <Title>상품 등록</Title>
                 <InnerContainer>
-                    <RecentlyRegistered>최근등록상품<br/>정보 불러오기</RecentlyRegistered>
+                    <RecentlyRegistered onClick = {fetchRecentProducts}>최근등록상품<br/>정보 불러오기</RecentlyRegistered>
                     <InnerBox>
                         <Label>상품명</Label>
                         <InputField type = "text" 
