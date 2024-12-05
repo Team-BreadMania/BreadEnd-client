@@ -200,7 +200,7 @@ export default function ProductManagement() {
                             <div>판매가</div>
                             <div>카테고리</div>
                             <div>상태</div>
-                            <div>재고</div>
+                            <div>수량</div>
                             <div>등록일</div>
                             <div>수정일</div>
                         </ProductHeader>
@@ -229,7 +229,7 @@ export default function ProductManagement() {
                                 <ProductCell label="판매가">{product.price.toLocaleString()}원</ProductCell>
                                 <ProductCell label="카테고리">{product.itemtype}</ProductCell>
                                 <ProductCell label="상태">판매중</ProductCell>
-                                <ProductCell label="재고">{product.count}</ProductCell>
+                                <ProductCell label="수량">{product.count}</ProductCell>
                                 <ProductCell label="제조일자">{product.makedate}</ProductCell>
                                 <ProductCell label="판매시간">{product.expireddate}</ProductCell>
                             </ProductRow>
@@ -243,7 +243,7 @@ export default function ProductManagement() {
                                 <ProductCell label="No">{product.productid}</ProductCell>
                                 <ProductCell label="상품명">
                                     <ProductInfo>
-                                        <ProductImage src={reserve} />
+                                        <ProductImage src={product.imgpaths[0]} />
                                         <ProductDetails>
                                             <div>{product.itemname}</div>
                                         </ProductDetails>
@@ -255,7 +255,7 @@ export default function ProductManagement() {
                                 <ProductCell label="판매가">{product.price.toLocaleString()}원</ProductCell>
                                 <ProductCell label="카테고리">{product.itemtype}</ProductCell>
                                 <ProductCell label="상태">판매예약</ProductCell>
-                                <ProductCell label="재고">{product.count}</ProductCell>
+                                <ProductCell label="수량">{product.count}</ProductCell>
                                 <ProductCell label="제조일자">{product.makedate}</ProductCell>
                                 <ProductCell label="판매시간">{product.expireddate}</ProductCell>
                             </ProductRow>
@@ -269,7 +269,7 @@ export default function ProductManagement() {
                                 <ProductCell label="No">{product.productid}</ProductCell>
                                 <ProductCell label="상품명">
                                     <ProductInfo>
-                                        <ProductImage src={soldout} />
+                                        <ProductImage src={product.imgpaths[0]} />
                                         <ProductDetails>
                                             <div>{product.itemname}</div>
                                         </ProductDetails>
@@ -281,7 +281,7 @@ export default function ProductManagement() {
                                 <ProductCell label="판매가">{product.price.toLocaleString()}원</ProductCell>
                                 <ProductCell label="카테고리">{product.itemtype}</ProductCell>
                                 <ProductCell label="상태">판매완료</ProductCell>
-                                <ProductCell label="재고">{product.count}</ProductCell>
+                                <ProductCell label="수량">{product.count}</ProductCell>
                                 <ProductCell label="제조일자">{product.makedate}</ProductCell>
                                 <ProductCell label="판매시간">{product.expireddate}</ProductCell>
                             </ProductRow>
@@ -352,7 +352,7 @@ export default function ProductManagement() {
                             <MobileProduct key={product.productid}>
                                 <input type="checkbox" value={product.productid} checked={selectedProducts.includes(product.productid)} onChange={() => handleProductSelect(product.productid)} />
                                 <MobileDiv>{product.productid}</MobileDiv>
-                                <MobileImg src={reserve} />
+                                <MobileImg src={product.imgpaths[0]} />
                                 <MobileInfoContainer>
                                     <MobileDiv>{product.itemname}</MobileDiv>
                                     <MobileDiv>{product.price}</MobileDiv>
@@ -366,7 +366,7 @@ export default function ProductManagement() {
                             <MobileProduct key={product.productid}>
                                 <input type="checkbox" value={product.productid} checked={selectedProducts.includes(product.productid)} onChange={() => handleProductSelect(product.productid)} />
                                 <MobileDiv>{product.productid}</MobileDiv>
-                                <MobileImg src={soldout} />
+                                <MobileImg src={product.imgpaths[0]} />
                                 <MobileInfoContainer>
                                     <MobileDiv>{product.itemname}</MobileDiv>
                                     <MobileDiv>{product.price}</MobileDiv>

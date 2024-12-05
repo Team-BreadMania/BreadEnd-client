@@ -301,8 +301,9 @@ const StoreImageContainer = styled.div`
     width: 300px;
     height: 225px;
     background-image: url(${(props) => props.src|| defaultBakery});
-    background-size: cover;
+    background-size: contain;
     background-position: center center;
+    background-repeat:no-repeat;
     @media (min-width: 550px) {
         border-radius: 0 0 0 18px;
     }

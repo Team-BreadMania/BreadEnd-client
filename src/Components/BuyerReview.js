@@ -10,7 +10,7 @@ export default function BuyerReview() {
 
     const fetchReviewData = async () => {
         try {
-            const response = await axios.get(`https://breadend.shop/detailpage/review?productid=18`, {
+            const response = await axios.get(`https://breadend.shop/Mypage/review/show`, {
                 headers: {
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${accessToken}`,
@@ -52,7 +52,7 @@ export default function BuyerReview() {
                     <ReviewCard key={index}>
                         <ReviewHeader>
                             <ProductName>{product.productname}</ProductName>
-                            <RatingBadge>★ {product.rasting}</RatingBadge>
+                            <RatingBadge>★ {product.rating}</RatingBadge>
                         </ReviewHeader>
                         <ReviewText>{product.reviewtext}</ReviewText>
                         <ReviewFooter>
