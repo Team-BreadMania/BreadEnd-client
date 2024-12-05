@@ -14,6 +14,8 @@ export default function SellerHome() {
     const [number, setNumber] = useState(null);
     const [location, setLocation] = useState(null);
     const [detailLocation, setDetailLocation] = useState(null);
+    const [userImage, setUserImage] = useState(null);
+    const [shopImage, setShopImage] = useState(null);
 
     // 유저 정보 수정
     const [isMobile, setIsMobile] = useState(false);
@@ -82,11 +84,13 @@ export default function SellerHome() {
 
             if (response.status === 200) {
                 console.log('유저정보 불러오기 성공:', response.data);
-                const { shop_name, shop_number, location, detaillocation } = response.data;
+                const { shop_name, shop_number, location, detaillocation,profileIMG, shopIMG } = response.data;
                 setStoreName(shop_name);
                 setNumber(shop_number);
                 setLocation(location);
                 setDetailLocation(detaillocation);
+                setUserImage(profileIMG);
+                setShopImage(shopIMG);
             }
         } catch (error) {
             console.log(error.response);
@@ -98,12 +102,12 @@ export default function SellerHome() {
                 <TextContainer>가게 정보</TextContainer>
                 <StoreContainer>
                     <StoreNameContainer>
-                        <StoreProfile src={profile_img} />
+                        <StoreProfile src={userImage} />
                         {storeName}
                     </StoreNameContainer>
                     <StoreInfoContainer>
                         <StoreDetailPage>
-                            <StoreImageContainer src={shop_img} />
+                            <StoreImageContainer src={shopImage} />
                             <StoreDetailInform>
                                 <StoreWorkTime>영업시간 : {workTime}</StoreWorkTime>
                                 <StoreNumber>매장 전화번호 : {number}</StoreNumber>
@@ -112,11 +116,12 @@ export default function SellerHome() {
                                 <StoreLocation>주소 : {location}</StoreLocation>
                                 <StoreDetailLocation>상세주소 : {detailLocation}</StoreDetailLocation>
                             </StoreLocationContainer>
-                            {!isTablet ? <PCEditContainer /> : null}
+                            {/* {!isTablet ? <PCEditContainer /> : null} */}
                         </StoreDetailPage>
                     </StoreInfoContainer>
                 </StoreContainer>
-                {isTablet ? <TabletEditContainer /> : null}
+                <TabletEditContainer />
+                {/* {isTablet ? <TabletEditContainer /> : null} */}
                 <TextContainer>리뷰조회</TextContainer>
                 <div style={{ margin: '0 0 10px 5px' }}>등록된 리뷰가 없습니다</div>
                 <TextContainer>문의내역</TextContainer>
@@ -261,8 +266,9 @@ const StoreProfile = styled.div`
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background-image: url(${profile_img});
+    background-image: url(${(props) => props.src});
     background-size: cover;
+    margin-right:10px;
 `;
 //가게 이름 컨테이너
 const StoreNameContainer = styled.div`
@@ -273,6 +279,7 @@ const StoreNameContainer = styled.div`
     justify-content: center;
     border-radius: 20px 20px 0 0px;
     align-items: center;
+    padding:8px 1px;
 `;
 //가게 상세정보 컨테이너
 const StoreDetailPage = styled.div`
@@ -292,7 +299,7 @@ const StoreDetailPage = styled.div`
 const StoreImageContainer = styled.div`
     width: 300px;
     height: 225px;
-    background-image: url(${shop_img});
+    background-image: url(${(props) => props.src});
     background-size: cover;
     background-position: center center;
     @media (min-width: 550px) {
@@ -384,6 +391,7 @@ const StoreDetailLocation = styled.div`
 `;
 const StoreLocationContainer = styled.div`
     padding: 8px;
+    margin-right:10%;
 `;
 //버튼 컨테이너
 const ButtonContainer = styled.div`

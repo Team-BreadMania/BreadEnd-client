@@ -15,7 +15,7 @@ export default function Item() {
     const [isMobile, setIsMobile] = useState(false);
     // 모바일 뷰, 태블릿 뷰 식별
     const resizeHandler = () => {
-        setIsMobile(window.innerWidth <= 1024);
+        setIsMobile(window.innerWidth < 1024);
     };
     // 뷰포트 확인 후 조절
     useEffect(() => {

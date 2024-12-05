@@ -1,17 +1,39 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import breadShop from '../Images/breadshop_img.jpg';
+import axios from 'axios';
+import Cookie from 'js-cookie'
 
 export default function Reservation() {
     const [isMobile, setIsMobile] = useState(false);
     const [quantity, setQuantity] = useState(1);
     const [priceUnit, setPriceUnit] = useState(0);
+    const [stores, setStores] = useState([]);
+
     const totalPrice = quantity ? Number(quantity) * priceUnit : 0;
 
-    const [stores, setStores] = useState([
-        { id: 1, name: '오둥이 빵집', phone: '02-546-7588', address: '서울특별시 강남구 압구정로30길 9', backgroundImage: 'breadShop', selected: false },
-        { id: 2, name: '또 다른 빵집', phone: '02-1234-5678', address: '서울특별시 강남구 압구정로30길 10', backgroundImage: 'breadShop', selected: false },
-    ]);
+    const accessToken = Cookie.get('accessToken');
+
+    const fetchShopData = async()=>{
+        try{
+            const response = await axios.get(`https://breadend.shop/Mypage/bookmarks`,{
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${accessToken}`,
+                },
+            })
+            console.log("찜한매장 불러오기 성공", response.data);
+            setStores(response.data);
+        }catch(error){
+            console.error("찜한매장 불러오기 오류", error);
+        }
+    }
+    useEffect(()=>{
+        if(accessToken){
+            fetchShopData(accessToken);
+        }
+    },[accessToken])
+
 
     const toggleSelect = (id) => {
         setStores(stores.map((store) => (store.id === id ? { ...store, selected: !store.selected } : store)));
@@ -32,32 +54,22 @@ export default function Reservation() {
             <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
                 <CheckAllBox /> 모두 선택
             </div>
-            <StoreContainer>
+            {stores.map((store)=>(
+                <StoreContainer>
                 <ItemContainer>
                     <CheckboxContainer>
                         <CheckBox />
                     </CheckboxContainer>
-                    <ShopImage backgroundImage={breadShop} />
+                    <ShopImage src={store.shopIMG} />
                     <InformationConatiner>
-                        <ShopNameContainer>오둥이 빵집</ShopNameContainer>
-                        <ShopNumberContainer>매장 전화번호 : 02-546-7588</ShopNumberContainer>
-                        <ShopLocationContainer>매장 주소 : 서울특별시 강남구 압구정로30길 9</ShopLocationContainer>
+                        <ShopNameContainer>{store.shop_name}</ShopNameContainer>
+                        <ShopNumberContainer>매장 전화번호 :{store.shop_number}</ShopNumberContainer>
+                        <ShopLocationContainer>매장 주소 : {store.detaillocation}</ShopLocationContainer>
                     </InformationConatiner>
                 </ItemContainer>
             </StoreContainer>
-            <StoreContainer>
-                <ItemContainer>
-                    <CheckboxContainer>
-                        <CheckBox />
-                    </CheckboxContainer>
-                    <ShopImage backgroundImage={breadShop} />
-                    <InformationConatiner>
-                        <ShopNameContainer>오둥이 빵집</ShopNameContainer>
-                        <ShopNumberContainer>매장 전화번호 : 02-546-7588</ShopNumberContainer>
-                        <ShopLocationContainer>매장 주소 : 서울특별시 강남구 압구정로30길 9</ShopLocationContainer>
-                    </InformationConatiner>
-                </ItemContainer>
-            </StoreContainer>
+            ))}          
+            
             <div>
                 <DeleteSelectButton onClick={deleteSelected}>선택 삭제</DeleteSelectButton>
             </div>
@@ -123,7 +135,7 @@ const ItemContainer = styled.div`
 const ShopImage = styled.div`
     width: 200px;
     height: 150px;
-    background-image: url(${(props) => props.backgroundImage});
+    background-image: url(${(props) => props.src});
     background-size: cover;
     background-position: contain;
     background-repeat: no-repeat;

@@ -486,7 +486,7 @@ const ProductGrid = styled.div`
 
 const ProductHeader = styled.div`
     display: grid;
-    grid-template-columns: 40px 60px 1.5fr 1fr 1fr 1fr 0.85fr 1fr 1fr;
+    grid-template-columns: 40px 60px 1.6fr 1fr 1fr 1fr 0.85fr 1fr 1.2fr;
     gap: 0.8rem;
     padding: 1rem 0.7rem;
     background: #d3b790;
@@ -501,7 +501,7 @@ const ProductHeader = styled.div`
 
 const ProductRow = styled.div`
     display: grid;
-    grid-template-columns: 40px 60px 1.5fr 1fr 1fr 1fr 0.85fr 1fr 1fr;
+    grid-template-columns: 40px 60px 1.6fr 1fr 1fr 1fr 0.85fr 1fr 1.2fr;
     gap: 0.8rem;
     padding: 1rem 0.7rem;
     align-items: center;
@@ -654,7 +654,7 @@ const DeleteButton = styled.div`
     background-color: #dc2e1c;
     color: white;
     border-radius: 5px;
-    padding: 8px 16px;
+    padding: 8px 16px;    
     &:hover {
         background-color: #c62919;
     }

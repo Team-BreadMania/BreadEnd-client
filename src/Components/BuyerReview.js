@@ -29,8 +29,18 @@ export default function BuyerReview() {
     }, [accessToken]);
 
     const handleEditReview = (reviewId) => {
-        // 리뷰 수정 로직 추가 (예: 모달 열기, 수정 페이지로 이동 등)
         console.log(`리뷰 수정: ${reviewId}`);
+    };
+    const handleDeleteReview = (reviewId) => {
+        console.log(`리뷰 수정: ${reviewId}`);
+    };
+
+    const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
     };
 
     return (
@@ -41,12 +51,15 @@ export default function BuyerReview() {
                     <ReviewCard key={index}>
                         <ReviewHeader>
                             <ProductName>{product.productname}</ProductName>
-                            <RatingBadge>★ {product.rating}</RatingBadge>
+                            <RatingBadge>★ {product.rasting}</RatingBadge>
                         </ReviewHeader>
                         <ReviewText>{product.reviewtext}</ReviewText>
                         <ReviewFooter>
-                            <DateText>{product.registdate}</DateText>
-                            <EditButton onClick={() => handleEditReview(product.reviewId)}>수정</EditButton>
+                            <DateText>{formatDate(product.registdate)}</DateText>
+                            <ButtonContainer>
+                                <EditButton onClick={() => handleEditReview(product.orderid)}>수정</EditButton>
+                                <DeleteButton onClick={()=>handleDeleteReview(product.orderid)}>삭제</DeleteButton>
+                            </ButtonContainer>
                         </ReviewFooter>
                     </ReviewCard>
                 ))}
@@ -76,8 +89,15 @@ const ReviewContainer = styled.div`
     max-width: 800px;
     margin: 0 auto;
     padding: 20px;
-    background-color: #f9f9f9;
+    background-color: #fff9ee;
     border-radius: 8px;
+    margin:10px 3px;
+    overflow-x : scroll;
+    @media (max-width:850px) {
+        flex-direction:column;
+        overflow-y : scroll;
+        overflow-x:hidden;;
+    }
 `;
 
 const ReviewCard = styled.div`
@@ -85,7 +105,6 @@ const ReviewCard = styled.div`
     border: 1px solid #e0e0e0;
     border-radius: 6px;
     padding: 15px;
-    margin-bottom: 15px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 `;
 
@@ -126,6 +145,9 @@ const DateText = styled.small`
     color: #999;
 `;
 
+const ButtonContainer = styled.div`
+    display: flex;   
+`;
 const EditButton = styled.button`
     background-color: #2196f3;
     color: white;
@@ -135,8 +157,25 @@ const EditButton = styled.button`
     cursor: pointer;
     font-size: 0.8em;
     transition: background-color 0.3s ease;
-
+    width:60%;
+    padding:5px 8px;
     &:hover {
         background-color: #1976d2;
     }
+    margin:0 5px;
+`;
+const DeleteButton = styled.button`
+background-color: #dc2e1c;
+    &:hover {
+        background-color: #c62919;
+    }    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.8em;
+    transition: background-color 0.3s ease;
+    width:60%;
+    padding:5px 8px;
+    margin:0;
 `;
