@@ -137,11 +137,11 @@ export default function SellerHome() {
                 <TextContainer>가게 정보</TextContainer>
                 <StoreContainer>
                     <StoreNameContainer>
-                        <StoreProfile src={profile_img} />
+                        <StoreProfile src={userImage} />
                         {storeName}
                     </StoreNameContainer>
                     <StoreDetailPage>
-                        <StoreImageContainer src={shop_img} />
+                        <StoreImageContainer src={shopImage} />
                         <StoreDetailInform>
                             <StoreWorkTime>
                                 영업시간 <br /> {workTime}
