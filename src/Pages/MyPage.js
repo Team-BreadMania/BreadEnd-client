@@ -3,8 +3,8 @@ import Cookies from 'js-cookie';
 import styled from 'styled-components';
 import Account from '../Components/Account';
 import Reservation from '../Components/Reservation';
-import Item from '../Components/Item';
-import Review from '../Components/Review';
+import Item from '../Components/BuyedItem';
+import Review from '../Components/BuyerReview';
 import Inquiry from '../Components/Inquiry';
 import MenuIcon from '../Images/menu_icon1.jpg';
 import SellerHome from './Home_seller';
@@ -118,9 +118,11 @@ export default function MyPageBuyer() {
 const Container = styled.div`
     display: flex;
     border-radius: 5px;
-    max-width: 100%;
+    width: 100%;
     height: 100%;
     position: relative;
+    box-sizing: border-box;
+    overflow-x: hidden; // Add this
 `;
 
 const MobileNav = styled.div`
@@ -183,7 +185,16 @@ const RightContainer = styled.div`
     padding: 4% 3% 0 3%;
     box-sizing: border-box;
     background-color: #f0e9dd;
-
+    overflow-x: hidden; // Add this
+    @media (max-width: 1500px) {
+        min-width: 83%;
+    }
+    @media (max-width: 1250px) {
+        min-width: 83%;
+    }
+    @media (max-width: 1000px) {
+        min-width: 76%;
+    }
     @media (max-width: 800px) {
         width: 100%;
         padding: 20px;
@@ -244,6 +255,8 @@ const ToolContainer = styled.div`
     background-color: white;
     padding: 3%;
     box-sizing: border-box;
+    overflow-x: hidden; // Add this
+
     @media (max-width: 850px) {
         font-size: 16px;
         padding: 2%;

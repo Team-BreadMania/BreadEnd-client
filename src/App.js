@@ -17,6 +17,7 @@ import Map from './Pages/Map'; // Map 페이지 추가
 import SearchResults from './Pages/SearchResults';
 import ProductManagement from './Pages/ProductManagement';
 import EditProductPopup from './Components/EditProductPopup';
+import ReviewPopup from './Components/ReviewPopup';
 import { AuthProvider } from './AuthContext';
 import { CartProvider } from './CartContext';
 
@@ -24,8 +25,9 @@ function App() {
     const location = useLocation(); // 현재 경로를 확인하기 위한 useLocation
 
     // Header와 NaviBar를 각 페이지별로 숨김 처리
-    const hideHeader = location.pathname === '/normal' || location.pathname === '/seller' || location.pathname === '/Search' || location.pathname === '/EditProductPopup';
-    const hideNaviBar = location.pathname === '/normal' || location.pathname === '/seller' || location.pathname === '/EditProductPopup';
+    const hideHeader =
+        location.pathname === '/normal' || location.pathname === '/seller' || location.pathname === '/Search' || location.pathname === '/EditProductPopup' || location.pathname === '/ReviewWrite';
+    const hideNaviBar = location.pathname === '/normal' || location.pathname === '/seller' || location.pathname === '/EditProductPopup' || location.pathname === '/ReviewWrite';
 
     return (
         <CartProvider> 
@@ -51,6 +53,7 @@ function App() {
                         {/* Search 경로 추가 */}
                         <Route path="/Map" element={<Map />} /> {/* Map 경로 추가 */}
                         <Route path="/EditProductPopup" element={<EditProductPopup />} />
+                        <Route path="/ReviewWrite" element={<ReviewPopup />} />
                     </Routes>
 
                     {/* 특정 경로에서는 NaviBar를 렌더링하지 않음 */}
