@@ -5,6 +5,7 @@ import shop_img from '../Images/breadshop_img.jpg';
 import Cookies from 'js-cookie';
 import axios from 'axios';
 import Review from '../Components/Review';
+import defaultBakery from '../Images/defaultBakery.png'
 
 export default function SellerHome() {
     // 유저정보
@@ -266,7 +267,7 @@ const StoreProfile = styled.div`
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background-image: url(${(props) => props.src});
+    background-image: url(${(props) => props.src|| defaultBakery});
     background-size: cover;
     margin-right:10px;
 `;
