@@ -150,19 +150,27 @@ export default function ProductDetailPage() {
     };
 
     const addToCartHandler = async () => { // 장바구니 상품추가 메서드
-        const accessToken = Cookies.get("accessToken"); 
-
+        const accessToken = Cookies.get("accessToken");
+    
         if (!accessToken) {
             alert("로그인을 한 뒤 이용할 수 있는 기능입니다.");
             navigate("/Login");
             return;
         }
-        
+    
+        const storedProductDetails = localStorage.getItem("productDetails");
+        const productDetails = storedProductDetails ? JSON.parse(storedProductDetails) : null; 
+    
+        if (!productDetails) {
+            alert("상품 정보를 불러오는 데 실패했습니다.");
+            return;
+        }
+    
         try {
             const response = await axios.post('https://breadend.shop/detailpage/add/cart',
                 {
-                    productid: id, 
-                    count: quantity 
+                    productid: id,
+                    count: quantity
                 },
                 {
                     headers: {
@@ -170,16 +178,26 @@ export default function ProductDetailPage() {
                     },
                 }
             );
-
+    
             if (response.status === 200) {
                 alert("장바구니에 상품이 추가되었습니다.");
-                addToCart({ productid: id, count: quantity, price: productDetails.price, itemname: productDetails.product_name, imgpaths: productDetails.product_imgpath});
+    
+                const imgpaths = productDetails.product_imgpath ?
+                    (Array.isArray(productDetails.product_imgpath) ? productDetails.product_imgpath : [productDetails.product_imgpath])
+                    : []; 
+    
+                addToCart({
+                    productid: id,
+                    count: quantity,
+                    price: productDetails.price,
+                    itemname: productDetails.product_name || "상품명 없음", 
+                });
             }
         } catch (error) {
             alert("장바구니 상품추가에 실패하였습니다. 다시 시도해 주세요.");
             console.error("API 요청 에러:", error);
         }
-    };
+    };           
 
     const addToOrder = async () => { // 상품 바로구매 메서드
         const accessToken = Cookies.get("accessToken");  

@@ -20,9 +20,9 @@ export const CartProvider = ({ children }) => {
                 updatedItems[existingItemIndex].count += item.count;
                 return updatedItems;
             }
-            return [...prevItems, item];
+            return [...prevItems, item]; 
         });
-    };
+    };    
 
     return (
         <CartContext.Provider value={{ cartItems, setCartItems, addToCart }}>
