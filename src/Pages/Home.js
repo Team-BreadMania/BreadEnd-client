@@ -93,7 +93,7 @@ export default function Home() {
     };
 
     const handleProductClick = (productId) => { // 상품 상세페이지 이동 메서드
-        navigate(`/ProductDetailPage?id=${productId}`);
+        navigate(`/ProductDetailPage?id=${productId}`); 
     };
     
     const handleShopClick = (shopId) => { // 매장 상세페이지 이동 메서드
