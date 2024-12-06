@@ -52,17 +52,46 @@ export default function ProductManagement() {
     const handleSelectAll = (event) => {
         const isChecked = event.target.checked;
         if (isChecked) {
-            // 현재 보여지는 모든 제품의 ID 선택
-            const allProductIds = [...waitProducts.map((p) => p.productid), ...ongoingProducts.map((p) => p.productid), ...sellProducts.map((p) => p.productid)];
-            setSelectedProducts(allProductIds);
+            // 현재 보여지는 모든 제품의 ID와 연관된 주문 ID 선택
+            const allProductIds = [...waitProducts.map((p) => p.productid), ...ongoingProducts.flatMap((p) => [p.productid, p.orderid]), ...sellProducts.flatMap((p) => [p.productid, p.orderid])];
+            // 중복 제거
+            const uniqueSelectedProducts = [...new Set(allProductIds)];
+            setSelectedProducts(uniqueSelectedProducts);
         } else {
             // 모든 선택 해제
             setSelectedProducts([]);
         }
     };
+
+    // 전체 선택 상태 확인 함수
+    const isAllSelected = () => {
+        // 모든 제품의 ID와 관련 주문 ID 배열 생성
+        const allProductAndOrderIds = [...waitProducts.map((p) => p.productid), ...ongoingProducts.flatMap((p) => [p.productid, p.orderid]), ...sellProducts.flatMap((p) => [p.productid, p.orderid])];
+
+        // 모든 ID가 선택되었는지 확인
+        return allProductAndOrderIds.every((id) => selectedProducts.includes(id));
+    };
+
     // 개별 상품 선택/해제 핸들러
-    const handleProductSelect = (productId) => {
-        setSelectedProducts((prev) => (prev.includes(productId) ? prev.filter((id) => id !== productId) : [...prev, productId]));
+    const handleProductSelect = (productId, orderid = null) => {
+        setSelectedProducts((prev) => {
+            // 제품 ID가 이미 선택되어 있는지 확인
+            const isProductSelected = prev.includes(productId);
+
+            // 주문 ID가 있는 경우 (판매예약, 판매완료 상품)
+            if (orderid) {
+                if (isProductSelected) {
+                    // 제품 ID와 주문 ID 모두 제거
+                    return prev.filter((id) => id !== productId && id !== orderid);
+                } else {
+                    // 제품 ID와 주문 ID 모두 추가
+                    return [...prev, productId, orderid];
+                }
+            } else {
+                // 일반 상품 (판매중)의 경우 기존 로직 유지
+                return isProductSelected ? prev.filter((id) => id !== productId) : [...prev, productId];
+            }
+        });
     };
     //판매 대기중인 제품 정보 제공
     const fetchwaitItem = async () => {
@@ -194,8 +223,7 @@ export default function ProductManagement() {
 
                     <ProductGrid>
                         <ProductHeader>
-                            <input type="checkbox" checked={selectedProducts.length === waitProductLength + ongoingProductsLength + sellProductLenght} onChange={handleSelectAll} />
-                            <div>No</div>
+                            <input type="checkbox" checked={isAllSelected()} onChange={handleSelectAll} /> <div>No</div>
                             <div>상품명</div>
                             <div>판매가</div>
                             <div>카테고리</div>
@@ -239,7 +267,13 @@ export default function ProductManagement() {
                     <ProductGrid>
                         {ongoingProducts.map((product) => (
                             <ProductRow key={product.productid}>
-                                <input type="checkbox" value={product.productid} checked={selectedProducts.includes(product.productid)} onChange={() => handleProductSelect(product.productid)} />
+                                <input
+                                    type="checkbox"
+                                    value={product.productid}
+                                    checked={selectedProducts.includes(product.productid) && selectedProducts.includes(product.orderid)}
+                                    onChange={() => handleProductSelect(product.productid, product.orderid)}
+                                    styled={{ margin: '0px' }}
+                                />
                                 <ProductCell label="No">{product.productid}</ProductCell>
                                 <ProductCell label="상품명">
                                     <ProductInfo>
@@ -265,7 +299,13 @@ export default function ProductManagement() {
                     <ProductGrid>
                         {sellProducts.map((product) => (
                             <ProductRow key={product.productid}>
-                                <input type="checkbox" value={product.productid} checked={selectedProducts.includes(product.productid)} onChange={() => handleProductSelect(product.productid)} />
+                                <input
+                                    type="checkbox"
+                                    value={product.productid}
+                                    checked={selectedProducts.includes(product.productid) && selectedProducts.includes(product.orderid)}
+                                    onChange={() => handleProductSelect(product.productid, product.orderid)}
+                                    styled={{ margin: '0px' }}
+                                />
                                 <ProductCell label="No">{product.productid}</ProductCell>
                                 <ProductCell label="상품명">
                                     <ProductInfo>
@@ -288,6 +328,7 @@ export default function ProductManagement() {
                         ))}
                     </ProductGrid>
                     <ButtonContainer>
+                        <SellButton>판매완료</SellButton>
                         <EditButton onClick={handleUpdateProducts}>수정</EditButton>
                         <DeleteButton onClick={handleDeleteProducts}>삭제</DeleteButton>
                     </ButtonContainer>
@@ -350,7 +391,13 @@ export default function ProductManagement() {
                         {/*판매예약*/}
                         {ongoingProducts.map((product) => (
                             <MobileProduct key={product.productid}>
-                                <input type="checkbox" value={product.productid} checked={selectedProducts.includes(product.productid)} onChange={() => handleProductSelect(product.productid)} />
+                                <input
+                                    type="checkbox"
+                                    value={product.productid}
+                                    checked={selectedProducts.includes(product.productid) && selectedProducts.includes(product.orderid)}
+                                    onChange={() => handleProductSelect(product.productid, product.orderid)}
+                                    styled={{ margin: '0px' }}
+                                />{' '}
                                 <MobileDiv>{product.productid}</MobileDiv>
                                 <MobileImg src={product.imgpaths[0]} />
                                 <MobileInfoContainer>
@@ -364,7 +411,13 @@ export default function ProductManagement() {
                         {/*판매완료*/}
                         {sellProducts.map((product) => (
                             <MobileProduct key={product.productid}>
-                                <input type="checkbox" value={product.productid} checked={selectedProducts.includes(product.productid)} onChange={() => handleProductSelect(product.productid)} />
+                                <input
+                                    type="checkbox"
+                                    value={product.productid}
+                                    checked={selectedProducts.includes(product.productid) && selectedProducts.includes(product.orderid)}
+                                    onChange={() => handleProductSelect(product.productid, product.orderid)}
+                                    styled={{ margin: '0px' }}
+                                />{' '}
                                 <MobileDiv>{product.productid}</MobileDiv>
                                 <MobileImg src={product.imgpaths[0]} />
                                 <MobileInfoContainer>
@@ -377,6 +430,7 @@ export default function ProductManagement() {
                         ))}
                     </ProductGrid>
                     <ButtonContainer>
+                        <SellButton>판매완료</SellButton>
                         <EditButton onClick={handleUpdateProducts}>수정</EditButton>
                         <DeleteButton onClick={handleDeleteProducts}>삭제</DeleteButton>
                     </ButtonContainer>
@@ -650,13 +704,22 @@ const EditButton = styled.div`
     &:hover {
         background-color: #19b47c;
     }
-    margin-right: 8px;
+    margin: 0 8px;
 `;
 const DeleteButton = styled.div`
     background-color: #dc2e1c;
     color: white;
     border-radius: 5px;
-    padding: 8px 16px;    
+    padding: 8px 16px;
+    &:hover {
+        background-color: #c62919;
+    }
+`;
+const SellButton = styled.div`
+    background-color: #c6855b;
+    color: white;
+    border-radius: 5px;
+    padding: 8px 16px;
     &:hover {
         background-color: #c62919;
     }

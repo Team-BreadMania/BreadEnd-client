@@ -5,7 +5,7 @@ import shop_img from '../Images/breadshop_img.jpg';
 import Cookies from 'js-cookie';
 import axios from 'axios';
 import Review from '../Components/Review';
-import defaultBakery from '../Images/defaultBakery.png'
+import defaultBakery from '../Images/defaultBakery.png';
 
 export default function SellerHome() {
     // 유저정보
@@ -76,7 +76,7 @@ export default function SellerHome() {
 
     const fetchUserData = async (accessToken) => {
         try {
-            const response = await axios.get('http://43.203.241.42/user/get-userinfo', {
+            const response = await axios.get('https://breadend.shop/user/get-userinfo', {
                 headers: {
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${accessToken}`, // accessToken을 헤더에 포함
@@ -85,7 +85,7 @@ export default function SellerHome() {
 
             if (response.status === 200) {
                 console.log('유저정보 불러오기 성공:', response.data);
-                const { shop_name, shop_number, location, detaillocation,profileIMG, shopIMG } = response.data;
+                const { shop_name, shop_number, location, detaillocation, profileIMG, shopIMG } = response.data;
                 setStoreName(shop_name);
                 setNumber(shop_number);
                 setLocation(location);
@@ -269,7 +269,7 @@ const StoreProfile = styled.div`
     border-radius: 50%;
     background-image: url(${(props) => props.src});
     background-size: cover;
-    margin-right:10px;
+    margin-right: 10px;
 `;
 //가게 이름 컨테이너
 const StoreNameContainer = styled.div`
@@ -280,7 +280,7 @@ const StoreNameContainer = styled.div`
     justify-content: center;
     border-radius: 20px 20px 0 0px;
     align-items: center;
-    padding:8px 1px;
+    padding: 8px 1px;
 `;
 //가게 상세정보 컨테이너
 const StoreDetailPage = styled.div`
@@ -300,10 +300,10 @@ const StoreDetailPage = styled.div`
 const StoreImageContainer = styled.div`
     width: 300px;
     height: 225px;
-    background-image: url(${(props) => props.src|| defaultBakery});
+    background-image: url(${(props) => props.src || defaultBakery});
     background-size: contain;
     background-position: center center;
-    background-repeat:no-repeat;
+    background-repeat: no-repeat;
     @media (min-width: 550px) {
         border-radius: 0 0 0 18px;
     }
@@ -393,7 +393,7 @@ const StoreDetailLocation = styled.div`
 `;
 const StoreLocationContainer = styled.div`
     padding: 8px;
-    margin-right:10%;
+    margin-right: 10%;
 `;
 //버튼 컨테이너
 const ButtonContainer = styled.div`
