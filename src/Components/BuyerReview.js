@@ -23,17 +23,31 @@ export default function BuyerReview() {
         }
     };
 
+    const ReviewEdit = (orderid, itemname) => {
+        // 리뷰 수정 페이지 열기
+        window.open(`/ReviewEdit?orderid=${orderid}&itemname=${itemname}`, '리뷰수정', 'width=600,height=400,scrollbars=yes');
+    };
+
     useEffect(() => {
         if (accessToken) {
             fetchReviewData(accessToken);
         }
     }, [accessToken]);
 
-    const handleEditReview = (reviewId) => {
-        console.log(`리뷰 수정: ${reviewId}`);
-    };
-    const handleDeleteReview = (reviewId) => {
-        console.log(`리뷰 수정: ${reviewId}`);
+    const handleDeleteReview = async (orderid) => {
+        try {
+            const response = await axios.delete(`https://breadend.shop/Mypage/review/delete?orderid=${orderid}`, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${accessToken}`,
+                },
+            });
+            if (response.status === 200) {
+                console.log(`리뷰 삭제 성공`);
+            }
+        } catch (error) {
+            console.log(`리뷰 삭제 중 오류 발생`, error);
+        }
     };
 
     const formatDate = (dateString) => {
@@ -58,8 +72,8 @@ export default function BuyerReview() {
                         <ReviewFooter>
                             <DateText>{formatDate(product.registdate)}</DateText>
                             <ButtonContainer>
-                                <EditButton onClick={() => handleEditReview(product.orderid)}>수정</EditButton>
-                                <DeleteButton onClick={()=>handleDeleteReview(product.orderid)}>삭제</DeleteButton>
+                                <EditButton onClick={() => ReviewEdit(product.orderid, product.productname)}>수정</EditButton>
+                                <DeleteButton onClick={() => handleDeleteReview(product.orderid)}>삭제</DeleteButton>
                             </ButtonContainer>
                         </ReviewFooter>
                     </ReviewCard>
@@ -88,16 +102,17 @@ const TitleContainer = styled.div`
 const ReviewContainer = styled.div`
     display: flex;
     max-width: 800px;
+    min-width: 600px;
     margin: 0 auto;
     padding: 20px;
     background-color: #fff9ee;
     border-radius: 8px;
-    margin:10px 3px;
-    overflow-x : scroll;
-    @media (max-width:850px) {
-        flex-direction:column;
-        overflow-y : scroll;
-        overflow-x:hidden;;
+    margin: 10px 3px;
+    overflow-x: scroll;
+    @media (max-width: 850px) {
+        flex-direction: column;
+        overflow-y: scroll;
+        overflow-x: hidden;
     }
 `;
 
@@ -107,6 +122,7 @@ const ReviewCard = styled.div`
     border-radius: 6px;
     padding: 15px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin: 0 8px;
 `;
 
 const ReviewHeader = styled.div`
@@ -114,12 +130,15 @@ const ReviewHeader = styled.div`
     justify-content: space-between;
     align-items: center;
     margin-bottom: 10px;
+    padding: 2px;
 `;
 
 const ProductName = styled.h3`
     color: #333;
     margin: 0;
     font-size: 1.1em;
+    padding: 2px;
+    margin-right: 8px;
 `;
 
 const RatingBadge = styled.span`
@@ -147,7 +166,7 @@ const DateText = styled.small`
 `;
 
 const ButtonContainer = styled.div`
-    display: flex;   
+    display: flex;
 `;
 const EditButton = styled.button`
     background-color: #2196f3;
@@ -158,25 +177,26 @@ const EditButton = styled.button`
     cursor: pointer;
     font-size: 0.8em;
     transition: background-color 0.3s ease;
-    width:60%;
-    padding:5px 8px;
+    width: 60%;
+    padding: 5px 8px;
     &:hover {
         background-color: #1976d2;
     }
-    margin:0 5px;
+    margin: 0 5px;
 `;
 const DeleteButton = styled.button`
-background-color: #dc2e1c;
+    background-color: #dc2e1c;
     &:hover {
         background-color: #c62919;
-    }    color: white;
+    }
+    color: white;
     border: none;
     padding: 5px 10px;
     border-radius: 4px;
     cursor: pointer;
     font-size: 0.8em;
     transition: background-color 0.3s ease;
-    width:60%;
-    padding:5px 8px;
-    margin:0;
+    width: 60%;
+    padding: 5px 8px;
+    margin: 0;
 `;

@@ -183,6 +183,85 @@ export default function ProductManagement() {
         }
     };
 
+    const handleSellProducts = async () => {
+        try {
+            // Filter out only order IDs for products in ongoing or reserved state
+            const orderIds = selectedProducts.filter((id) => ongoingProducts.some((product) => product.orderid === id));
+
+            if (orderIds.length === 0) {
+                alert('판매 완료할 상품을 선택해주세요.');
+                return;
+            }
+
+            // Create promises for each order confirmation
+            const sellPromises = orderIds.map((orderid) =>
+                axios.put(
+                    `https://breadend.shop/seller/confirm?orderid=${orderid}`,
+                    {},
+                    {
+                        headers: {
+                            'Content-Type': 'application/json',
+                            Authorization: `Bearer ${accessToken}`,
+                        },
+                    }
+                )
+            );
+
+            // Wait for all sell confirmations to complete
+            await Promise.all(sellPromises);
+
+            // Refresh product lists after selling
+            await Promise.all([fetchwaitItem(), fetchsellItem(), fetchOngoingItem()]);
+
+            // Clear selected products
+            setSelectedProducts([]);
+
+            alert('선택한 상품들의 판매가 완료되었습니다.');
+        } catch (error) {
+            console.error('상품 판매 중 오류:', error);
+            alert('상품 판매에 실패했습니다. 다시 시도해주세요.');
+        }
+    };
+    const handleReservCancleProducts = async () => {
+        try {
+            // Filter out only order IDs for products in ongoing or reserved state
+            const orderIds = selectedProducts.filter((id) => ongoingProducts.some((product) => product.orderid === id));
+
+            if (orderIds.length === 0) {
+                alert('예약 취소할 상품을 선택해주세요.');
+                return;
+            }
+
+            // Create promises for each order confirmation
+            const sellPromises = orderIds.map((orderid) =>
+                axios.put(
+                    `https://breadend.shop/seller/cancel?orderid=${orderid}`,
+                    {},
+                    {
+                        headers: {
+                            'Content-Type': 'application/json',
+                            Authorization: `Bearer ${accessToken}`,
+                        },
+                    }
+                )
+            );
+
+            // Wait for all sell confirmations to complete
+            await Promise.all(sellPromises);
+
+            // Refresh product lists after selling
+            await Promise.all([fetchwaitItem(), fetchsellItem(), fetchOngoingItem()]);
+
+            // Clear selected products
+            setSelectedProducts([]);
+
+            alert('선택한 상품의 예약이 취소되었습니다.');
+        } catch (error) {
+            console.error('예약 취소 중 오류:', error);
+            alert('예약 취소에 실패했습니다. 다시 시도해주세요.');
+        }
+    };
+
     useEffect(() => {
         if (accessToken) {
             fetchwaitItem();
@@ -328,7 +407,8 @@ export default function ProductManagement() {
                         ))}
                     </ProductGrid>
                     <ButtonContainer>
-                        <SellButton>판매완료</SellButton>
+                        <ReservCancleButton onClick={handleReservCancleProducts}>예약취소</ReservCancleButton>
+                        <SellButton onClick={handleSellProducts}>판매완료</SellButton>
                         <EditButton onClick={handleUpdateProducts}>수정</EditButton>
                         <DeleteButton onClick={handleDeleteProducts}>삭제</DeleteButton>
                     </ButtonContainer>
@@ -430,7 +510,8 @@ export default function ProductManagement() {
                         ))}
                     </ProductGrid>
                     <ButtonContainer>
-                        <SellButton>판매완료</SellButton>
+                        <ReservCancleButton onClick={handleReservCancleProducts}>예약취소</ReservCancleButton>
+                        <SellButton onClick={handleSellProducts}>판매완료</SellButton>
                         <EditButton onClick={handleUpdateProducts}>수정</EditButton>
                         <DeleteButton onClick={handleDeleteProducts}>삭제</DeleteButton>
                     </ButtonContainer>
@@ -720,7 +801,17 @@ const SellButton = styled.div`
     color: white;
     border-radius: 5px;
     padding: 8px 16px;
+    margin-left: 8px;
     &:hover {
-        background-color: #c62919;
+        background-color: #b16b3d;
+    }
+`;
+const ReservCancleButton = styled.div`
+    background-color: #c6855b;
+    color: white;
+    border-radius: 5px;
+    padding: 8px 16px;
+    &:hover {
+        background-color: #b16b3d;
     }
 `;

@@ -20,8 +20,8 @@ export default function ReviewPopup() {
     const handleSubmitReview = async () => {
         try {
             const accessToken = Cookies.get('accessToken');
-            await axios.post(
-                'https://breadend.shop/Mypage/review/write',
+            await axios.put(
+                'https://breadend.shop/Mypage/review/modify',
                 {
                     orderid: orderId,
                     rating: rating,
@@ -34,23 +34,23 @@ export default function ReviewPopup() {
                     },
                 }
             );
-            alert('리뷰가 성공적으로 작성되었습니다.');
+            alert('리뷰가 성공적으로 수정되었습니다.');
             window.close(); // 팝업을 닫습니다.
         } catch (error) {
-            console.error('리뷰 작성 중 오류 발생:', error);
-            alert('리뷰 작성에 실패했습니다.');
+            console.error('리뷰 수정 중 오류 발생:', error);
+            alert('리뷰 수정에 실패했습니다.');
         }
     };
 
     return (
         <ReviewContainer>
-            <ItemTitle>{itemName} 리뷰 작성</ItemTitle>
+            <ItemTitle>{itemName} 리뷰 수정</ItemTitle>
             <StarRatingContainer>
                 <StarRatings rating={rating} starRatedColor="gold" changeRating={handleRatingChange} numberOfStars={5} name="rating" starDimension="40px" starSpacing="5px" />
             </StarRatingContainer>
             <RatingText>현재 선택된 별점: {rating}점</RatingText>
             <ReviewTextarea placeholder="리뷰를 작성해주세요 (최대 500자)" value={reviewText} onChange={(e) => setReviewText(e.target.value)} maxLength={500} />
-            <SubmitButton onClick={handleSubmitReview}>리뷰 제출하기</SubmitButton>
+            <SubmitButton onClick={handleSubmitReview}>리뷰 수정하기</SubmitButton>
         </ReviewContainer>
     );
 }

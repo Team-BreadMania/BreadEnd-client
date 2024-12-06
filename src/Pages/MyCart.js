@@ -26,11 +26,11 @@ export default function MyCart() {
                 setCartItems(response.data);
                 localStorage.setItem('cartItems', JSON.stringify(response.data)); 
 
-                const total = response.data.reduce((acc, item) => acc + item.price * item.count, 0);
+                const total = response.data.reduce((acc, item) => acc + item.product.price * item.product.count, 0);
                 setTotalPrice(total);
 
                 const initialSelectedItems = response.data.reduce((acc, item) => {
-                    acc[item.productid] = true; 
+                    acc[item.cartid] = true;
                     return acc;
                 }, {});
                 setSelectedItems(initialSelectedItems);
@@ -45,19 +45,19 @@ export default function MyCart() {
 
     const calculateSelectedTotal = () => { // 선택된 상품 가격 계산 메서드
         return cartItems.reduce((total, item) => {
-            if (selectedItems[item.productid]) {
-                return total + item.price * item.count;
+            if (selectedItems[item.cartid]) {
+                return total + item.product.price * item.product.count;
             }
             return total;
         }, 0);
     };
 
-    const handleDelete = async (productid) => { // 선택 상품 개별 삭제 메서드
+    const handleDelete = async (cartid) => { // 선택 상품 개별 삭제 메서드
         const accessToken = Cookies.get("accessToken");
         
         try {
-            console.log("Deleting product with ID:", productid);
-            await axios.delete(`https://breadend.shop/cart/delete?productid=${productid}`, {
+            console.log("Deleting product with ID:", cartid);
+            await axios.delete(`https://breadend.shop/cart/delete?cartid=${cartid}`, {
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
                     'Content-Type': 'application/json;charset=UTF-8',
@@ -65,8 +65,8 @@ export default function MyCart() {
             });
     
             setCartItems(prevItems => {
-                const updatedItems = prevItems.filter(item => item.productid !== productid);
-                const updatedTotal = updatedItems.reduce((acc, item) => acc + item.price * item.count, 0);
+                const updatedItems = prevItems.filter(item => item.cartid !== cartid);
+                const updatedTotal = updatedItems.reduce((acc, item) => acc + item.product.price * item.product.count, 0);
                 setTotalPrice(updatedTotal);
                 localStorage.setItem('cartItems', JSON.stringify(updatedItems));
                 return updatedItems;
@@ -105,7 +105,7 @@ export default function MyCart() {
         const accessToken = Cookies.get("accessToken");
         
         const orderItems = cartItems
-            .filter(item => selectedItems[item.productid])
+            .filter(item => selectedItems[item.cartid])
             .map(item => ({
                 productid: item.productid,
                 count: item.count,
@@ -166,7 +166,7 @@ export default function MyCart() {
                                 <ProductPrice>개당 {item.price.toLocaleString()}원</ProductPrice>
                             </ProductInfoBox>
                             <DeleteBox>
-                                <DeleteIcon onClick = {() => handleDelete(item.productid)}/>
+                                <DeleteIcon onClick = {() => handleDelete(item.cartid)}/>
                             </DeleteBox>
                         </ProductContainer>
                     ))}
