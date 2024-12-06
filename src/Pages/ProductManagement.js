@@ -450,15 +450,20 @@ export default function ProductManagement() {
                     <ProductGrid>
                         <MobileHeader>
                             <div style={{ marginRight: '6px' }}>
-                                <input type="checkbox" />
+                                <input type="checkbox" checked={isAllSelected()} onChange={handleSelectAll} />
                             </div>
                             <SelectAllDiv>전체선택</SelectAllDiv>
                         </MobileHeader>
                         {/*판매중*/}
                         {waitProducts.map((product) => (
                             <MobileProduct key={product.productid}>
-                                <input type="checkbox" value={product.productid} checked={selectedProducts.includes(product.productid)} onChange={() => handleProductSelect(product.productid)} />
-                                <MobileDiv>{product.productid}</MobileDiv>
+                                <input
+                                    type="checkbox"
+                                    value={product.productid}
+                                    checked={selectedProducts.includes(product.productid)}
+                                    onChange={() => handleProductSelect(product.productid)}
+                                    styled={{ margin: '0px' }}
+                                />                                <MobileDiv>{product.productid}</MobileDiv>
                                 <MobileImg src={product.imgpaths[0]} />
                                 <MobileInfoContainer>
                                     <MobileDiv>{product.itemname}</MobileDiv>
@@ -477,7 +482,7 @@ export default function ProductManagement() {
                                     checked={selectedProducts.includes(product.productid) && selectedProducts.includes(product.orderid)}
                                     onChange={() => handleProductSelect(product.productid, product.orderid)}
                                     styled={{ margin: '0px' }}
-                                />{' '}
+                                />
                                 <MobileDiv>{product.productid}</MobileDiv>
                                 <MobileImg src={product.imgpaths[0]} />
                                 <MobileInfoContainer>
@@ -497,7 +502,7 @@ export default function ProductManagement() {
                                     checked={selectedProducts.includes(product.productid) && selectedProducts.includes(product.orderid)}
                                     onChange={() => handleProductSelect(product.productid, product.orderid)}
                                     styled={{ margin: '0px' }}
-                                />{' '}
+                                />
                                 <MobileDiv>{product.productid}</MobileDiv>
                                 <MobileImg src={product.imgpaths[0]} />
                                 <MobileInfoContainer>
