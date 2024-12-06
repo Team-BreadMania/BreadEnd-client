@@ -4,16 +4,16 @@ import { useNavigate } from 'react-router-dom';
 
 export default function Popular() {
     const [popularSearches, setPopularSearches] = useState([
-        "니들리 토너패드",
-        "독도토너",
-        "닥터벨머",
-        "르네셀",
-        "니들리",
-        "이즈앤트리",
-        "토니모리",
-        "그뤼너 씨",
-        "닥터랩",
-        "이니스프리 블루베리 스킨"
+        "조영동",
+        "판교동",
+        "크림빵",
+        "초코빵",
+        "소금빵",
+        "단팥빵",
+        "경상북도 경산시",
+        "경기도 분당시",
+        "생크림빵",
+        "붕어빵"
     ]);
     const navigate = useNavigate();
 

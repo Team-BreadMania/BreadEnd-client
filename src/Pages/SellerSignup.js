@@ -70,7 +70,7 @@ export default function SellerSignup() {
                     name: formData.name,
                     phoneNumber: formData.contact,
                     nickname: formData.nickname,
-                    liked_category: formData.likedCategory,
+                    liked_category: "",
                     shopName: formData.shopName,
                     shopNumber: formData.shopNumber,
                     userType: 'seller',
@@ -87,7 +87,7 @@ export default function SellerSignup() {
                     requestData.append('shopThumbnail', shopThumbnail);
                 }
 
-                const response = await axios.post('https://43.203.241.42/user/regist', requestData, {
+                const response = await axios.post('https://breadend.shop/user/regist', requestData, {
                     headers: {
                         'Content-Type': 'multipart/form-data',
                     },
