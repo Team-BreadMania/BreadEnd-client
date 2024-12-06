@@ -113,7 +113,7 @@ export default function Search() {
         top: ${({ top }) => top || '160px'};
         left: ${({ left }) => left || '0px'};
         padding: 0;
-        width: 100%;
+        width: 90%;
         height: 100vh;
         background-color: #ffffff;
     `;

@@ -18,7 +18,7 @@ export default function SearchResults() {
         const handleResize = () => {
             const width = window.innerWidth;
             if (width <= 600) {
-                setSlidesToShow(1);
+                setSlidesToShow(3);
             } else if (width <= 900) {
                 setSlidesToShow(2);
             } else {
@@ -86,18 +86,29 @@ const Container = styled.div`
     background-color: #fff;
     border-radius: 10px;
     box-sizing: border-box;
+        @media (max-width: 600px) {
+        width: 95%; /* 모바일 화면에서는 조금 더 줄이기 */
+    }
 `;
+
 
 const Title = styled.h2`
     font-size: 24px;
     color: #333;
     margin-bottom: 30px;
     text-align: center;
+    @media (max-width: 600px) {
+        font-size: 20px; /* 모바일에서 제목 크기 줄이기 */
+        margin-bottom: 20px;
+    }
 `;
 
 const Category = styled.div`
     margin-bottom: 40px;
     background-color: #fff;
+     @media (max-width: 600px) {
+        margin-bottom: 20px; /* 모바일 화면에서 간격 줄이기 */
+    }
 `;
 
 const CategoryTitle = styled.h3`
@@ -110,6 +121,11 @@ const CategoryTitle = styled.h3`
     margin-bottom: 20px;
     padding-left: 10px;
     padding-top: 10px;
+    @media (max-width: 600px) {
+        font-size: 18px; /* 모바일에서 제목 크기 줄이기 */
+        padding: 8px;
+        margin-bottom: 15px;
+    }
 `;
 
 const ProductSlider = styled(Slider)`
@@ -186,7 +202,7 @@ const ProductSlider = styled(Slider)`
          color: #d4b896;;
         font-size: 30px;
 
-        @media (max-width: 800px) {
+        @media (max-width: 600px) {
             font-size: 25px; 
         }
     }
@@ -198,11 +214,18 @@ const ProductSlider = styled(Slider)`
 `;
 
 const ProductBox = styled.div`
-    width: 120%;
+    width: 95%;
     padding: 10px;
     box-sizing: border-box;
-`;
 
+    @media (max-width: 600px) {
+        padding: 5px; /* 모바일 화면에서 간격 줄이기 */
+    }
+`;
 const Empty = styled.div`
-    height: 30vh;
+    height: 15vh;
+
+    @media (max-width: 600px) {
+        height: 10vh; /* 모바일 화면에서 빈 공간 줄이기 */
+    }
 `;

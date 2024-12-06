@@ -70,7 +70,7 @@ export default function SellerSignup() {
                     name: formData.name,
                     phoneNumber: formData.contact,
                     nickname: formData.nickname,
-                    liked_category: formData.likedCategory,
+                    liked_category: "",
                     shopName: formData.shopName,
                     shopNumber: formData.shopNumber,
                     userType: 'seller',

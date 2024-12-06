@@ -30,10 +30,18 @@ const Container = styled.div`
 
 const ImageBox = styled.div`
     width: 100%;
-    height: 200px;
+    height: 200px; /* 기본 이미지 높이 */
     background-size: cover;
     background-position: center;
     border-radius: 10px;
+
+    @media (max-width: 600px) {
+        height: 150px; /* 모바일 화면에서 이미지 높이를 줄임 */
+    }
+
+    @media (max-width: 400px) {
+        height: 120px; /* 더 작은 화면에서는 더 줄임 */
+    }
 `;
 
 const ShopName = styled.div`
