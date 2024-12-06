@@ -15,7 +15,7 @@ export default function NormalSignup() {
         detaillocation: '',
         contact: '',
         name: '',
-        likedCategory: '',
+        likedCategory: '',    
     });
 
     const [imageFile, setImageFile] = useState(null);
@@ -59,7 +59,7 @@ export default function NormalSignup() {
 
             try {
                 const requestData = new FormData();
-
+                
                 const userObject = {
                     userid: formData.userId,
                     password: formData.password,
@@ -118,56 +118,134 @@ export default function NormalSignup() {
             <form onSubmit={handleSubmit}>
                 <div className="form-group">
                     <label htmlFor="userId">아이디</label>
-                    <input type="text" id="userId" name="userId" value={formData.userId} onChange={handleChange} placeholder="아이디 (13자 이내 중복확인)" required />
-                    <button type="button" className={`duplicate-check ${isIdEntered ? 'active' : ''}`} onClick={handleIdCheck} disabled={!isIdEntered}>
+                    <input
+                        type="text"
+                        id="userId"
+                        name="userId"
+                        value={formData.userId}
+                        onChange={handleChange}
+                        placeholder="아이디 (13자 이내 중복확인)"
+                        required
+                    />
+                    <button
+                        type="button"
+                        className={`duplicate-check ${isIdEntered ? 'active' : ''}`}
+                        onClick={handleIdCheck}
+                        disabled={!isIdEntered}
+                    >
                         중복 체크
                     </button>
                 </div>
                 {idCheckMessage && (
                     <div className="id-check-message">
-                        {idCheckMessage}
-                        {isIdAvailable && (
-                            <button type="button" className="use-id-button">
-                                사용
-                            </button>
-                        )}
+                        {idCheckMessage}     
                     </div>
                 )}
                 <div className="form-group">
                     <label htmlFor="name">이름</label>
-                    <input type="text" id="name" name="name" value={formData.name} onChange={handleChange} placeholder="이름 입력" required />
+                    <input
+                        type="text"
+                        id="name"
+                        name="name"
+                        value={formData.name}
+                        onChange={handleChange}
+                        placeholder="이름 입력"
+                        required
+                    />
                 </div>
                 <div className="form-group">
                     <label htmlFor="password">비밀번호</label>
-                    <input type="password" id="password" name="password" value={formData.password} onChange={handleChange} placeholder="비밀번호 (20자 이내)" required />
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        value={formData.password}
+                        onChange={handleChange}
+                        placeholder="비밀번호 (20자 이내)"
+                        required
+                    />
                 </div>
                 <div className="form-group">
                     <label htmlFor="confirmPassword">비밀번호 확인</label>
-                    <input type="password" id="confirmPassword" name="confirmPassword" value={formData.confirmPassword} onChange={handleChange} placeholder="비밀번호(RE) 비밀번호 확인" required />
+                    <input
+                        type="password"
+                        id="confirmPassword"
+                        name="confirmPassword"
+                        value={formData.confirmPassword}
+                        onChange={handleChange}
+                        placeholder="비밀번호(RE) 비밀번호 확인"
+                        required
+                    />
                 </div>
                 <div className="form-group">
                     <label htmlFor="nickname">닉네임</label>
-                    <input type="text" id="nickname" name="nickname" value={formData.nickname} onChange={handleChange} placeholder="닉네임 (3자리 이상)" required />
+                    <input
+                        type="text"
+                        id="nickname"
+                        name="nickname"
+                        value={formData.nickname}
+                        onChange={handleChange}
+                        placeholder="닉네임 (3자리 이상)"
+                        required
+                    />
                 </div>
                 <div className="form-group">
                     <label htmlFor="region">지역</label>
-                    <input type="text" id="region" name="region" value={formData.region} onChange={handleChange} placeholder="경상북도 경산시..." required />
+                    <input
+                        type="text"
+                        id="region"
+                        name="region"
+                        value={formData.region}
+                        onChange={handleChange}
+                        placeholder="경상북도 경산시..."
+                        required
+                    />
                 </div>
                 <div className="form-group">
                     <label htmlFor="detaillocation">상세 지역</label>
-                    <input type="text" id="detaillocation" name="detaillocation" value={formData.detaillocation} onChange={handleChange} placeholder="상세 주소 입력..." required />
+                    <input
+                        type="text"
+                        id="detaillocation"
+                        name="detaillocation"
+                        value={formData.detaillocation}
+                        onChange={handleChange}
+                        placeholder="상세 주소 입력..."
+                        required
+                    />
                 </div>
                 <div className="form-group">
                     <label htmlFor="contact">연락처</label>
-                    <input type="text" id="contact" name="contact" value={formData.contact} onChange={handleChange} placeholder="(+82) 010xxxxxxxx" required />
+                    <input
+                        type="text"
+                        id="contact"
+                        name="contact"
+                        value={formData.contact}
+                        onChange={handleChange}
+                        placeholder="(+82) 010xxxxxxxx"
+                        required
+                    />
                 </div>
                 <div className="form-group">
                     <label htmlFor="likedCategory">좋아하는 카테고리</label>
-                    <input type="text" id="likedCategory" name="likedCategory" value={formData.likedCategory} onChange={handleChange} placeholder="좋아하는 카테고리 입력" required />
+                    <input
+                        type="text"
+                        id="likedCategory"
+                        name="likedCategory"
+                        value={formData.likedCategory}
+                        onChange={handleChange}
+                        placeholder="좋아하는 카테고리 입력"
+                        required
+                    />
                 </div>
                 <div className="form-group">
                     <label htmlFor="image">프로필 이미지</label>
-                    <input type="file" id="image" name="image" onChange={handleImageChange} accept="image/*" />
+                    <input
+                        type="file"
+                        id="image"
+                        name="image"
+                        onChange={handleImageChange}
+                        accept="image/*"
+                    />
                 </div>
                 <div className="button-group">
                     <button type="submit">가입 확인</button>
