@@ -34,9 +34,9 @@ export default function BuyerReview() {
         }
     }, [accessToken]);
 
-    const handleDeleteReview = async (reviewId) => {
+    const handleDeleteReview = async (orderid) => {
         try {
-            const response = await axios.delete(`https://breadend.shop/Mypage/review/delete`, {
+            const response = await axios.delete(`https://breadend.shop/Mypage/review/delete?orderid=${orderid}`, {
                 headers: {
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${accessToken}`,
