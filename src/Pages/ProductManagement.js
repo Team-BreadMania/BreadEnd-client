@@ -588,11 +588,14 @@ const StatsContainer = styled.div`
 
     @media (max-width: 768px) {
         grid-template-columns: repeat(2, 1fr);
+        gap:0.6rem;
+
     }
 
-    @media (max-width: 480px) {
+    /* @media (max-width: 480px) {
         grid-template-columns: 1fr;
-    }
+        gap:0.6rem;
+    } */
 `;
 
 const StatBox = styled.div`
@@ -608,11 +611,17 @@ const StatBox = styled.div`
 const StatLabel = styled.div`
     font-size: 0.875rem;
     color: #6b7280;
+    @media (max-width: 480px) {
+        font-size:0.8rem
+    }
 `;
 
 const StatValue = styled.div`
     font-size: 1.25rem;
     font-weight: bold;
+    @media (max-width: 480px) {
+        font-size:1.1rem
+    }
 `;
 
 const ProductGrid = styled.div`
@@ -738,10 +747,15 @@ const MobileProduct = styled.div`
         font-size: 16px;
         grid-template-columns: 20px 33px 0.8fr 1.6fr 1.1fr 0.8fr;
     }
+    @media (max-width: 520px) {
+        font-size: 15px;
+    }
 
     @media (max-width: 400px) {
-        font-size: 14px;
-        grid-template-columns: 20px 33px 0.8fr 1.6fr 1.1fr 0.8fr;
+        font-size: 13px;
+    }
+    @media (max-width: 400px) {
+        font-size: 11px;
     }
 `;
 const MobileImg = styled.div`
@@ -761,6 +775,9 @@ const MobileImg = styled.div`
 
 const MobileDiv = styled.div`
     padding: 1px 8px;
+    @media screen {
+        
+    }
 `;
 
 const MobileInfoContainer = styled.div`
@@ -786,6 +803,12 @@ const EditButton = styled.div`
         background-color: #19b47c;
     }
     margin: 0 8px;
+    @media (max-width:400px) {
+        font-size:15px;
+    }
+    @media (max-width:350px) {
+        font-size:13px;
+    }
 `;
 const DeleteButton = styled.div`
     background-color: #dc2e1c;
@@ -794,6 +817,12 @@ const DeleteButton = styled.div`
     padding: 8px 16px;
     &:hover {
         background-color: #c62919;
+    }
+    @media (max-width:400px) {
+        font-size:15px;
+    }
+    @media (max-width:365px) {
+        font-size:13px;
     }
 `;
 const SellButton = styled.div`
@@ -805,6 +834,12 @@ const SellButton = styled.div`
     &:hover {
         background-color: #b16b3d;
     }
+    @media (max-width:400px) {
+        font-size:15px;
+    }
+    @media (max-width:350px) {
+        font-size:13px;
+    }
 `;
 const ReservCancleButton = styled.div`
     background-color: #c6855b;
@@ -813,5 +848,11 @@ const ReservCancleButton = styled.div`
     padding: 8px 16px;
     &:hover {
         background-color: #b16b3d;
+    }
+    @media (max-width:400px) {
+        font-size:15px;
+    }
+    @media (max-width:350px) {
+        font-size:13px;
     }
 `;
