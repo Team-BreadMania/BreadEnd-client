@@ -464,6 +464,7 @@ const Image = styled.img` // 상품 이미지
     width: 100%;
     height: 100%;
     object-fit: cover; 
+    background-repeat: no-repeat;
 `;
 
 const ProductInfoBox = styled.div` // 상품 상세정보 컨테이너

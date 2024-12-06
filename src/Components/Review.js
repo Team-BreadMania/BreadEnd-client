@@ -96,113 +96,120 @@ export default function Review({ productId }) {
 
     return (
         <Container>
-            <Title>
-                작성된 리뷰 <ReviewCount>{reviews.length}</ReviewCount>
-            </Title>
-            <TotalRating>
-                <LeftBox>
-                    <AverageRating>{averageRating}</AverageRating>
-                    <StarRatings rating = {parseFloat(averageRating)} 
-                                 starRatedColor = "gold" 
-                                 starEmptyColor = "lightgray" 
-                                 numberOfStars = {5} 
-                                 name = "rating" 
-                                 starDimension = {isMobile ? "20px" : "25px"} 
-                                 starSpacing = "0px" 
-                                 readonly 
-                    />
-                </LeftBox>
-                <RightBox>
-                    <Bar
-                        data = {chartData}
-                        options = {{
-                            indexAxis: 'y',
-                            scales: {
-                                x: {
-                                    stacked: true,
-                                    beginAtZero: true,
-                                    grid: {
-                                        display: false,
+            {reviews.length === 0 ? (<NoReview>아직 작성된 리뷰가 없습니다.</NoReview>) : (
+            <>
+                <Title>
+                    작성된 리뷰 <ReviewCount>{reviews.length}</ReviewCount>
+                </Title>
+                <TotalRating>
+                    <LeftBox>
+                        <AverageRating>{averageRating}</AverageRating>
+                        <StarRatings
+                            rating={parseFloat(averageRating)}
+                            starRatedColor="gold"
+                            starEmptyColor="lightgray"
+                            numberOfStars={5}
+                            name="rating"
+                            starDimension={isMobile ? "20px" : "25px"}
+                            starSpacing="0px"
+                            readonly
+                        />
+                    </LeftBox>
+                    <RightBox>
+                        <Bar
+                            data={chartData}
+                            options={{
+                                indexAxis: 'y',
+                                scales: {
+                                    x: {
+                                        stacked: true,
+                                        beginAtZero: true,
+                                        grid: {
+                                            display: false,
+                                        },
+                                        border: {
+                                            display: false,
+                                        },
+                                        ticks: {
+                                            display: false,
+                                        },
                                     },
-                                    border: {
-                                        display: false,
-                                    },
-                                    ticks: {
-                                        display: false,
-                                    },
-                                },
-                                y: {
-                                    stacked: true,
-                                    grid: {
-                                        display: false,
-                                    },
-                                    border: {
-                                        display: false,
-                                    },
-                                },
-                            },
-                            plugins: {
-                                legend: {
-                                    display: false,
-                                },
-                                tooltip: {
-                                    callbacks: {
-                                        label: function (tooltipItem) {
-                                            return tooltipItem.dataset.label + ': ' + tooltipItem.raw.toFixed(1) + '%';
+                                    y: {
+                                        stacked: true,
+                                        grid: {
+                                            display: false,
+                                        },
+                                        border: {
+                                            display: false,
                                         },
                                     },
                                 },
-                            },
-                        }}
-                    />
-                    <ScoreContainer>
-                        {ratingDistribution.map((count, index) => (
-                            <ScoreLabel key = {index}>{count}</ScoreLabel>
-                        ))}
-                    </ScoreContainer>
-                </RightBox>
-            </TotalRating>
-            {displayedReviews.map((review) => (
-                <ReviewBox key = {review.id}>
-                    <TopBox>
-                        <ProfileBox img = {review.userprofile}/>
-                        <ProfileInfoBox>
-                            <NickNameBox>{review.buyerNickname || "익명"}</NickNameBox>
-                            <ScoreBox>
-                                <StarBox>
-                                    <StarRatings
-                                        rating = {review.rating}
-                                        starRatedColor = "gold"
-                                        starEmptyColor = "lightgray"
-                                        numberOfStars = {5}
-                                        name = "reviewRating"
-                                        starDimension = "15px"
-                                        starSpacing = "0px"
-                                        readonly
-                                    />
-                                </StarBox>
-                                <RecordDateBox>{new Date(review.registdate).toLocaleDateString()}</RecordDateBox>
-                            </ScoreBox>
-                        </ProfileInfoBox>
-                    </TopBox>
-                    <MiddleBox>
-                        <SubTitle>구매상품</SubTitle>
-                        <PurchasedProduct>{review.productname}</PurchasedProduct>
-                    </MiddleBox>
-                    <BottomBox>
-                        {review.reviewtext}
-                    </BottomBox>
-                </ReviewBox>
-            ))}
-            <ButtonBox>
-                <Button onClick={handlePrevious} disabled={currentPage === 0}>
-                    ◀
-                </Button>
-                <ReviewPageNumber>{currentPage + 1}</ReviewPageNumber>
-                <Button onClick={handleNext} disabled={(currentPage + 1) * reviewsPerPage >= reviews.length}>
-                    ▶
-                </Button>
-            </ButtonBox>
+                                plugins: {
+                                    legend: {
+                                        display: false,
+                                    },
+                                    tooltip: {
+                                        callbacks: {
+                                            label: function (tooltipItem) {
+                                                return tooltipItem.dataset.label + ': ' + tooltipItem.raw.toFixed(1) + '%';
+                                            },
+                                        },
+                                    },
+                                },
+                            }}
+                        />
+                        <ScoreContainer>
+                            {ratingDistribution.map((count, index) => (
+                                <ScoreLabel key={index}>{count}</ScoreLabel>
+                            ))}
+                        </ScoreContainer>
+                    </RightBox>
+                </TotalRating>
+
+                {displayedReviews.map((review) => (
+                    <ReviewBox key={review.id}>
+                        <TopBox>
+                            <ProfileBox img={review.userprofile} />
+                            <ProfileInfoBox>
+                                <NickNameBox>{review.buyerNickname || "익명"}</NickNameBox>
+                                <ScoreBox>
+                                    <StarBox>
+                                        <StarRatings
+                                            rating={review.rating}
+                                            starRatedColor="gold"
+                                            starEmptyColor="lightgray"
+                                            numberOfStars={5}
+                                            name="reviewRating"
+                                            starDimension="15px"
+                                            starSpacing="0px"
+                                            readonly
+                                        />
+                                    </StarBox>
+                                    <RecordDateBox>{new Date(review.registdate).toLocaleDateString()}</RecordDateBox>
+                                </ScoreBox>
+                            </ProfileInfoBox>
+                        </TopBox>
+                        <MiddleBox>
+                            <SubTitle>구매상품</SubTitle>
+                            <PurchasedProduct>{review.productname}</PurchasedProduct>
+                        </MiddleBox>
+                        <BottomBox>
+                            {review.reviewtext}
+                        </BottomBox>
+                    </ReviewBox>
+                ))}
+
+                <ButtonBox>
+                    <Button onClick={handlePrevious} disabled={currentPage === 0}>
+                        ◀
+                    </Button>
+                    <ReviewPageNumber>{currentPage + 1}</ReviewPageNumber>
+                    <Button onClick={handleNext} disabled={(currentPage + 1) * reviewsPerPage >= reviews.length}>
+                        ▶
+                    </Button>
+                </ButtonBox>
+            </>
+        )}
         </Container>
     );
 }
@@ -436,4 +443,16 @@ const ReviewPageNumber = styled.div` // 리뷰페이지 숫자
     width: 80px;
     height: 70%;
     font-size: 20px;
+`;
+
+const NoReview = styled.div` // 리뷰가 없을때 보여지는 컴포넌트 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    font-size: 30px;
+    font-weight: bold;
+    font-family: maple-font;
+    background-color: #F1F1F1;
 `;
