@@ -54,10 +54,12 @@ const Title = styled.h1`
     margin: 40px 0 20px;
     color: #333;
     text-align: center;
+    margin-top: 200px;
 
     @media (max-width: 768px) {
         font-size: 20px;
         margin: 30px 0 15px;
+        margin-top: 150px;
     }
 `;
 

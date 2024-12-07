@@ -4,16 +4,16 @@ import { useNavigate } from 'react-router-dom';
 
 export default function Popular() {
     const [popularSearches, setPopularSearches] = useState([
-        "조영동",
-        "판교동",
-        "크림빵",
+        "빵",
+        "와플",
+        "와플대학",
         "초코빵",
         "소금빵",
         "단팥빵",
-        "경상북도 경산시",
-        "경기도 분당시",
+        "빵집",
+        "소금",
         "생크림빵",
-        "붕어빵"
+        "그리다빵"
     ]);
     const navigate = useNavigate();
 
@@ -57,6 +57,7 @@ export default function Popular() {
         </PopularContainer>
     );
 }
+
 // Styled-components CSS 설정
 const PopularContainer = styled.div`
     margin-left: ${({ marginLeft }) => marginLeft || 100}px;

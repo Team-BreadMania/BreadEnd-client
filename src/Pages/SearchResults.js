@@ -4,14 +4,15 @@ import styled from 'styled-components';
 import Slider from 'react-slick';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import SearchProduct, { productData } from '../Components/SearchProduct'; // 데이터 가져오기
-import SearchShop, { shopData } from '../Components/SearchShop'; // 데이터 가져오기
+import SearchProduct from '../Components/SearchProduct'; // 데이터 가져오기
+import SearchShop from '../Components/SearchShop'; // 데이터 가져오기
 
 
 export default function SearchResults() {
     const location = useLocation();
     const query = new URLSearchParams(location.search).get('query');
     const [slidesToShow, setSlidesToShow] = useState(3);
+    
 
     useEffect(() => {
         
@@ -35,40 +36,14 @@ export default function SearchResults() {
     }, []);
 
 
-    const sliderSettings = {
-        infinite: false,
-        speed: 500,
-        slidesToShow: slidesToShow,
-        slidesToScroll: 1,
-        arrows: true,
-    };
-
     return (
         <Container>
             <Title>{query ? `"${query}"에 대한 검색결과입니다.` : "검색결과가 없습니다😓."}</Title>
 
-            <Category>
-                <CategoryTitle>빵</CategoryTitle>
-                <ProductSlider {...sliderSettings}>
-                    {productData.map((item) => (
-                        <ProductBox key={item.id}>
-                            <SearchProduct data={item} />
-                        </ProductBox>
-                    ))}
-                </ProductSlider>
-            </Category>
-
-            <Category>
-                <CategoryTitle>빵집</CategoryTitle>
-                <ProductSlider {...sliderSettings}>
-                    {shopData.map((item) => (
-                        <ProductBox key={item.id}>
-                            <SearchShop data={item} />
-                        </ProductBox>
-                    ))}
-                </ProductSlider>
-            </Category>
-
+                    <SearchProduct />
+                    <SearchShop /> {/* 여기에 API 데이터를 렌더링하는 컴포넌트를 배치 */}
+            
+      
             <Empty />
         </Container>
     );
@@ -86,9 +61,7 @@ const Container = styled.div`
     background-color: #fff;
     border-radius: 10px;
     box-sizing: border-box;
-        @media (max-width: 600px) {
-        width: 95%; /* 모바일 화면에서는 조금 더 줄이기 */
-    }
+
 `;
 
 
@@ -113,7 +86,7 @@ const Category = styled.div`
 
 const CategoryTitle = styled.h3`
     font-size: 20px;
-    color: #d4b896;
+    color: #5b4421;
     border-bottom: 2px solid #d4b896;
     background-color: #f5f5dc;
     border-radius: 8px;

@@ -17,6 +17,10 @@ function Login() {
         setUserAuth(userType);
     }, [setUserAuth]);
 
+    const handleSignUpClick = () => { // 회원가입 페이지로 이동
+        navigate('/SignUp'); 
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (username && password) {
@@ -88,6 +92,9 @@ function Login() {
                     </InputContainer>
                     <LoginButton type="submit">로그인</LoginButton>
                 </LoginForm>
+                <Text2>아직 회원이 아니신가요? -&gt; 
+                    <span style = {{ color: "#D4A373", cursor: "pointer" }} onClick = {handleSignUpClick}> 회원가입 이동하기</span>
+                </Text2>
             </LoginFormContainer>
         </LoginPage>
     );
@@ -100,11 +107,23 @@ const LoginPage = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 80vh;
+    height: 40vh;
+    padding-top: 10%;
     gap: 20px;
+
+    @media (max-width: 1200px) {
+        padding-top: 15%;
+    }
+
+    @media (max-width: 1000px) {
+        padding-top: 20%;
+    }
+
+    @media (max-width: 1000px) {
+        padding-top: 25%;
+    }
     @media screen and (max-width: 1440px) {
         flex-direction: column;
-        height: auto;
     }
 `;
 const IconContainer = styled.div`
@@ -217,4 +236,11 @@ const LoginButton = styled.button`
         height: 45px;
         font-size: 16px;
     }
+`;
+
+const Text2 = styled.div` // 텍스트 
+    font-size: 15px;
+    font-weight: bold;
+    margin-top: 20px;
+    color: black;
 `;

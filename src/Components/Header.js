@@ -47,7 +47,7 @@ export default function Header() {
                     <LogoText>빵끝마켓</LogoText>
                 </LogoButton>
             </Box>
-            <Box style={{ width: '20%', justifyContent: 'flex-end' }}>
+            <Box style={{ width: '10%', justifyContent: 'flex-end' }}>
                 {' '}
                 {/* 로그인과 회원가입 박스를 담는 박스 */}
                 {Cookies.get('accessToken') ? (
@@ -55,7 +55,6 @@ export default function Header() {
                     <LogoutBox onClick={handleLogout}>로그아웃</LogoutBox>
                 ) : (
                     <>
-                        <LoginBox to="/Login">로그인</LoginBox>
                         <SignupBox to="/Signup">회원가입</SignupBox>
                     </>
                 )}
@@ -122,7 +121,6 @@ const LoginBox = styled(Link)`
 const SignupBox = styled(Link)`
     display: flex;
     width: auto;
-    padding-left: 15px;
     height: 100%;
     justify-content: right;
     align-items: center;
@@ -134,19 +132,16 @@ const SignupBox = styled(Link)`
 
     @media (max-width: 800px) {
         font-size: 11px;
-        padding-left: 10px; /* 왼쪽 여백 줄이기 */
     }
 
     @media (max-width: 600px) {
         font-size: 10px;
-        padding-left: 5px; /* 왼쪽 여백 더 줄이기 */
     }
 `;
 
 const LogoutBox = styled.div`
     display: flex;
     width: auto;
-    padding-right: 15px;
     height: 100%;
     justify-content: right;
     align-items: center;
@@ -159,12 +154,10 @@ const LogoutBox = styled.div`
 
     @media (max-width: 800px) {
         font-size: 11px;
-        padding-right: 10px;
     }
 
     @media (max-width: 600px) {
         font-size: 10px;
-        padding-right: 5px;
     }
 `;
 

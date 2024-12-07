@@ -93,7 +93,7 @@ export default function Home() {
     };
 
     const handleProductClick = (productId) => { // 상품 상세페이지 이동 메서드
-        navigate(`/ProductDetailPage?id=${productId}`);
+        navigate(`/ProductDetailPage?id=${productId}`); 
     };
     
     const handleShopClick = (shopId) => { // 매장 상세페이지 이동 메서드
@@ -112,45 +112,53 @@ export default function Home() {
                 </BannerSlider>
             </Banner>
             <Title>❤️사용자님이 좋아하실만한 상품</Title>
-            <ProductContainer>
-                <ProductSlider {...product_settings}>
-                    {recommendedProducts.slice(0, 10).map((product) => (
-                        <ProductBox key = {product.productid} onClick = {() => handleProductClick(product.productid)}>
-                            <Product item = {product} />
-                        </ProductBox>
-                    ))}
-                </ProductSlider>
-            </ProductContainer>
+            {recommendedProducts.length > 0 && (
+                <ProductContainer>
+                    <ProductSlider {...product_settings}>
+                        {recommendedProducts.slice(0, 10).map((product) => (
+                            <ProductBox key = {product.productid} onClick = {() => handleProductClick(product.productid)}>
+                                <Product item = {product} />
+                            </ProductBox>
+                        ))}
+                    </ProductSlider>
+                </ProductContainer>
+            )}
             <Title>🍞내 주변 매장</Title>
-            <ProductContainer>
-                <ProductSlider {...product_settings}>
-                    {shops.slice(0, 10).map((shop) => (
-                        <ProductBox key = {shop.shopid} onClick = {() => handleShopClick(shop.shopid)}>
-                            <Shop shop = {shop} />
-                        </ProductBox>
-                    ))}
-                </ProductSlider>
-            </ProductContainer>
+            {shops.length > 0 && (
+                <ProductContainer>
+                    <ProductSlider {...product_settings}>
+                        {shops.slice(0, 10).map((shop) => (
+                            <ProductBox key = {shop.shopid} onClick = {() => handleShopClick(shop.shopid)}>
+                                <Shop shop = {shop} />
+                            </ProductBox>
+                        ))}
+                    </ProductSlider>
+                </ProductContainer>
+            )}
             <Title>🔥내 주변 인기상품</Title>
-            <ProductContainer>
-                <ProductSlider {...product_settings}>
-                    {popularProducts.slice(0, 10).map((product) => (
-                        <ProductBox key = {product.productid} onClick = {() => handleProductClick(product.productid)}>
-                            <Product item = {product} />
-                        </ProductBox>
-                    ))}
-                </ProductSlider>
-            </ProductContainer>
+            {popularProducts.length > 0 && (
+                <ProductContainer>
+                    <ProductSlider {...product_settings}>
+                        {popularProducts.slice(0, 10).map((product) => (
+                            <ProductBox key = {product.productid} onClick = {() => handleProductClick(product.productid)}>
+                                <Product item = {product} />
+                            </ProductBox>
+                        ))}
+                    </ProductSlider>
+                </ProductContainer>
+            )}
             <Title>🆕내 주변 최신등록 상품</Title>
-            <ProductContainer>
-                <ProductSlider {...product_settings}>
-                    {recentProducts.slice(0, 10).map((product) => (
-                        <ProductBox key = {product.productid} onClick = {() => handleProductClick(product.productid)}>
-                            <Product item = {product} />
-                        </ProductBox>
-                    ))}
-                </ProductSlider>
-            </ProductContainer>
+            {recentProducts.length > 0 && (
+                <ProductContainer>
+                    <ProductSlider {...product_settings}>
+                        {recentProducts.slice(0, 10).map((product) => (
+                            <ProductBox key = {product.productid} onClick = {() => handleProductClick(product.productid)}>
+                                <Product item = {product} />
+                            </ProductBox>
+                        ))}
+                    </ProductSlider>
+                </ProductContainer>
+             )}
             <Empty/>
         </Container>
     );
