@@ -149,9 +149,9 @@ export default function SellerHome() {
                 {reviews.length === 0 ? (
                     <ReviewContainer>등록된 리뷰가 없습니다</ReviewContainer>
                 ) : (
-                    reviews.map((review) => (
-                        <ReviewContainer>
-                            <InfoContainer>
+                    <ReviewContainer>
+                        {reviews.map((review) => (
+                            <InfoContainer key={review.id}>
                                 <div style={{ display: 'flex' }}>
                                     <UserImage src={review.userprofile} />
                                     <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -167,10 +167,9 @@ export default function SellerHome() {
                                                     starDimension="15px"
                                                     starSpacing="0px"
                                                     readonly
-                                                    styled={{ marginRight: '5px' }}
                                                 />
-                                            </div>{' '}
-                                            <div style={{ marginLeft: '3px', color: '#9E9997 ' }}>{formatDate(review.registdate)}</div>
+                                            </div>
+                                            <div style={{ marginLeft: '3px', color: '#9E9997' }}>{formatDate(review.registdate)}</div>
                                         </div>
                                     </div>
                                 </div>
@@ -180,9 +179,10 @@ export default function SellerHome() {
                                 </div>
                                 <div>{review.reviewtext}</div>
                             </InfoContainer>
-                        </ReviewContainer>
-                    ))
+                        ))}
+                    </ReviewContainer>
                 )}
+
                 <TextContainer>문의내역</TextContainer>
                 <div style={{ margin: '0 0 10px 5px' }}>등록된 문의가 없습니다</div>
             </Container>
@@ -220,9 +220,9 @@ export default function SellerHome() {
                 {reviews.length === 0 ? (
                     <ReviewContainer>등록된 리뷰가 없습니다</ReviewContainer>
                 ) : (
-                    reviews.map((review) => (
-                        <ReviewContainer>
-                            <InfoContainer>
+                    <ReviewContainer>
+                        {reviews.map((review) => (
+                            <InfoContainer key={review.id}>
                                 <div style={{ display: 'flex' }}>
                                     <UserImage src={review.userprofile} />
                                     <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -238,10 +238,9 @@ export default function SellerHome() {
                                                     starDimension="15px"
                                                     starSpacing="0px"
                                                     readonly
-                                                    styled={{ marginRight: '5px' }}
                                                 />
-                                            </div>{' '}
-                                            <div style={{ marginLeft: '3px', color: '#9E9997 ' }}>{formatDate(review.registdate)}</div>
+                                            </div>
+                                            <div style={{ marginLeft: '3px', color: '#9E9997' }}>{formatDate(review.registdate)}</div>
                                         </div>
                                     </div>
                                 </div>
@@ -251,9 +250,10 @@ export default function SellerHome() {
                                 </div>
                                 <div>{review.reviewtext}</div>
                             </InfoContainer>
-                        </ReviewContainer>
-                    ))
+                        ))}
+                    </ReviewContainer>
                 )}
+
                 <TextContainer>문의내역</TextContainer>
                 <div style={{ margin: '0 0 10px 5px' }}>등록된 문의가 없습니다</div>
             </Container>

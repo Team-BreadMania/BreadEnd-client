@@ -26,6 +26,12 @@ export default function BuyerReview() {
     const ReviewEdit = (orderid, itemname) => {
         // 리뷰 수정 페이지 열기
         window.open(`/ReviewEdit?orderid=${orderid}&itemname=${itemname}`, '리뷰수정', 'width=600,height=400,scrollbars=yes');
+        const timer = setInterval(() => {
+            if (popup.closed) {
+                clearInterval(timer);
+                window.location.reload(); // 페이지 리로드
+            }
+        }, 500); // 500ms마다 팝업 상태 확인
     };
 
     useEffect(() => {
@@ -101,10 +107,10 @@ const TitleContainer = styled.div`
 `;
 const ReviewContainer = styled.div`
     display: flex;
-    max-width: 800px;
-    min-width: 600px;
+    flex-direction: column;
     margin: 0 auto;
     padding: 20px;
+
     background-color: #fff9ee;
     border-radius: 8px;
     margin: 10px 3px;
@@ -112,8 +118,9 @@ const ReviewContainer = styled.div`
     box-sizing: border-box;
     @media (max-width: 850px) {
         flex-direction: column;
-        /* overflow-y: scroll; */
+        overflow-y: scroll;
         overflow-x: hidden;
+        width: 85vw;
     }
 `;
 
@@ -124,6 +131,8 @@ const ReviewCard = styled.div`
     padding: 15px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     margin: 0 8px;
+    box-sizing: border-box;
+    margin-bottom: 10px;
 `;
 
 const ReviewHeader = styled.div`

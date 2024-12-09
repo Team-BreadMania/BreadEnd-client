@@ -10,6 +10,7 @@ import MenuIcon from '../Images/menu_icon1.jpg';
 import SellerHome from './Home_seller';
 import { AuthContext } from '../AuthContext';
 import axios from 'axios';
+import { HeartIcon } from 'lucide-react';
 
 export default function MyPageBuyer() {
     const { userAuth, setUserAuth } = useContext(AuthContext);
@@ -101,6 +102,7 @@ export default function MyPageBuyer() {
                         <MenuTitle>{buyerMenuItems.find((item) => item.tab === activeTab)?.text || '마이페이지'}</MenuTitle>
                     </MenuBox>
                     <ToolContainer>{renderInformationContainer()}</ToolContainer>
+                    <div style={{ height: '150px' }}></div>
                 </RightContainer>
             </Container>
         );
@@ -123,6 +125,7 @@ const Container = styled.div`
     position: relative;
     box-sizing: border-box;
     overflow-x: hidden; // Add this
+    overflow-y: hidden;
 `;
 
 const MobileNav = styled.div`

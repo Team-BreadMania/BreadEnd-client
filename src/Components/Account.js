@@ -19,6 +19,16 @@ export default function Account() {
     const [view, setViwe] = useState(false);
     const [isMobile, setIsMobile] = useState(false);
 
+    function formatPhoneNumber(phoneNumber) {
+        // 숫자만 남기고 제거
+        const cleaned = ('' + phoneNumber).replace(/\D/g, '');
+        const match = cleaned.match(/^(\d{3})(\d{4})(\d{4})$/);
+        if (match) {
+            return `${match[1]}-${match[2]}-${match[3]}`;
+        }
+        return phoneNumber; // 형식에 맞지 않으면 원래 값 반환
+    }
+
     // 모바일 뷰, 태블릿 뷰 식별
     const resizeHandler = () => {
         setIsMobile(window.innerWidth <= 1024);
@@ -98,7 +108,7 @@ export default function Account() {
                     <UserUpperContainer>
                         <UserInform>
                             <UserNameContainer>{nickname}</UserNameContainer>
-                            <UserEmail>{number}</UserEmail>
+                            <UserEmail>{formatPhoneNumber(number)}</UserEmail>
                         </UserInform>
                         <MannerTemperature percentage={temp} />
                     </UserUpperContainer>

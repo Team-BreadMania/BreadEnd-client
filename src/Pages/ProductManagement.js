@@ -171,6 +171,7 @@ export default function ProductManagement() {
             setSelectedProducts([]);
 
             alert('선택한 상품들이 삭제되었습니다.');
+            window.location.reload();
         } catch (error) {
             console.error('상품 삭제 중 오류:', error);
             alert('상품 삭제에 실패했습니다. 다시 시도해주세요.');
