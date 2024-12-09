@@ -170,7 +170,7 @@ export default function SellerHome() {
                                                     styled={{ marginRight: '5px' }}
                                                 />
                                             </div>{' '}
-                                            <div style={{ marginLeft: '3px', color: '#c1c1c1' }}>{formatDate(review.registdate)}</div>
+                                            <div style={{ marginLeft: '3px', color: '#9E9997 ' }}>{formatDate(review.registdate)}</div>
                                         </div>
                                     </div>
                                 </div>
@@ -241,7 +241,7 @@ export default function SellerHome() {
                                                     styled={{ marginRight: '5px' }}
                                                 />
                                             </div>{' '}
-                                            <div style={{ marginLeft: '3px', color: '#c1c1c1' }}>{formatDate(review.registdate)}</div>
+                                            <div style={{ marginLeft: '3px', color: '#9E9997 ' }}>{formatDate(review.registdate)}</div>
                                         </div>
                                     </div>
                                 </div>
