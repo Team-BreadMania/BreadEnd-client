@@ -154,7 +154,7 @@ export default function ProductManagement() {
         try {
             // 선택된 각 상품에 대해 삭제 요청
             const deletePromises = selectedProducts.map((productId) =>
-                axios.delete(`https://breadend.shop/seller/delete?productid=${productId}`, {
+                axios.put(`https://breadend.shop/seller/delete?productid=${productId}`, {
                     headers: {
                         'Content-Type': 'application/json',
                         Authorization: `Bearer ${accessToken}`,
@@ -457,7 +457,8 @@ export default function ProductManagement() {
                                     checked={selectedProducts.includes(product.productid)}
                                     onChange={() => handleProductSelect(product.productid)}
                                     styled={{ margin: '0px' }}
-                                />                                <MobileDiv>{product.productid}</MobileDiv>
+                                />{' '}
+                                <MobileDiv>{product.productid}</MobileDiv>
                                 <MobileImg src={product.imgpaths[0]} />
                                 <MobileInfoContainer>
                                     <MobileDiv>{product.itemname}</MobileDiv>
@@ -587,8 +588,7 @@ const StatsContainer = styled.div`
 
     @media (max-width: 768px) {
         grid-template-columns: repeat(2, 1fr);
-        gap:0.6rem;
-
+        gap: 0.6rem;
     }
 
     /* @media (max-width: 480px) {
@@ -607,7 +607,7 @@ const StatBox = styled.div`
     color: ${(props) => (props.active ? 'white' : 'black')};
 
     &:hover {
-        background-color: ${(props) => (props.active ? '#D3B790' : '#f0f0f0')}; 
+        background-color: ${(props) => (props.active ? '#D3B790' : '#f0f0f0')};
     }
     @media (max-width: 450px) {
         padding: 0.7rem 1rem;
@@ -618,7 +618,7 @@ const StatLabel = styled.div`
     font-size: 0.875rem;
     color: #6b7280;
     @media (max-width: 480px) {
-        font-size:0.8rem
+        font-size: 0.8rem;
     }
 `;
 
@@ -626,7 +626,7 @@ const StatValue = styled.div`
     font-size: 1.25rem;
     font-weight: bold;
     @media (max-width: 480px) {
-        font-size:1.1rem
+        font-size: 1.1rem;
     }
 `;
 
@@ -782,7 +782,6 @@ const MobileImg = styled.div`
 const MobileDiv = styled.div`
     padding: 1px 8px;
     @media screen {
-        
     }
 `;
 
@@ -809,11 +808,11 @@ const EditButton = styled.div`
         background-color: #19b47c;
     }
     margin: 0 8px;
-    @media (max-width:400px) {
-        font-size:15px;
+    @media (max-width: 400px) {
+        font-size: 15px;
     }
-    @media (max-width:350px) {
-        font-size:13px;
+    @media (max-width: 350px) {
+        font-size: 13px;
     }
 `;
 const DeleteButton = styled.div`
@@ -824,11 +823,11 @@ const DeleteButton = styled.div`
     &:hover {
         background-color: #c62919;
     }
-    @media (max-width:400px) {
-        font-size:15px;
+    @media (max-width: 400px) {
+        font-size: 15px;
     }
-    @media (max-width:365px) {
-        font-size:13px;
+    @media (max-width: 365px) {
+        font-size: 13px;
     }
 `;
 const SellButton = styled.div`
@@ -840,11 +839,11 @@ const SellButton = styled.div`
     &:hover {
         background-color: #b16b3d;
     }
-    @media (max-width:400px) {
-        font-size:15px;
+    @media (max-width: 400px) {
+        font-size: 15px;
     }
-    @media (max-width:350px) {
-        font-size:13px;
+    @media (max-width: 350px) {
+        font-size: 13px;
     }
 `;
 const ReservCancleButton = styled.div`
@@ -855,10 +854,10 @@ const ReservCancleButton = styled.div`
     &:hover {
         background-color: #b16b3d;
     }
-    @media (max-width:400px) {
-        font-size:15px;
+    @media (max-width: 400px) {
+        font-size: 15px;
     }
-    @media (max-width:350px) {
-        font-size:13px;
+    @media (max-width: 350px) {
+        font-size: 13px;
     }
 `;

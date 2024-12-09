@@ -109,9 +109,10 @@ const ReviewContainer = styled.div`
     border-radius: 8px;
     margin: 10px 3px;
     overflow-x: scroll;
+    box-sizing: border-box;
     @media (max-width: 850px) {
         flex-direction: column;
-        overflow-y: scroll;
+        /* overflow-y: scroll; */
         overflow-x: hidden;
     }
 `;
