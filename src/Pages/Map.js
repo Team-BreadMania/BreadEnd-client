@@ -124,58 +124,56 @@ export default function Map() {
 
     .container {
       display: flex;
-      flex-direction: row;
-      flex-wrap: wrap;
-      font-family: 'Roboto', sans-serif; /* 기본 폰트 설정 */
+      flex-direction: column; /* 모바일에서는 세로 배치 */
+      height: 100vh;
+      font-family: 'Roboto', sans-serif;
+      overflow: hidden;
     }
 
     #map {
-      width: 70%;
-      height: 600px;
-      border-radius: 10px;
-      margin-right: 20px;
+      width: 100%;
+      height: 50%; /* 지도 높이를 화면의 절반 */
+      border-radius: 0; /* 꽉 찬 느낌 */
       box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
     }
 
     .shop-list {
-      width: 28%;
-      max-height: 600px;
+      width: 100%;
+      height: 50%; /* 리스트 높이를 화면의 절반 */
       overflow-y: auto;
+      background: #fffaf0; /* 밝은 배경 */
       list-style: none;
-      padding: 0;
-      margin: 0;
-      border: 1px solid #ddd;
-      border-radius: 10px;
-      background: #fffaf0;
-      box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+      padding: 0; /* 내부 여백 제거 */
+      margin: 0; /* 외부 여백 제거 */
+      box-shadow: 0px -4px 6px rgba(0, 0, 0, 0.1);
     }
 
     .shop-item {
       display: flex;
-      align-items: center; /* 이미지와 텍스트를 세로 정렬 */
-      padding: 10px 15px;
-      border-bottom: 1px solid #ddd;
+      align-items: center;
+      padding: 15px; /* 내부 여백 */
+      border-bottom: 1px solid #ddd; /* 항목 구분선 */
       cursor: pointer;
       transition: background-color 0.3s ease; /* 배경색 변경 애니메이션 */
     }
 
     .shop-item:hover {
-      background-color: #fef1b3;
+      background-color: #fef1b3; /* 항목 호버 배경 */
     }
 
     .shop-img {
-      width: 80px;
-      height: 80px;
+      width: 60px;
+      height: 60px;
       border-radius: 5px;
       object-fit: cover;
-      margin-right: 15px; /* 이미지와 텍스트 간 간격 */
+      margin-right: 15px;
       flex-shrink: 0; /* 이미지 크기 고정 */
     }
 
     .shop-details {
       display: flex;
-      flex-direction: column; /* 텍스트 세로 정렬 */
-      justify-content: center; /* 텍스트가 가운데 정렬되도록 설정 */
+      flex-direction: column;
+      justify-content: center;
     }
 
     .shop-name {
@@ -190,21 +188,21 @@ export default function Map() {
       color: gray;
     }
 
-    @media (max-width: 768px) {
+    /* 데스크톱 및 태블릿 */
+    @media (min-width: 769px) {
       .container {
-        flex-direction: column;
+        flex-direction: row; /* 가로 배치 */
       }
 
       #map {
-        width: 100%;
-        height: 400px;
-        margin-right: 0;
+        width: 70%;
+        height: 100%; /* 데스크톱에서는 전체 높이 */
       }
 
       .shop-list {
-        width: 100%;
-        max-height: 300px;
-        margin-top: 10px;
+        width: 30%;
+        height: 100%;
+        max-height: 100%;
       }
     }
   `}</style>
@@ -223,6 +221,7 @@ export default function Map() {
     ))}
   </ul>
 </div>
+
 
   );
 }

@@ -152,7 +152,7 @@ const CategoryTitle = styled.h3`
 `;
 
 const ProductSlider = styled(Slider)`
-   width: 100%;
+    width: 100%;
     height: 100%;
 
     .slick-list {
@@ -262,12 +262,12 @@ const ImageBox = styled.div`
     border-radius: 10px;
 
     @media (max-width: 600px) {
-        height: 150px; /* 모바일 화면에서 이미지 높이를 줄임 */
+        height: 100px; /* 모바일 화면에서 이미지 높이를 줄임 */
     }
 
     @media (max-width: 400px) {
         width: 100%
-        height: 130px; /* 작은 화면에서 높이를 더 줄임 */
+        height: 40px; /* 작은 화면에서 높이를 더 줄임 */
     }
 `;
 const ProductName = styled.h3`

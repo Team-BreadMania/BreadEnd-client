@@ -125,6 +125,15 @@ const ShopContainer = styled.div`
         width: 100%; /* 모바일 화면에서 카드 너비를 100%로 설정 */
         padding: 10px; /* 약간의 패딩 추가 */
         margin-bottom: 100px; /* 카드 간격 추가 */
+        height: 50px;'
+
+      @media (max-width: 400px) {
+        width: 100%
+        height: 35px; /* 작은 화면에서 높이를 더 줄임 */
+    }
+  
+        
+
     }
 `;
 const ImageBox = styled.div`
@@ -135,8 +144,13 @@ const ImageBox = styled.div`
     border-radius: 10px;
 
     @media (max-width: 600px) {
-    width: 100%;
-        height: 150px; /* 모바일 화면에서 이미지 높이를 줄임 */
+        height: 100px; /* 모바일 화면에서 이미지 높이를 줄임 */
+        width: 100%;
+    }
+
+    @media (max-width: 400px) {
+        width: 100%
+        height: 35px; /* 작은 화면에서 높이를 더 줄임 */
     }
 
 `;
