@@ -26,12 +26,6 @@ export default function BuyerReview() {
     const ReviewEdit = (orderid, itemname) => {
         // 리뷰 수정 페이지 열기
         window.open(`/ReviewEdit?orderid=${orderid}&itemname=${itemname}`, '리뷰수정', 'width=600,height=400,scrollbars=yes');
-        const timer = setInterval(() => {
-            if (popup.closed) {
-                clearInterval(timer);
-                window.location.reload(); // 페이지 리로드
-            }
-        }, 500); // 500ms마다 팝업 상태 확인
     };
 
     useEffect(() => {
@@ -51,6 +45,7 @@ export default function BuyerReview() {
             if (response.status === 200) {
                 console.log(`리뷰 삭제 성공`);
             }
+            window.location.reload();
         } catch (error) {
             console.log(`리뷰 삭제 중 오류 발생`, error);
         }
@@ -114,7 +109,6 @@ const ReviewContainer = styled.div`
     background-color: #fff9ee;
     border-radius: 8px;
     margin: 10px 3px;
-    overflow-x: scroll;
     box-sizing: border-box;
     @media (max-width: 850px) {
         flex-direction: column;
