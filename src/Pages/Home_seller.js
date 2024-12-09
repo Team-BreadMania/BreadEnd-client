@@ -6,6 +6,7 @@ import Cookies from 'js-cookie';
 import axios from 'axios';
 import Review from '../Components/Review';
 import defaultBakery from '../Images/defaultBakery.png';
+import StarRatings from 'react-star-ratings';
 
 export default function SellerHome() {
     // 유저정보
@@ -26,6 +27,19 @@ export default function SellerHome() {
     const [newWorkTime, setNewWorkTime] = useState(workTime);
     const [newLocation, setNewLocation] = useState(location);
     const [newDetailLocation, setNewDetailLocation] = useState(detailLocation);
+
+    //매장 리뷰 불러오기
+    const [reviews, setReviews] = useState([]);
+
+    function formatDate(dateString) {
+        const date = new Date(dateString);
+
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0'); // 1월은 0이므로 1 더하기
+        const day = String(date.getDate()).padStart(2, '0');
+
+        return `${year}-${month}-${day}`;
+    }
 
     // 모바일 뷰, 태블릿 뷰 식별
     const resizeHandler = () => {
@@ -82,16 +96,24 @@ export default function SellerHome() {
                     Authorization: `Bearer ${accessToken}`, // accessToken을 헤더에 포함
                 },
             });
+            const sellerReview = await axios.get(`https://breadend.shop/home/get-review`, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${accessToken}`, // accessToken을 헤더에 포함
+                },
+            });
 
             if (response.status === 200) {
                 console.log('유저정보 불러오기 성공:', response.data);
                 const { shop_name, shop_number, location, detaillocation, profileIMG, shopIMG } = response.data;
+
                 setStoreName(shop_name);
                 setNumber(shop_number);
                 setLocation(location);
                 setDetailLocation(detaillocation);
                 setUserImage(profileIMG);
                 setShopImage(shopIMG);
+                setReviews(sellerReview.data);
             }
         } catch (error) {
             console.log(error.response);
@@ -124,7 +146,43 @@ export default function SellerHome() {
                 <TabletEditContainer />
                 {/* {isTablet ? <TabletEditContainer /> : null} */}
                 <TextContainer>리뷰조회</TextContainer>
-                <div style={{ margin: '0 0 10px 5px' }}>등록된 리뷰가 없습니다</div>
+                {reviews.length === 0 ? (
+                    <ReviewContainer>등록된 리뷰가 없습니다</ReviewContainer>
+                ) : (
+                    reviews.map((review) => (
+                        <ReviewContainer>
+                            <InfoContainer>
+                                <div style={{ display: 'flex' }}>
+                                    <UserImage src={review.userprofile} />
+                                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                                        <div style={{ fontWeight: 'bold' }}>{review.buyerNickname}</div>
+                                        <div style={{ display: 'flex' }}>
+                                            <div>
+                                                <StarRatings
+                                                    rating={review.rating}
+                                                    starRatedColor="gold"
+                                                    starEmptyColor="lightgray"
+                                                    numberOfStars={5}
+                                                    name="reviewRating"
+                                                    starDimension="15px"
+                                                    starSpacing="0px"
+                                                    readonly
+                                                    styled={{ marginRight: '5px' }}
+                                                />
+                                            </div>{' '}
+                                            <div style={{ marginLeft: '3px', color: '#c1c1c1' }}>{formatDate(review.registdate)}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div style={{ display: 'flex', alignItems: 'center', margin: '3px 0' }}>
+                                    <SellProduct>판매 상품</SellProduct>
+                                    <div style={{ fontWeight: 'bold' }}>{review.productname}</div>
+                                </div>
+                                <div>{review.reviewtext}</div>
+                            </InfoContainer>
+                        </ReviewContainer>
+                    ))
+                )}
                 <TextContainer>문의내역</TextContainer>
                 <div style={{ margin: '0 0 10px 5px' }}>등록된 문의가 없습니다</div>
             </Container>
@@ -159,7 +217,43 @@ export default function SellerHome() {
                 {isTablet ? <TabletEditContainer /> : null}
 
                 <TextContainer>리뷰조회</TextContainer>
-                <div style={{ margin: '0 0 10px 5px' }}>등록된 리뷰가 없습니다</div>
+                {reviews.length === 0 ? (
+                    <ReviewContainer>등록된 리뷰가 없습니다</ReviewContainer>
+                ) : (
+                    reviews.map((review) => (
+                        <ReviewContainer>
+                            <InfoContainer>
+                                <div style={{ display: 'flex' }}>
+                                    <UserImage src={review.userprofile} />
+                                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                                        <div style={{ fontWeight: 'bold' }}>{review.buyerNickname}</div>
+                                        <div style={{ display: 'flex' }}>
+                                            <div>
+                                                <StarRatings
+                                                    rating={review.rating}
+                                                    starRatedColor="gold"
+                                                    starEmptyColor="lightgray"
+                                                    numberOfStars={5}
+                                                    name="reviewRating"
+                                                    starDimension="15px"
+                                                    starSpacing="0px"
+                                                    readonly
+                                                    styled={{ marginRight: '5px' }}
+                                                />
+                                            </div>{' '}
+                                            <div style={{ marginLeft: '3px', color: '#c1c1c1' }}>{formatDate(review.registdate)}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div style={{ display: 'flex', alignItems: 'center', margin: '3px 0' }}>
+                                    <SellProduct>판매 상품</SellProduct>
+                                    <div style={{ fontWeight: 'bold' }}>{review.productname}</div>
+                                </div>
+                                <div>{review.reviewtext}</div>
+                            </InfoContainer>
+                        </ReviewContainer>
+                    ))
+                )}
                 <TextContainer>문의내역</TextContainer>
                 <div style={{ margin: '0 0 10px 5px' }}>등록된 문의가 없습니다</div>
             </Container>
@@ -274,7 +368,7 @@ const StoreProfile = styled.div`
 //가게 이름 컨테이너
 const StoreNameContainer = styled.div`
     display: flex;
-    background-color: #faf6e3;
+    background-color: #f0e9dd;
     font-weight: bold;
     font-size: 20px;
     justify-content: center;
@@ -459,4 +553,67 @@ const EditText = styled.div`
 const EditInput = styled.div`
     display: flex;
     flex-direction: column;
+`;
+
+const ReviewContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    border-radius: 20px;
+    border: black 2px solid;
+    margin: 0 auto 10px auto;
+    width: 100%;
+    padding: 10px;
+    @media (max-width: 1200px) {
+        width: 100%;
+    }
+    @media (max-width: 860px) {
+        width: 95%;
+    }
+    box-sizing: border-box;
+`;
+
+const InfoContainer = styled.div`
+    margin: 1% 3%;
+    background-color: #f0e9dd;
+    padding: 10px 20px;
+    border-radius: 20px;
+    border: 2px solid #d8d1c6;
+    @media (min-width: 1024px) {
+        padding: 30px 30px;
+    }
+`;
+
+const UserImage = styled.div`
+    width: 40px;
+    height: 40px;
+    max-width: 100px;
+    max-height: 100px;
+    background-image: url(${(props) => props.src});
+    margin-right: 10px;
+    background-size: cover;
+    background-position: center;
+    text-align: center;
+    border: #c0bab0 0.5px solid;
+    @media (max-width: 768px) {
+        width: 30vw;
+        height: 30vw;
+    }
+
+    @media (max-width: 480px) {
+        width: 40px;
+        height: 40px;
+    }
+    border-radius: 50%;
+`;
+const SellProduct = styled.div`
+    background-color: #d3b795;
+    color: white;
+    padding: 5px 8px;
+    border-radius: 20px;
+    margin: 0 5px 0 0;
+    font-size: 10px;
+    font-weight: bold;
+    @media (min-width: 1024px) {
+        font-size: 14px;
+    }
 `;
