@@ -139,12 +139,10 @@ export default function SellerHome() {
                                 <StoreLocation>주소 : {location}</StoreLocation>
                                 <StoreDetailLocation>상세주소 : {detailLocation}</StoreDetailLocation>
                             </StoreLocationContainer>
-                            {/* {!isTablet ? <PCEditContainer /> : null} */}
                         </StoreDetailPage>
                     </StoreInfoContainer>
                 </StoreContainer>
                 <TabletEditContainer />
-                {/* {isTablet ? <TabletEditContainer /> : null} */}
                 <TextContainer>리뷰조회</TextContainer>
                 {reviews.length === 0 ? (
                     <ReviewContainer>등록된 리뷰가 없습니다</ReviewContainer>
@@ -182,9 +180,10 @@ export default function SellerHome() {
                         ))}
                     </ReviewContainer>
                 )}
-
-                <TextContainer>문의내역</TextContainer>
-                <div style={{ margin: '0 0 10px 5px' }}>등록된 문의가 없습니다</div>
+                <div style={{marginBottom:'100px'}}>
+                    <TextContainer>문의내역</TextContainer>
+                    <div style={{ margin: '0 0 10px 5px' }}>등록된 문의가 없습니다</div>
+                </div>
             </Container>
         );
     };
@@ -253,32 +252,13 @@ export default function SellerHome() {
                         ))}
                     </ReviewContainer>
                 )}
-
-                <TextContainer>문의내역</TextContainer>
-                <div style={{ margin: '0 0 10px 5px' }}>등록된 문의가 없습니다</div>
+                 <div style={{marginBottom:'100px'}}>
+                    <TextContainer>문의내역</TextContainer>
+                    <div style={{ margin: '0 0 10px 5px' }}>등록된 문의가 없습니다</div>
+                </div>
             </Container>
         );
-    };
-    const PCEditContainer = () => {
-        return (
-            <ButtonContainer>
-                {isEditing ? (
-                    <>
-                        <Input type="text" value={newStoreName} onChange={(e) => setNewStoreName(e.target.value)} placeholder="가게 이름" />
-                        <Input type="text" value={newNumber} onChange={(e) => setNewNumber(e.target.value)} placeholder="전화번호" />
-                        <Input type="text" value={newWorkTime} onChange={(e) => setNewWorkTime(e.target.value)} placeholder="영업시간" />
-                        <Input type="text" value={newLocation} onChange={(e) => setNewLocation(e.target.value)} placeholder="주소" />
-                        <Input type="text" value={newDetailLocation} onChange={(e) => setNewDetailLocation(e.target.value)} placeholder="상세주소" />
-                        <Button onClick={handleSaveClick}>저장</Button>
-                    </>
-                ) : (
-                    <>
-                        <Button onClick={handleEditClick}>수정</Button>
-                    </>
-                )}
-            </ButtonContainer>
-        );
-    };
+    };    
     const TabletEditContainer = () => {
         return (
             <ButtonContainer>
@@ -323,7 +303,9 @@ const Container = styled.div`
     @media (max-width: 1200px) {
         padding: 10px 0 0 0;
     }
+    overflow-y:auto;
     box-sizing: border-box;
+  
 `;
 //해당 정보 명시 컨테이너
 const TextContainer = styled.div`

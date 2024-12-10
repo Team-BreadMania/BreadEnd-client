@@ -125,7 +125,6 @@ const Container = styled.div`
     position: relative;
     box-sizing: border-box;
     overflow-x: hidden; // Add this
-    overflow-y: hidden;
 `;
 
 const MobileNav = styled.div`
