@@ -173,7 +173,7 @@ export default function ProductDetailPage() {
 
             if (response.status === 200) {
                 alert("장바구니에 상품이 추가되었습니다.");
-                addToCart({ productid: id, count: quantity, price: productDetails.price, itemname: productDetails.product_name, imgpaths: productDetails.product_imgpath});
+                addToCart({ productid: id, count: quantity, price: productDetails.price, itemname: productDetails.product_name, imgpaths: productDetails.product_imgpath });
             }
         } catch (error) {
             alert("장바구니 상품추가에 실패하였습니다. 다시 시도해 주세요.");

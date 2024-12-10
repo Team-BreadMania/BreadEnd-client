@@ -45,6 +45,7 @@ export default function BuyerReview() {
             if (response.status === 200) {
                 console.log(`리뷰 삭제 성공`);
             }
+            window.location.reload();
         } catch (error) {
             console.log(`리뷰 삭제 중 오류 발생`, error);
         }
@@ -101,18 +102,19 @@ const TitleContainer = styled.div`
 `;
 const ReviewContainer = styled.div`
     display: flex;
-    max-width: 800px;
-    min-width: 600px;
+    flex-direction: column;
     margin: 0 auto;
     padding: 20px;
+
     background-color: #fff9ee;
     border-radius: 8px;
     margin: 10px 3px;
-    overflow-x: scroll;
+    box-sizing: border-box;
     @media (max-width: 850px) {
         flex-direction: column;
         overflow-y: scroll;
         overflow-x: hidden;
+        width: 85vw;
     }
 `;
 
@@ -123,6 +125,8 @@ const ReviewCard = styled.div`
     padding: 15px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     margin: 0 8px;
+    box-sizing: border-box;
+    margin-bottom: 10px;
 `;
 
 const ReviewHeader = styled.div`

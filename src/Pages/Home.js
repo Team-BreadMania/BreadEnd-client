@@ -10,15 +10,16 @@ import bannerImg_01 from "../Images/banner_img_01.jpg";
 import bannerImg_02 from "../Images/banner_img_02.jpg";
 import bannerImg_03 from "../Images/banner_img_03.jpg";
 import bannerImg_04 from "../Images/banner_img_04.jpg";
-import bannerImg_05 from "../Images/banner_img_05.jpg";
 import Product from "../Components/Product";
 import Shop from "../Components/Shop";
 
-const imgset = [bannerImg_01, bannerImg_02, bannerImg_03, bannerImg_04, bannerImg_05];
+const imgset = [bannerImg_01, bannerImg_02, bannerImg_03, bannerImg_04];
 
 export default function Home() {
 
     const navigate = useNavigate();
+    const [bannerImages, setBannerImages] = useState(imgset); // 배너이미지
+    const [userInfo, setUserInfo] = useState(null); // 사용자 정보 상태
     const [slidesToShow, setSlidesToShow] = useState(6); // 한번에 보이는 슬라이드의 수
     const [shops, setShops] = useState([]); // 내 주변 매장
     const [popularProducts, setPopularProducts] = useState([]); // 내 주변 인기상품
@@ -30,12 +31,14 @@ export default function Home() {
             const width = window.innerWidth;
             if (width <= 600) {
                 setSlidesToShow(3);
+                setBannerImages([bannerImg_03, bannerImg_04]); 
             } else if (width <= 900) {
                 setSlidesToShow(4);
             } else if (width <= 1300) {
                 setSlidesToShow(5);
             } else {
                 setSlidesToShow(6);
+                setBannerImages([bannerImg_01, bannerImg_02]);
             }
         };
 
@@ -56,6 +59,9 @@ export default function Home() {
         const headers = { Authorization: `Bearer ${accessToken}` };
 
         try {
+            const response = await axios.get('https://breadend.shop/user/get-userinfo', { headers });
+            setUserInfo(response.data); 
+
             const shopResponse = await axios.get('https://breadend.shop/home/close-shop', { headers });
             setShops(shopResponse.data);
 
@@ -93,7 +99,7 @@ export default function Home() {
     };
 
     const handleProductClick = (productId) => { // 상품 상세페이지 이동 메서드
-        navigate(`/ProductDetailPage?id=${productId}`);
+        navigate(`/ProductDetailPage?id=${productId}`); 
     };
     
     const handleShopClick = (shopId) => { // 매장 상세페이지 이동 메서드
@@ -104,14 +110,14 @@ export default function Home() {
         <Container>
             <Banner>
                 <BannerSlider {...banner_settings}>
-                    {imgset.map((image, index) => (
+                    {bannerImages.map((image, index) => (
                         <Slide key = {index}>
-                            <Image src = {image}/>
+                            <Image src = {image} />
                         </Slide>
                     ))}
                 </BannerSlider>
             </Banner>
-            <Title>❤️사용자님이 좋아하실만한 상품</Title>
+            <Title>❤️{userInfo ? `${userInfo.nickname}님이 좋아하실만한 상품` : '사용자님이 좋아하실만한 상품'}</Title>
             {recommendedProducts.length > 0 && (
                 <ProductContainer>
                     <ProductSlider {...product_settings}>

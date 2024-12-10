@@ -2,14 +2,10 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { Search, ChevronDown, MoreVertical } from 'lucide-react';
-import breadImg1 from '../Images/breadImg1.jfif';
-import breadImg2 from '../Images/breadImg2.jpg';
 import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import axios from 'axios';
 import EditProductPopup from '../Components/EditProductPopup';
-import reserve from '../Images/reserve.png';
-import soldout from '../Images/soldout.png';
 
 export default function ProductManagement() {
     const navigate = useNavigate();
@@ -19,20 +15,18 @@ export default function ProductManagement() {
     const [isMobile, setIsMobile] = useState(false);
 
     const accessToken = Cookies.get('accessToken');
-    //판매 대기 제품 저장 배열
     const [waitProducts, setWaitProducts] = useState([]);
-    //판매 완료 제품 저장 배열
     const [sellProducts, setSellProducts] = useState([]);
-    //구매 예약 제품 저장 배열
     const [ongoingProducts, setOngoinProducts] = useState([]);
-    // 선택된 상품 ID들을 저장할 상태 추가
     const [selectedProducts, setSelectedProducts] = useState([]);
-    //판매중인 제품 개수
     const waitProductLength = waitProducts.length;
-    //판매예약 제품 개수
     const ongoingProductsLength = ongoingProducts.length;
-    //판매완료 제품 개수
     const sellProductLenght = sellProducts.length;
+    const [activeTab, setActiveTab] = useState('all');
+
+    const filteredWaitProducts = activeTab === 'all' || activeTab === 'wait' ? waitProducts : [];
+    const filteredOngoingProducts = activeTab === 'all' || activeTab === 'ongoing' ? ongoingProducts : [];
+    const filteredSellProducts = activeTab === 'all' || activeTab === 'sell' ? sellProducts : [];
 
     // 모바일 뷰, 태블릿 뷰 식별
     const resizeHandler = () => {
@@ -160,7 +154,7 @@ export default function ProductManagement() {
         try {
             // 선택된 각 상품에 대해 삭제 요청
             const deletePromises = selectedProducts.map((productId) =>
-                axios.delete(`https://breadend.shop/seller/delete?productid=${productId}`, {
+                axios.put(`https://breadend.shop/seller/delete?productid=${productId}`, {
                     headers: {
                         'Content-Type': 'application/json',
                         Authorization: `Bearer ${accessToken}`,
@@ -177,6 +171,7 @@ export default function ProductManagement() {
             setSelectedProducts([]);
 
             alert('선택한 상품들이 삭제되었습니다.');
+            window.location.reload();
         } catch (error) {
             console.error('상품 삭제 중 오류:', error);
             alert('상품 삭제에 실패했습니다. 다시 시도해주세요.');
@@ -282,19 +277,19 @@ export default function ProductManagement() {
 
                 <MainContent>
                     <StatsContainer>
-                        <StatBox>
+                        <StatBox onClick={() => setActiveTab('all')} active={activeTab === 'all'}>
                             <StatLabel>전체</StatLabel>
                             <StatValue>{waitProductLength + sellProductLenght + ongoingProductsLength}</StatValue>
                         </StatBox>
-                        <StatBox>
+                        <StatBox onClick={() => setActiveTab('wait')} active={activeTab === 'wait'}>
                             <StatLabel>판매중</StatLabel>
                             <StatValue>{waitProductLength}</StatValue>
                         </StatBox>
-                        <StatBox>
+                        <StatBox onClick={() => setActiveTab('ongoing')} active={activeTab === 'ongoing'}>
                             <StatLabel>판매예약</StatLabel>
                             <StatValue>{ongoingProductsLength}</StatValue>
                         </StatBox>
-                        <StatBox>
+                        <StatBox onClick={() => setActiveTab('sell')} active={activeTab === 'sell'}>
                             <StatLabel>판매완료</StatLabel>
                             <StatValue>{sellProductLenght}</StatValue>
                         </StatBox>
@@ -312,7 +307,7 @@ export default function ProductManagement() {
                             <div>수정일</div>
                         </ProductHeader>
                         {/*판매중*/}
-                        {waitProducts.map((product) => (
+                        {filteredWaitProducts.map((product) => (
                             <ProductRow key={product.productid}>
                                 <input
                                     type="checkbox"
@@ -344,7 +339,7 @@ export default function ProductManagement() {
                     </ProductGrid>
                     {/*판매예약*/}
                     <ProductGrid>
-                        {ongoingProducts.map((product) => (
+                        {filteredOngoingProducts.map((product) => (
                             <ProductRow key={product.productid}>
                                 <input
                                     type="checkbox"
@@ -376,7 +371,7 @@ export default function ProductManagement() {
                     </ProductGrid>
                     {/*판매완료*/}
                     <ProductGrid>
-                        {sellProducts.map((product) => (
+                        {filteredSellProducts.map((product) => (
                             <ProductRow key={product.productid}>
                                 <input
                                     type="checkbox"
@@ -429,19 +424,19 @@ export default function ProductManagement() {
 
                 <MainContent>
                     <StatsContainer>
-                        <StatBox>
+                        <StatBox onClick={() => setActiveTab('all')} active={activeTab === 'all'}>
                             <StatLabel>전체</StatLabel>
                             <StatValue>{waitProductLength + sellProductLenght + ongoingProductsLength}</StatValue>
                         </StatBox>
-                        <StatBox>
+                        <StatBox onClick={() => setActiveTab('wait')} active={activeTab === 'wait'}>
                             <StatLabel>판매중</StatLabel>
                             <StatValue>{waitProductLength}</StatValue>
                         </StatBox>
-                        <StatBox>
+                        <StatBox onClick={() => setActiveTab('ongoing')} active={activeTab === 'ongoing'}>
                             <StatLabel>판매예약</StatLabel>
                             <StatValue>{ongoingProductsLength}</StatValue>
                         </StatBox>
-                        <StatBox>
+                        <StatBox onClick={() => setActiveTab('sell')} active={activeTab === 'sell'}>
                             <StatLabel>판매완료</StatLabel>
                             <StatValue>{sellProductLenght}</StatValue>
                         </StatBox>
@@ -455,7 +450,7 @@ export default function ProductManagement() {
                             <SelectAllDiv>전체선택</SelectAllDiv>
                         </MobileHeader>
                         {/*판매중*/}
-                        {waitProducts.map((product) => (
+                        {filteredWaitProducts.map((product) => (
                             <MobileProduct key={product.productid}>
                                 <input
                                     type="checkbox"
@@ -463,7 +458,8 @@ export default function ProductManagement() {
                                     checked={selectedProducts.includes(product.productid)}
                                     onChange={() => handleProductSelect(product.productid)}
                                     styled={{ margin: '0px' }}
-                                />                                <MobileDiv>{product.productid}</MobileDiv>
+                                />{' '}
+                                <MobileDiv>{product.productid}</MobileDiv>
                                 <MobileImg src={product.imgpaths[0]} />
                                 <MobileInfoContainer>
                                     <MobileDiv>{product.itemname}</MobileDiv>
@@ -474,7 +470,7 @@ export default function ProductManagement() {
                             </MobileProduct>
                         ))}
                         {/*판매예약*/}
-                        {ongoingProducts.map((product) => (
+                        {filteredOngoingProducts.map((product) => (
                             <MobileProduct key={product.productid}>
                                 <input
                                     type="checkbox"
@@ -494,7 +490,7 @@ export default function ProductManagement() {
                             </MobileProduct>
                         ))}
                         {/*판매완료*/}
-                        {sellProducts.map((product) => (
+                        {filteredSellProducts.map((product) => (
                             <MobileProduct key={product.productid}>
                                 <input
                                     type="checkbox"
@@ -593,8 +589,7 @@ const StatsContainer = styled.div`
 
     @media (max-width: 768px) {
         grid-template-columns: repeat(2, 1fr);
-        gap:0.6rem;
-
+        gap: 0.6rem;
     }
 
     /* @media (max-width: 480px) {
@@ -608,6 +603,13 @@ const StatBox = styled.div`
     padding: 1rem;
     border-radius: 0.25rem;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    background-color: ${(props) => (props.active ? '#D3B790' : 'white')};
+    color: ${(props) => (props.active ? 'white' : 'black')};
+
+    &:hover {
+        background-color: ${(props) => (props.active ? '#D3B790' : '#f0f0f0')};
+    }
     @media (max-width: 450px) {
         padding: 0.7rem 1rem;
     }
@@ -617,7 +619,7 @@ const StatLabel = styled.div`
     font-size: 0.875rem;
     color: #6b7280;
     @media (max-width: 480px) {
-        font-size:0.8rem
+        font-size: 0.8rem;
     }
 `;
 
@@ -625,7 +627,7 @@ const StatValue = styled.div`
     font-size: 1.25rem;
     font-weight: bold;
     @media (max-width: 480px) {
-        font-size:1.1rem
+        font-size: 1.1rem;
     }
 `;
 
@@ -781,7 +783,6 @@ const MobileImg = styled.div`
 const MobileDiv = styled.div`
     padding: 1px 8px;
     @media screen {
-        
     }
 `;
 
@@ -808,11 +809,11 @@ const EditButton = styled.div`
         background-color: #19b47c;
     }
     margin: 0 8px;
-    @media (max-width:400px) {
-        font-size:15px;
+    @media (max-width: 400px) {
+        font-size: 15px;
     }
-    @media (max-width:350px) {
-        font-size:13px;
+    @media (max-width: 350px) {
+        font-size: 13px;
     }
 `;
 const DeleteButton = styled.div`
@@ -823,11 +824,11 @@ const DeleteButton = styled.div`
     &:hover {
         background-color: #c62919;
     }
-    @media (max-width:400px) {
-        font-size:15px;
+    @media (max-width: 400px) {
+        font-size: 15px;
     }
-    @media (max-width:365px) {
-        font-size:13px;
+    @media (max-width: 365px) {
+        font-size: 13px;
     }
 `;
 const SellButton = styled.div`
@@ -839,11 +840,11 @@ const SellButton = styled.div`
     &:hover {
         background-color: #b16b3d;
     }
-    @media (max-width:400px) {
-        font-size:15px;
+    @media (max-width: 400px) {
+        font-size: 15px;
     }
-    @media (max-width:350px) {
-        font-size:13px;
+    @media (max-width: 350px) {
+        font-size: 13px;
     }
 `;
 const ReservCancleButton = styled.div`
@@ -854,10 +855,10 @@ const ReservCancleButton = styled.div`
     &:hover {
         background-color: #b16b3d;
     }
-    @media (max-width:400px) {
-        font-size:15px;
+    @media (max-width: 400px) {
+        font-size: 15px;
     }
-    @media (max-width:350px) {
-        font-size:13px;
+    @media (max-width: 350px) {
+        font-size: 13px;
     }
 `;

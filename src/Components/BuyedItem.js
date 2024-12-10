@@ -124,7 +124,7 @@ export default function Item() {
                             <div>상품 가격</div>
                         </ProductTitleContainer>
                         <ProductInfoContainer>
-                            <ReservImage src={butterroll}></ReservImage>
+                            <ReservImage src={product.imgpaths[0]}></ReservImage>
                             <NameCostContainer>
                                 <Name>{product.itemname}</Name>
                                 <Info>{product.info}</Info>
@@ -149,6 +149,7 @@ const Container = styled.div`
     display: flex;
     flex-direction: column;
     width: 100%;
+
     @media (max-width: 800px) {
         padding: 1%;
     }

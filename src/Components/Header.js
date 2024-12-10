@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React, { useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
@@ -5,18 +6,34 @@ import { AuthContext } from '../AuthContext';
 import Cookies from 'js-cookie';
 import styled from 'styled-components';
 import menu_icon from '../Images/menu_icon.svg';
-import logo_icon from '../Images/logo_icon.png';
+import logo_icon from '../Images/WelcomeImage.png';
 import alarm_icon from '../Images/alarm_icon.svg';
 import '../Fonts/font.css';
 
 export default function Header() {
     const navigate = useNavigate();
     const { userAuth, setUserAuth } = useContext(AuthContext);
+    const [menuVisible, setMenuVisible] = useState(false);
 
     useEffect(() => {
         const userType = Cookies.get('userType');
         setUserAuth(userType);
     }, [setUserAuth]);
+
+    const handleOutsideClick = (event) => {
+        // 메뉴가 열려있고 클릭된 요소가 메뉴와 관련이 없을 때
+        if (menuVisible && !event.target.closest('#menu-container') && !event.target.closest('#menu-button')) {
+            setMenuVisible(false);
+        }
+    };
+
+    useEffect(() => {
+        document.addEventListener('click', handleOutsideClick);
+        return () => {
+            document.removeEventListener('click', handleOutsideClick);
+        };
+    }, [menuVisible]);
+
 
     const handleLogout = () => {
         Cookies.remove('accessToken');
@@ -33,13 +50,18 @@ export default function Header() {
         } else {
             navigate('/Home'); // 나머지 경우는 Home으로 이동
         }
+        window.location.reload();
         console.log(userAuth);
+    };
+
+    const toggleMenu = () => {
+        setMenuVisible(!menuVisible); // 메뉴 가시성 토글
     };
 
     return (
         <Container>
             <Box>
-                <MenuButton />
+                <MenuButton id="menu-button" onClick={toggleMenu} />
             </Box>
             <Box style={{ width: '60%' }}>
                 <LogoButton onClick={handleLogoClick}>
@@ -47,7 +69,7 @@ export default function Header() {
                     <LogoText>빵끝마켓</LogoText>
                 </LogoButton>
             </Box>
-            <Box style={{ width: '20%', justifyContent: 'flex-end' }}>
+            <Box style={{ width: '10%', justifyContent: 'flex-end' }}>
                 {' '}
                 {/* 로그인과 회원가입 박스를 담는 박스 */}
                 {Cookies.get('accessToken') ? (
@@ -55,7 +77,6 @@ export default function Header() {
                     <LogoutBox onClick={handleLogout}>로그아웃</LogoutBox>
                 ) : (
                     <>
-                        <LoginBox to="/Login">로그인</LoginBox>
                         <SignupBox to="/Signup">회원가입</SignupBox>
                     </>
                 )}
@@ -63,6 +84,14 @@ export default function Header() {
             <Box>
                 <AlarmButton />
             </Box>
+            {menuVisible && ( 
+                <MenuContainer id = "menu-container">
+                    <MenuItem onClick={() => setMenuVisible(false)}>공지사항</MenuItem>
+                    <MenuItem onClick={() => setMenuVisible(false)}>이벤트</MenuItem>
+                    <MenuItem onClick={() => setMenuVisible(false)}>문의하기</MenuItem>
+                    <MenuItem onClick={() => setMenuVisible(false)}>신고하기</MenuItem>
+                </MenuContainer>
+            )}
         </Container>
     );
 }
@@ -72,7 +101,7 @@ export default function Header() {
 const Container = styled.div`
     display: flex;
     width: 90%;
-    height: 7.5vh;
+    height: 60px;
     border-bottom: 3px solid black;
     padding: 0 5%;
 
@@ -95,34 +124,9 @@ const Box = styled.div`
     align-items: center;
 `;
 
-const LoginBox = styled(Link)`
-    display: flex;
-    width: auto;
-    padding-right: 15px;
-    height: 100%;
-    justify-content: right;
-    align-items: center;
-    font-size: 13px;
-    font-weight: bold;
-    color: black;
-    text-decoration: none;
-    white-space: nowrap; /* 줄바꿈 방지 */
-
-    @media (max-width: 800px) {
-        font-size: 11px;
-        padding-right: 10px; /* 오른쪽 여백 줄이기 */
-    }
-
-    @media (max-width: 600px) {
-        font-size: 10px;
-        padding-right: 5px; /* 오른쪽 여백 더 줄이기 */
-    }
-`;
-
 const SignupBox = styled(Link)`
     display: flex;
     width: auto;
-    padding-left: 15px;
     height: 100%;
     justify-content: right;
     align-items: center;
@@ -134,19 +138,16 @@ const SignupBox = styled(Link)`
 
     @media (max-width: 800px) {
         font-size: 11px;
-        padding-left: 10px; /* 왼쪽 여백 줄이기 */
     }
 
     @media (max-width: 600px) {
         font-size: 10px;
-        padding-left: 5px; /* 왼쪽 여백 더 줄이기 */
     }
 `;
 
 const LogoutBox = styled.div`
     display: flex;
     width: auto;
-    padding-right: 15px;
     height: 100%;
     justify-content: right;
     align-items: center;
@@ -159,12 +160,10 @@ const LogoutBox = styled.div`
 
     @media (max-width: 800px) {
         font-size: 11px;
-        padding-right: 10px;
     }
 
     @media (max-width: 600px) {
         font-size: 10px;
-        padding-right: 5px;
     }
 `;
 
@@ -210,7 +209,7 @@ const LogoButton = styled.div`
 
 const LogoIcon = styled.div`
     width: 20%;
-    height: 100%;
+    height: 70%;
     background-image: url(${logo_icon});
     background-size: contain;
     background-repeat: no-repeat;
@@ -237,5 +236,26 @@ const LogoText = styled.div`
     }
     &:hover {
         cursor: pointer;
+    }
+`;
+
+const MenuContainer = styled.div`
+    position: absolute;
+    width: 200px;
+    top: 60px; 
+    left: 0;
+    background-color: white;
+    border: 1px solid #ccc;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+`;
+
+const MenuItem = styled.div`
+    font-size: 15px;
+    font-weight: bold;
+    padding: 10px 20px;
+    cursor: pointer;
+    &:hover {
+        background-color: #f0f0f0;
     }
 `;

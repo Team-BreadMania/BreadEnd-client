@@ -21,7 +21,7 @@ import ReviewPopup from './Components/ReviewPopup';
 import ReviewEdit from './Components/ReviewEdit';
 import { AuthProvider } from './AuthContext';
 import { CartProvider } from './CartContext';
-import Review from './Components/Review';
+import WelcomePage from "./Pages/WelcomeHomePage";
 
 function App() {
     const location = useLocation(); // 현재 경로를 확인하기 위한 useLocation
@@ -33,9 +33,19 @@ function App() {
         location.pathname === '/Search' ||
         location.pathname === '/EditProductPopup' ||
         location.pathname === '/ReviewWrite' ||
+        location.pathname === '/WelcomePage' ||
+        location.pathname === '/Login' ||
+        location.pathname === '/SignUp' ||
         location.pathname === '/ReviewEdit';
     const hideNaviBar =
-        location.pathname === '/normal' || location.pathname === '/seller' || location.pathname === '/EditProductPopup' || location.pathname === '/ReviewWrite' || location.pathname === '/ReviewEdit';
+        location.pathname === '/normal' || 
+        location.pathname === '/seller' || 
+        location.pathname === '/WelcomePage' || 
+        location.pathname === '/Login' ||
+        location.pathname === '/SignUp' ||
+        location.pathname === '/EditProductPopup' || 
+        location.pathname === '/ReviewWrite' || 
+        location.pathname === '/ReviewEdit';
 
     return (
         <CartProvider>
@@ -44,7 +54,7 @@ function App() {
                     {/* 특정 경로에서는 Header를 렌더링하지 않음 */}
                     {!hideHeader && <Header />}
                     <Routes>
-                        <Route path="/" element={<Navigate to="/Home" />} />
+                        <Route path="/" element={<Navigate to="/WelcomePage" />} />
                         <Route path="/Home" element={<Home />} />
                         <Route path="/Login" element={<Login />} />
                         <Route path="/Signup" element={<Signup />} />
@@ -63,6 +73,7 @@ function App() {
                         <Route path="/EditProductPopup" element={<EditProductPopup />} />
                         <Route path="/ReviewWrite" element={<ReviewPopup />} />
                         <Route path="/ReviewEdit" element={<ReviewEdit />} />
+                        <Route path="/WelcomePage" element={<WelcomePage />} />
                     </Routes>
 
                     {/* 특정 경로에서는 NaviBar를 렌더링하지 않음 */}
