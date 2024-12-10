@@ -5,6 +5,7 @@ import { Search, ChevronDown, MoreVertical } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import axios from 'axios';
+import Swal from 'sweetalert2';
 import EditProductPopup from '../Components/EditProductPopup';
 
 export default function ProductManagement() {
@@ -211,11 +212,19 @@ export default function ProductManagement() {
             // Clear selected products
             setSelectedProducts([]);
 
-            alert('선택한 상품들의 판매가 완료되었습니다.');
+            await Swal.fire({
+                icon: 'success',
+                title: '판매 완료',
+                text: '선택한 상품들의 판매가 완료되었습니다.',
+            });
         } catch (error) {
             console.error('상품 판매 중 오류:', error);
-            alert('상품 판매에 실패했습니다. 다시 시도해주세요.');
-        }
+            await Swal.fire({
+                icon: 'error',
+                title: '판매 실패',
+                text: '상품 판매에 실패했습니다. 다시 시도해주세요.',
+            });
+        } 
     };
     const handleReservCancleProducts = async () => {
         try {
